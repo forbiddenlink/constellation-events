@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "mapbox-gl/dist/mapbox-gl.css";
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #05060f;
+  color: #e8f1ff;
+}
+
+::selection {
+  background: rgba(94, 242, 193, 0.25);
+}
+
+.grid-overlay {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.starfield {
+  background-image: radial-gradient(circle at 10% 20%, rgba(232, 241, 255, 0.4), transparent 2px),
+    radial-gradient(circle at 80% 10%, rgba(232, 241, 255, 0.3), transparent 2px),
+    radial-gradient(circle at 40% 70%, rgba(232, 241, 255, 0.25), transparent 2px),
+    radial-gradient(circle at 70% 60%, rgba(232, 241, 255, 0.3), transparent 2px);
+}
+
+.glass {
+  background: rgba(12, 16, 32, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+}
+
+.button-primary {
+  @apply rounded-full bg-aurora px-5 py-2.5 text-sm font-semibold text-midnight shadow-glow transition hover:scale-[1.02];
+}
+
+.button-ghost {
+  @apply rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-starlight/80 transition hover:border-aurora hover:text-aurora;
+}
