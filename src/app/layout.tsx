@@ -3,6 +3,11 @@ import type { Metadata } from "next";
 import { Space_Grotesk, DM_Serif_Display } from "next/font/google";
 import Link from "next/link";
 import { clsx } from "clsx";
+import ClientErrorBoundary from "@/components/ClientErrorBoundary";
+import { logConfigStatus } from "@/lib/config";
+
+// Log configuration status on server startup
+logConfigStatus();
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -64,7 +69,9 @@ export default function RootLayout({
                 </div>
               </div>
             </header>
-            <main className="mx-auto max-w-6xl px-6 py-10">{children}</main>
+            <main className="mx-auto max-w-6xl px-6 py-10">
+              <ClientErrorBoundary>{children}</ClientErrorBoundary>
+            </main>
             <footer className="border-t border-white/10 py-8 text-center text-xs text-starlight/50">
               Built for stargazers. Powered by open astronomy data.
             </footer>
