@@ -10,9 +10,10 @@ const fallbackCenter: [number, number] = [-115.1728, 36.1147];
 
 type StarMapProps = {
   showLightPollution: boolean;
+  overlayOpacity: number;
 };
 
-export default function StarMap({ showLightPollution }: StarMapProps) {
+export default function StarMap({ showLightPollution, overlayOpacity }: StarMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [ready, setReady] = useState(false);
@@ -80,14 +81,16 @@ export default function StarMap({ showLightPollution }: StarMapProps) {
           type: "raster",
           source: sourceId,
           paint: {
-            "raster-opacity": 0.7
+            "raster-opacity": overlayOpacity
           }
         });
+      } else {
+        map.setPaintProperty(layerId, "raster-opacity", overlayOpacity);
       }
     } else {
       if (map.getLayer(layerId)) map.removeLayer(layerId);
     }
-  }, [showLightPollution, lightPollutionTiles, ready]);
+  }, [showLightPollution, lightPollutionTiles, ready, overlayOpacity]);
 
   return (
     <div className="relative h-64 overflow-hidden rounded-2xl border border-white/10 bg-white/5">

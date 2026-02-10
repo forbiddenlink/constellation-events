@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
+import { clamp } from "@/lib/geo";
 import { parseCoordinates } from "@/lib/geo";
 import { findNearbyDarkSkyLocations, estimateDarkSkyScore } from "@/lib/locations";
 import { config } from "@/lib/config";
+import { calculateMoonPhase } from "@/lib/astronomy";
+import { fetchSkyQuality } from "@/lib/weather";
 
 /**
  * GET /api/locations
@@ -20,12 +23,40 @@ export async function GET(request: Request) {
   const limit = parseInt(searchParams.get("limit") || "10", 10);
 
   try {
-    const locations = findNearbyDarkSkyLocations(coords, maxDistance, limit);
-    const userDarkSkyScore = estimateDarkSkyScore(coords);
+    const [skyQuality, moonPhase] = await Promise.all([
+      fetchSkyQuality(coords.lat, coords.lng).catch(() => null),
+      Promise.resolve(calculateMoonPhase())
+    ]);
+
+    const moonPenalty = Math.round(moonPhase.illumination * 0.1);
+    const weatherAdjustment = skyQuality ? Math.round((skyQuality.quality - 60) * 0.2) : 0;
+
+    const locations = findNearbyDarkSkyLocations(coords, maxDistance, limit)
+      .map((location, index) => ({
+        ...location,
+        darkSkyScore: clamp(
+          location.darkSkyScore - moonPenalty + weatherAdjustment - index,
+          25,
+          99
+        )
+      }))
+      .sort((a, b) => b.darkSkyScore - a.darkSkyScore);
+
+    const userDarkSkyScore = clamp(
+      estimateDarkSkyScore(coords) - moonPenalty + weatherAdjustment,
+      20,
+      99
+    );
 
     return NextResponse.json({
       location: coords,
       userDarkSkyScore,
+      conditions: {
+        moonIllumination: moonPhase.illumination,
+        weatherQuality: skyQuality?.quality ?? null,
+        cloudCover: skyQuality?.cloudCover ?? null,
+        weatherSource: skyQuality?.source ?? null
+      },
       locations,
       count: locations.length,
       generatedAt: new Date().toISOString()

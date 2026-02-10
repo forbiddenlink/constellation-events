@@ -16,27 +16,10 @@ export async function GET(request: Request) {
     searchParams.get("lng")
   ) ?? config.defaultLocation;
 
-  try {
-    const skyQuality = await fetchSkyQuality(coords.lat, coords.lng);
-
-    return NextResponse.json({
-      ...skyQuality,
-      location: coords,
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Weather data unavailable",
-        location: coords,
-        timestamp: new Date().toISOString(),
-        // Return estimated values as fallback
-        cloudCover: 50,
-        quality: 70,
-        seeing: "fair",
-        transparency: 50
-      },
-      { status: 503 }
-    );
-  }
+  const skyQuality = await fetchSkyQuality(coords.lat, coords.lng);
+  return NextResponse.json({
+    ...skyQuality,
+    location: coords,
+    timestamp: new Date().toISOString()
+  });
 }

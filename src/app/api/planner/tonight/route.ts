@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { parseCoordinates } from "@/lib/geo";
+import type { Coordinates } from "@/lib/geo";
 import { config } from "@/lib/config";
 import { 
   calculateMoonPhase, 
@@ -8,6 +9,73 @@ import {
 } from "@/lib/astronomy";
 import { getTonightEvents, getActiveMeteorShowers } from "@/lib/events";
 import { getDefaultTargets, fetchObserverTable } from "@/lib/horizons";
+import { fetchSkyQuality } from "@/lib/weather";
+import { estimateDarkSkyScore } from "@/lib/locations";
+import { getCache, setCache } from "@/lib/cache";
+
+const PLANNER_TTL_MS = 10 * 60 * 1000;
+const HORIZONS_TIMEOUT_MS = 7000;
+
+type VisiblePlanet = {
+  name: string;
+  type: string;
+  bestAltitude: number;
+  bestTime: string;
+  visible: boolean;
+};
+
+type PlannerPayload = {
+  location: Coordinates;
+  date: string;
+  moon: {
+    phase: string;
+    illumination: number;
+    age: number;
+    rise: Date | null;
+    set: Date | null;
+  };
+  sun: {
+    sunset: Date;
+    sunrise: Date;
+    astronomicalDusk: Date;
+    astronomicalDawn: Date;
+  };
+  optimalWindow: {
+    start: Date;
+    end: Date;
+    quality: number;
+    duration: number;
+  };
+  localDarkSkyScore: number;
+  weather: {
+    cloudCover: number;
+    seeing: string;
+    transparency: number;
+    humidity: number;
+    windSpeed: number;
+    quality: number;
+    source: string;
+  } | null;
+  visiblePlanets: VisiblePlanet[];
+  tonightEvents: ReturnType<typeof getTonightEvents>;
+  activeShowers: {
+    name: string;
+    zhr: number;
+    peak: Date;
+  }[];
+  recommendations: {
+    priority: string;
+    title: string;
+    description: string;
+    timing: string;
+  }[];
+  overallQuality: {
+    score: number;
+    rating: string;
+    description: string;
+  };
+  generatedAt: string;
+};
 
 /**
  * GET /api/planner/tonight
@@ -21,8 +89,16 @@ export async function GET(request: Request) {
     searchParams.get("lat"),
     searchParams.get("lng")
   ) ?? config.defaultLocation;
+  const cacheKey = getPlannerCacheKey(coords);
+
+  const cached = getCache<PlannerPayload>(cacheKey);
+  if (cached) {
+    return NextResponse.json(cached);
+  }
 
   try {
+    const skyQualityPromise = fetchSkyQuality(coords.lat, coords.lng).catch(() => null);
+
     // Calculate moon phase and conditions
     const moonPhase = calculateMoonPhase();
     
@@ -36,44 +112,14 @@ export async function GET(request: Request) {
     const tonightEvents = getTonightEvents(coords);
     
     // Get active meteor showers
-    const activerShowers = getActiveMeteorShowers();
+    const activeShowers = getActiveMeteorShowers();
     
-    // Get visible planets from JPL Horizons
-    type VisiblePlanet = {
-      name: string;
-      type: string;
-      bestAltitude: number;
-      bestTime: string;
-      visible: boolean;
-    };
-    
-    let visiblePlanets: VisiblePlanet[] = [];
-    try {
-      const targets = getDefaultTargets();
-      const planetData = await Promise.all(
-        targets.map(async (target) => {
-          const points = await fetchObserverTable(target, coords, 8);
-          if (points.length === 0) return null;
-          
-          const best = points.reduce((max, point) => 
-            point.elevation > max.elevation ? point : max, 
-            points[0]
-          );
-          
-          return {
-            name: target.name,
-            type: target.type,
-            bestAltitude: Math.round(best.elevation),
-            bestTime: best.timeLabel,
-            visible: best.elevation > 15 // Above 15° is considered visible
-          };
-        })
-      );
-      
-      visiblePlanets = planetData.filter((p): p is VisiblePlanet => p !== null && p.visible);
-    } catch (error) {
-      console.error("Failed to fetch planet data:", error);
-    }
+    const visiblePlanetsPromise = fetchVisiblePlanets(coords);
+
+    const [visiblePlanets, skyQuality] = await Promise.all([
+      visiblePlanetsPromise,
+      skyQualityPromise
+    ]);
 
     // Generate recommendations
     const recommendations = [];
@@ -96,8 +142,8 @@ export async function GET(request: Request) {
     }
     
     // Meteor shower recommendation
-    if (activerShowers.length > 0) {
-      const shower = activerShowers[0];
+    if (activeShowers.length > 0) {
+      const shower = activeShowers[0];
       recommendations.push({
         priority: "medium",
         title: `${shower.name} active`,
@@ -116,7 +162,33 @@ export async function GET(request: Request) {
       });
     }
 
-    return NextResponse.json({
+    if (skyQuality) {
+      if (skyQuality.cloudCover > 55) {
+        recommendations.push({
+          priority: "medium",
+          title: "Cloud cover elevated",
+          description: `${skyQuality.cloudCover}% cloud cover. Prioritize brighter targets and lunar features.`,
+          timing: "Check for short clear windows"
+        });
+      } else {
+        recommendations.push({
+          priority: "high",
+          title: "Weather supports deep-sky viewing",
+          description: `${skyQuality.cloudCover}% clouds and ${skyQuality.seeing} seeing conditions right now.`,
+          timing: "Use optimal window"
+        });
+      }
+    }
+
+    const localDarkSkyScore = estimateDarkSkyScore(coords);
+    const overallQuality = calculateOverallQuality({
+      moonIllumination: moonPhase.illumination,
+      windowQuality: optimalWindow.quality,
+      darkSkyScore: localDarkSkyScore,
+      weatherQuality: skyQuality?.quality
+    });
+
+    const payload: PlannerPayload = {
       location: coords,
       date: new Date().toISOString(),
       moon: {
@@ -138,16 +210,32 @@ export async function GET(request: Request) {
         quality: optimalWindow.quality,
         duration: Math.round((optimalWindow.end.getTime() - optimalWindow.start.getTime()) / (1000 * 60 * 60))
       },
+      localDarkSkyScore,
+      weather: skyQuality
+        ? {
+            cloudCover: skyQuality.cloudCover,
+            seeing: skyQuality.seeing,
+            transparency: skyQuality.transparency,
+            humidity: skyQuality.humidity,
+            windSpeed: skyQuality.windSpeed,
+            quality: skyQuality.quality,
+            source: skyQuality.source
+          }
+        : null,
       visiblePlanets,
       tonightEvents,
-      activeShowers: activerShowers.map(s => ({
+      activeShowers: activeShowers.map(s => ({
         name: s.name,
         zhr: s.zhr,
         peak: s.peak
       })),
       recommendations,
-      overallQuality: calculateOverallQuality(moonPhase.illumination, optimalWindow.quality)
-    });
+      overallQuality,
+      generatedAt: new Date().toISOString()
+    };
+
+    setCache(cacheKey, payload, PLANNER_TTL_MS);
+    return NextResponse.json(payload);
   } catch (error) {
     return NextResponse.json(
       {
@@ -159,16 +247,82 @@ export async function GET(request: Request) {
   }
 }
 
+function getPlannerCacheKey(coords: Coordinates) {
+  // Round coordinates to increase cache reuse for nearby users.
+  return `planner-tonight:${coords.lat.toFixed(2)}:${coords.lng.toFixed(2)}`;
+}
+
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      reject(new Error(`Request timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+
+    promise
+      .then((value) => {
+        clearTimeout(timeout);
+        resolve(value);
+      })
+      .catch((error) => {
+        clearTimeout(timeout);
+        reject(error);
+      });
+  });
+}
+
+async function fetchVisiblePlanets(coords: Coordinates): Promise<VisiblePlanet[]> {
+  const targets = getDefaultTargets().filter((target) => target.type === "Planet");
+  const planetData = await Promise.all(
+    targets.map(async (target) => {
+      try {
+        const points = await withTimeout(
+          fetchObserverTable(target, coords, 8),
+          HORIZONS_TIMEOUT_MS
+        );
+        if (points.length === 0) return null;
+
+        const best = points.reduce(
+          (max, point) => (point.elevation > max.elevation ? point : max),
+          points[0]
+        );
+
+        if (best.elevation <= 15) return null;
+        return {
+          name: target.name,
+          type: target.type,
+          bestAltitude: Math.round(best.elevation),
+          bestTime: best.timeLabel,
+          visible: true
+        };
+      } catch {
+        return null;
+      }
+    })
+  );
+
+  return planetData.filter((planet): planet is VisiblePlanet => Boolean(planet));
+}
+
 /**
  * Calculate overall tonight quality score
  */
-function calculateOverallQuality(moonIllumination: number, windowQuality: number): {
+function calculateOverallQuality(params: {
+  moonIllumination: number;
+  windowQuality: number;
+  darkSkyScore: number;
+  weatherQuality?: number;
+}): {
   score: number;
   rating: string;
   description: string;
 } {
-  // Weight moon interference more heavily
-  const score = Math.round(windowQuality * 0.7 + (100 - moonIllumination) * 0.3);
+  const weather = params.weatherQuality ?? 65;
+  const score = Math.round(
+    params.windowQuality * 0.35 +
+      (100 - params.moonIllumination) * 0.25 +
+      weather * 0.25 +
+      params.darkSkyScore * 0.15
+  );
   
   let rating: string;
   let description: string;

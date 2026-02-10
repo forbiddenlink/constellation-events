@@ -1,0 +1,5 @@
+# Add one URL per line.
+# Use Earthdata-protected VIIRS files or your approved data source URLs.
+# Example format only (not a guaranteed live URL):
+# https://example.nasa.gov/path/to/VIIRS_file_01.tif
+# https://example.nasa.gov/path/to/VIIRS_file_02.tif

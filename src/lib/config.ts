@@ -11,7 +11,13 @@ export const config = {
 
   // Weather APIs
   weather: {
-    provider: (process.env.WEATHER_API_PROVIDER as "openweather" | "clearoutside" | "visualcrossing") || "openweather",
+    provider:
+      (process.env.WEATHER_API_PROVIDER as
+        | "auto"
+        | "openweather"
+        | "openmeteo"
+        | "clearoutside"
+        | "visualcrossing") || "auto",
     openWeatherKey: process.env.OPENWEATHER_API_KEY || "",
     clearOutsideKey: process.env.CLEAROUTSIDE_API_KEY || "",
     visualCrossingKey: process.env.VISUALCROSSING_API_KEY || ""
@@ -55,7 +61,7 @@ export function validateConfig() {
   }
 
   if (!config.weather.openWeatherKey && config.weather.provider === "openweather") {
-    warnings.push("OPENWEATHER_API_KEY is not set - live weather data unavailable");
+    warnings.push("OPENWEATHER_API_KEY is not set - weather will fall back to Open-Meteo");
   }
 
   return {
@@ -69,6 +75,8 @@ export function validateConfig() {
  */
 export function logConfigStatus() {
   if (typeof window !== "undefined") return; // Only run on server
+  if ((globalThis as { __constellationConfigLogged?: boolean }).__constellationConfigLogged) return;
+  (globalThis as { __constellationConfigLogged?: boolean }).__constellationConfigLogged = true;
 
   const { valid, warnings } = validateConfig();
 

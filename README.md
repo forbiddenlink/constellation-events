@@ -44,7 +44,38 @@ Create a `.env.local` file with:
 
 ```env
 NEXT_PUBLIC_MAPBOX_TOKEN=your_mapbox_token
-NEXT_PUBLIC_LIGHTPOLLUTION_TILES=your_raster_tile_url
+NEXT_PUBLIC_LIGHTPOLLUTION_TILES=https://pub-...r2.dev/lightpollution/{z}/{x}/{y}.png
+
+WEATHER_API_PROVIDER=auto
+OPENWEATHER_API_KEY=your_openweather_api_key_optional
+
+R2_BUCKET=constellation-tiles
+R2_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_PUBLIC_BASE=https://pub-...r2.dev
+R2_TILE_PREFIX=lightpollution
+TILE_UPDATE_CADENCE=daily
+TILE_ZOOM_RANGE=0-7
+TILE_PROCESSES=2
+ENABLE_LOCAL_CLEANUP=true
+RAW_RETENTION_DAYS=3
+COG_RETENTION_DAYS=14
+LOG_RETENTION_DAYS=30
+TILE_RUN_HOUR=3
+TILE_RUN_MINUTE=15
+
+EARTHDATA_USERNAME=your_earthdata_username
+LAADS_DOWNLOAD_TOKEN=your_lads_download_token
+
+# Optional marketplace write protection
+MARKETPLACE_WRITE_TOKEN=change-me
+MARKETPLACE_WRITE_RATE_LIMIT_MAX=10
+MARKETPLACE_WRITE_RATE_LIMIT_WINDOW_MS=60000
+MARKETPLACE_IMAGE_PREFIX=marketplace/images
+MARKETPLACE_IMAGE_MAX_BYTES=5242880
+# Optional override if listing images use a different public base:
+# MARKETPLACE_IMAGE_PUBLIC_BASE=https://pub-...r2.dev
 ```
 
 ## 🛠️ Tech Stack
@@ -62,13 +93,36 @@ NEXT_PUBLIC_LIGHTPOLLUTION_TILES=your_raster_tile_url
 | `GET /api/sky/tonight` | Current night sky data | none |
 | `GET /api/events` | Astronomy events | `lat`, `lng`, `from`, `to` |
 | `GET /api/locations` | Dark-sky locations | `lat`, `lng` |
-| `GET /api/marketplace` | Gear listings | none |
+| `GET /api/marketplace` | Gear listings | `q`, `category`, `condition`, `maxPrice`, `sort`, `scope` |
+| `POST /api/marketplace` | Create listing | `title`, `tag`, `category`, `condition`, `priceUsd`, `city`, `shipping`, optional `description`, `imageUrl` |
+| `PATCH /api/marketplace/:id` | Update listing | Any of create fields + optional `status` |
+| `POST /api/marketplace/upload-url` | Generate signed R2 image upload URL | `filename`, `contentType`, `size` |
+
+When `MARKETPLACE_WRITE_TOKEN` is set, `POST` and `PATCH` require header `x-marketplace-write-token: <token>`.
+Public marketplace queries return only `approved` listings. Use `scope=all` with valid write token to include `pending` and `hidden`.
+Write endpoints are rate-limited per client IP (`MARKETPLACE_WRITE_RATE_LIMIT_MAX` per `MARKETPLACE_WRITE_RATE_LIMIT_WINDOW_MS`).
+Direct marketplace image uploads require an R2 bucket CORS rule that allows browser `PUT` from your app origin.
+Marketplace image files are resized/compressed in-browser before upload to keep costs down.
 
 ## 🛰️ Light-Pollution Tile Pipeline
 
 We generate custom light pollution tiles from NASA VIIRS Night-Time Lights data.
 
 See detailed pipeline documentation in [`scripts/tiles/README.md`](scripts/tiles/README.md)
+
+Quick run:
+
+```bash
+./scripts/tiles/check_setup.sh
+./scripts/tiles/check_download_auth.sh
+./scripts/tiles/run_pipeline.sh
+```
+
+Install daily macOS scheduler:
+
+```bash
+./scripts/tiles/install_launchd.sh
+```
 
 ## 🗺️ Roadmap
 
@@ -88,6 +142,7 @@ npm run dev          # Start development server
 npm run build        # Build for production
 npm run start        # Start production server
 npm run lint         # Run ESLint
+npm test             # Run automated tests
 ```
 
 ## 🤝 Contributing

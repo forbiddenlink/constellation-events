@@ -41,7 +41,7 @@ export default function EventsFeed() {
   if (status === "error") {
     return (
       <div className="glass rounded-3xl p-8 text-center">
-        <div className="text-ember">⚠️ Events unavailable right now</div>
+        <div className="text-ember">Events unavailable right now</div>
         <p className="mt-2 text-sm text-starlight/70">Please try again later</p>
       </div>
     );

@@ -14,10 +14,12 @@ export async function GET(request: Request) {
   
   // Parse date range
   const fromParam = searchParams.get("from");
-  const fromDate = fromParam ? new Date(fromParam) : new Date();
+  const parsedFrom = fromParam ? new Date(fromParam) : new Date();
+  const fromDate = Number.isNaN(parsedFrom.getTime()) ? new Date() : parsedFrom;
   
   const daysParam = searchParams.get("days");
-  const daysAhead = daysParam ? parseInt(daysParam, 10) : 60;
+  const parsedDays = daysParam ? parseInt(daysParam, 10) : 60;
+  const daysAhead = Number.isNaN(parsedDays) ? 60 : Math.max(1, Math.min(parsedDays, 365));
 
   const events = generateUpcomingEvents(coords ?? undefined, fromDate, daysAhead);
 

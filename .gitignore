@@ -44,6 +44,8 @@ next-env.d.ts
 
 # Local files
 *.local
+/data/
+/scripts/tiles/viirs_urls.txt
 
 # Ignore vscode AI rules
 .github/instructions/codacy.instructions.md

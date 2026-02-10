@@ -8,6 +8,8 @@ export function parseCoordinates(lat?: string | null, lng?: string | null): Coor
   const parsedLat = Number.parseFloat(lat);
   const parsedLng = Number.parseFloat(lng);
   if (Number.isNaN(parsedLat) || Number.isNaN(parsedLng)) return null;
+  if (parsedLat < -90 || parsedLat > 90) return null;
+  if (parsedLng < -180 || parsedLng > 180) return null;
   return { lat: parsedLat, lng: parsedLng };
 }
 
