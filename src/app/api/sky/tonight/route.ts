@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { tonightHighlights, type TonightObject } from "@/lib/mock";
 import { parseCoordinates } from "@/lib/geo";
 import { fetchObserverTable, getDefaultTargets, type HorizonsPoint } from "@/lib/horizons";
+import { checkRateLimit, getClientIp, RATE_LIMITS } from "@/lib/rate-limit";
 
 const fallbackLocation = { lat: 36.1147, lng: -115.1728 };
 
@@ -30,6 +31,17 @@ function buildHighlightsFromHorizons(targets: ReturnType<typeof getDefaultTarget
 }
 
 export async function GET(request: Request) {
+  const rateLimit = checkRateLimit(
+    `sky-tonight:${getClientIp(request)}`,
+    RATE_LIMITS.externalApi
+  );
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded", retryAfterSeconds: rateLimit.retryAfterSeconds },
+      { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } }
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const coords = parseCoordinates(searchParams.get("lat"), searchParams.get("lng")) ?? fallbackLocation;
 

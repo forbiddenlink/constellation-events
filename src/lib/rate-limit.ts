@@ -66,3 +66,11 @@ export function getClientIp(request: Request) {
 export function __resetRateLimitForTests() {
   RATE_LIMIT_BUCKETS.clear();
 }
+
+// Default rate limits for different endpoint types
+export const RATE_LIMITS = {
+  // Read endpoints that call external APIs (protect quota)
+  externalApi: { limit: 60, windowMs: 60000 }, // 60/min
+  // Write endpoints (more restrictive)
+  write: { limit: 10, windowMs: 60000 } // 10/min
+} as const;
