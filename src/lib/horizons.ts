@@ -97,7 +97,10 @@ export async function fetchObserverTable(target: HorizonsTarget, coords: Coordin
     return parseObserverCsv(extractCsvLines(cached));
   }
 
-  const response = await fetch(url, { next: { revalidate: 3600 } });
+  const response = await fetch(url, {
+    signal: AbortSignal.timeout(15000), // JPL Horizons can be slow
+    next: { revalidate: 3600 }
+  });
   if (!response.ok) {
     throw new Error(`Horizons request failed: ${response.status}`);
   }

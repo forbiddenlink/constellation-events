@@ -3,6 +3,7 @@
  * 
  * Supports multiple weather services for sky quality assessment:
  * - OpenWeather API (free tier available)
+ * - Open-Meteo API (free, no API key)
  * - Clear Outside API (astronomy-focused)
  * - Visual Crossing (historical + forecast)
  * 
@@ -18,26 +19,47 @@ export type SkyQuality = {
   windSpeed: number; // km/h
   moonPhase: number; // 0-1 (0 = new, 0.5 = full)
   quality: number; // Overall 0-100 score
+  source: "openweather" | "openmeteo" | "estimated";
 };
 
-type WeatherProvider = "openweather" | "clearoutside" | "visualcrossing";
+type WeatherProvider = "auto" | "openweather" | "openmeteo" | "clearoutside" | "visualcrossing";
 
-const PROVIDER = (process.env.WEATHER_API_PROVIDER as WeatherProvider) || "openweather";
+const PROVIDER = (process.env.WEATHER_API_PROVIDER as WeatherProvider) || "auto";
 
 /**
  * Fetch current sky quality for given coordinates
  */
 export async function fetchSkyQuality(lat: number, lng: number): Promise<SkyQuality> {
-  switch (PROVIDER) {
-    case "openweather":
-      return fetchOpenWeather(lat, lng);
-    case "clearoutside":
-      return fetchClearOutside(lat, lng);
-    case "visualcrossing":
-      return fetchVisualCrossing(lat, lng);
-    default:
-      throw new Error(`Unknown weather provider: ${PROVIDER}`);
+  try {
+    switch (PROVIDER) {
+      case "auto":
+        return await fetchAuto(lat, lng);
+      case "openweather":
+        return await fetchOpenWeather(lat, lng);
+      case "openmeteo":
+        return await fetchOpenMeteo(lat, lng);
+      case "clearoutside":
+        return await fetchClearOutside(lat, lng);
+      case "visualcrossing":
+        return await fetchVisualCrossing(lat, lng);
+      default:
+        return buildEstimatedSkyQuality();
+    }
+  } catch {
+    return buildEstimatedSkyQuality();
   }
+}
+
+async function fetchAuto(lat: number, lng: number): Promise<SkyQuality> {
+  const openWeatherKey = process.env.OPENWEATHER_API_KEY;
+  if (openWeatherKey) {
+    try {
+      return await fetchOpenWeather(lat, lng);
+    } catch {
+      // Fall through to Open-Meteo
+    }
+  }
+  return fetchOpenMeteo(lat, lng);
 }
 
 async function fetchOpenWeather(lat: number, lng: number): Promise<SkyQuality> {
@@ -47,7 +69,10 @@ async function fetchOpenWeather(lat: number, lng: number): Promise<SkyQuality> {
   }
 
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${apiKey}&units=metric`;
-  const response = await fetch(url, { next: { revalidate: 1800 } });
+  const response = await fetch(url, {
+    signal: AbortSignal.timeout(10000),
+    next: { revalidate: 1800 }
+  });
 
   if (!response.ok) {
     throw new Error(`OpenWeather API error: ${response.status}`);
@@ -71,20 +96,64 @@ async function fetchOpenWeather(lat: number, lng: number): Promise<SkyQuality> {
     temperature: data.main?.temp ?? 15,
     windSpeed,
     moonPhase: 0, // OpenWeather doesn't provide this, would need separate calculation
-    quality
+    quality,
+    source: "openweather"
+  };
+}
+
+async function fetchOpenMeteo(lat: number, lng: number): Promise<SkyQuality> {
+  const url = new URL("https://api.open-meteo.com/v1/forecast");
+  url.searchParams.set("latitude", String(lat));
+  url.searchParams.set("longitude", String(lng));
+  url.searchParams.set(
+    "current",
+    "temperature_2m,relative_humidity_2m,wind_speed_10m,cloud_cover"
+  );
+  url.searchParams.set("timezone", "auto");
+
+  const response = await fetch(url.toString(), {
+    signal: AbortSignal.timeout(10000),
+    next: { revalidate: 1800 }
+  });
+  if (!response.ok) {
+    throw new Error(`Open-Meteo API error: ${response.status}`);
+  }
+
+  const data = (await response.json()) as {
+    current?: {
+      cloud_cover?: number;
+      relative_humidity_2m?: number;
+      wind_speed_10m?: number;
+      temperature_2m?: number;
+    };
+  };
+
+  const cloudCover = clampPercent(data.current?.cloud_cover ?? 50);
+  const humidity = clampPercent(data.current?.relative_humidity_2m ?? 50);
+  const windSpeed = Math.max(0, Number(data.current?.wind_speed_10m ?? 0));
+  const quality = calculateQuality(cloudCover, humidity, windSpeed);
+
+  return {
+    cloudCover,
+    seeing: getSeeingCondition(windSpeed, humidity),
+    transparency: 100 - cloudCover,
+    humidity,
+    temperature: Number(data.current?.temperature_2m ?? 15),
+    windSpeed,
+    moonPhase: 0,
+    quality,
+    source: "openmeteo"
   };
 }
 
 async function fetchClearOutside(lat: number, lng: number): Promise<SkyQuality> {
-  // TODO: Implement Clear Outside API integration
-  // https://clearoutside.com/
-  throw new Error("Clear Outside integration not yet implemented");
+  // TODO: Replace with native integration when API details are finalized.
+  return fetchOpenMeteo(lat, lng);
 }
 
 async function fetchVisualCrossing(lat: number, lng: number): Promise<SkyQuality> {
-  // TODO: Implement Visual Crossing API integration
-  // https://www.visualcrossing.com/
-  throw new Error("Visual Crossing integration not yet implemented");
+  // TODO: Replace with native integration when API details are finalized.
+  return fetchOpenMeteo(lat, lng);
 }
 
 /**
@@ -118,4 +187,25 @@ function getSeeingCondition(windSpeed: number, humidity: number): SkyQuality["se
   if (windSpeed > 20 || humidity > 70) return "fair";
   if (windSpeed > 10 || humidity > 60) return "good";
   return "excellent";
+}
+
+function clampPercent(value: number): number {
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+function buildEstimatedSkyQuality(): SkyQuality {
+  const cloudCover = 45;
+  const humidity = 55;
+  const windSpeed = 8;
+  return {
+    cloudCover,
+    seeing: getSeeingCondition(windSpeed, humidity),
+    transparency: 100 - cloudCover,
+    humidity,
+    temperature: 15,
+    windSpeed,
+    moonPhase: 0,
+    quality: calculateQuality(cloudCover, humidity, windSpeed),
+    source: "estimated"
+  };
 }
