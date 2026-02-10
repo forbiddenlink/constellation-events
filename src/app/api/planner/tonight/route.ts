@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { parseCoordinates } from "@/lib/geo";
 import type { Coordinates } from "@/lib/geo";
 import { config } from "@/lib/config";
+import { checkRateLimit, getClientIp, RATE_LIMITS } from "@/lib/rate-limit";
 import { 
   calculateMoonPhase, 
   calculateOptimalWindow,
@@ -12,6 +13,7 @@ import { getDefaultTargets, fetchObserverTable } from "@/lib/horizons";
 import { fetchSkyQuality } from "@/lib/weather";
 import { estimateDarkSkyScore } from "@/lib/locations";
 import { getCache, setCache } from "@/lib/cache";
+import { getISSPasses, formatPassTime, type ISSPass } from "@/lib/iss";
 
 const PLANNER_TTL_MS = 10 * 60 * 1000;
 const HORIZONS_TIMEOUT_MS = 7000;
@@ -63,6 +65,13 @@ type PlannerPayload = {
     zhr: number;
     peak: Date;
   }[];
+  issPasses: {
+    risetime: string;
+    duration: number;
+    maxAltitude: number;
+    brightness: string;
+    formatted: string;
+  }[];
   recommendations: {
     priority: string;
     title: string;
@@ -84,6 +93,17 @@ type PlannerPayload = {
  * Includes: optimal window, moon conditions, visible planets, events
  */
 export async function GET(request: Request) {
+  const rateLimit = checkRateLimit(
+    `planner:${getClientIp(request)}`,
+    RATE_LIMITS.externalApi
+  );
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded", retryAfterSeconds: rateLimit.retryAfterSeconds },
+      { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } }
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const coords = parseCoordinates(
     searchParams.get("lat"),
@@ -115,10 +135,12 @@ export async function GET(request: Request) {
     const activeShowers = getActiveMeteorShowers();
     
     const visiblePlanetsPromise = fetchVisiblePlanets(coords);
+    const issPassesPromise = getISSPasses(coords, { count: 3 }).catch(() => []);
 
-    const [visiblePlanets, skyQuality] = await Promise.all([
+    const [visiblePlanets, skyQuality, issPasses] = await Promise.all([
       visiblePlanetsPromise,
-      skyQualityPromise
+      skyQualityPromise,
+      issPassesPromise
     ]);
 
     // Generate recommendations
@@ -159,6 +181,17 @@ export async function GET(request: Request) {
         title: `${visiblePlanets.length} planet${visiblePlanets.length > 1 ? 's' : ''} visible`,
         description: visiblePlanets.map(p => p.name).join(", "),
         timing: "Check individual times"
+      });
+    }
+
+    // ISS pass recommendation
+    if (issPasses.length > 0) {
+      const nextPass = issPasses[0];
+      recommendations.push({
+        priority: "high",
+        title: "ISS pass tonight",
+        description: `Visible for ${Math.round(nextPass.duration / 60)} minutes, reaching ${Math.round(nextPass.maxAltitude)}° altitude.`,
+        timing: formatPassTime(nextPass)
       });
     }
 
@@ -228,6 +261,13 @@ export async function GET(request: Request) {
         name: s.name,
         zhr: s.zhr,
         peak: s.peak
+      })),
+      issPasses: issPasses.map(pass => ({
+        risetime: pass.risetime.toISOString(),
+        duration: pass.duration,
+        maxAltitude: pass.maxAltitude,
+        brightness: pass.brightness,
+        formatted: formatPassTime(pass)
       })),
       recommendations,
       overallQuality,
