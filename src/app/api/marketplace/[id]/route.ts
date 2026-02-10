@@ -7,7 +7,8 @@ import type {
 import { MARKETPLACE_CATEGORIES, MARKETPLACE_CONDITIONS } from "@/lib/marketplace";
 import {
   getMarketplaceWriteAuth,
-  getMarketplaceWriteTokenHeaderName
+  getMarketplaceWriteTokenHeaderName,
+  validateOrigin
 } from "@/lib/marketplace-auth";
 import { isAllowedMarketplaceImageUrl, isValidHttpUrl } from "@/lib/marketplace-images";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
@@ -26,6 +27,14 @@ export async function PATCH(request: Request, context: RouteContext) {
         details: `Provide ${getMarketplaceWriteTokenHeaderName()} header`
       },
       { status: 401 }
+    );
+  }
+
+  const originCheck = validateOrigin(request);
+  if (!originCheck.valid) {
+    return NextResponse.json(
+      { error: "Invalid origin", origin: originCheck.origin },
+      { status: 403 }
     );
   }
 

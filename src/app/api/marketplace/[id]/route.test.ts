@@ -81,7 +81,8 @@ describe("marketplace id route", () => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "x-marketplace-write-token": "abc123"
+          "x-marketplace-write-token": "abc123",
+          Origin: "http://localhost:3000"
         },
         body: JSON.stringify({ priceUsd: 499, condition: "excellent" })
       }),
@@ -106,7 +107,8 @@ describe("marketplace id route", () => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "x-marketplace-write-token": "abc123"
+          "x-marketplace-write-token": "abc123",
+          Origin: "http://localhost:3000"
         },
         body: JSON.stringify({ priceUsd: 350 })
       }),
@@ -140,7 +142,8 @@ describe("marketplace id route", () => {
         headers: {
           "Content-Type": "application/json",
           "x-marketplace-write-token": "abc123",
-          "x-forwarded-for": "203.0.113.20"
+          "x-forwarded-for": "203.0.113.20",
+          Origin: "http://localhost:3000"
         },
         body: JSON.stringify({ priceUsd: 430 })
       });

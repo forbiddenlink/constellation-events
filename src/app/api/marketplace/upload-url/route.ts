@@ -5,7 +5,8 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NextResponse } from "next/server";
 import {
   getMarketplaceWriteAuth,
-  getMarketplaceWriteTokenHeaderName
+  getMarketplaceWriteTokenHeaderName,
+  validateOrigin
 } from "@/lib/marketplace-auth";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
@@ -35,6 +36,14 @@ export async function POST(request: Request) {
         details: `Provide ${getMarketplaceWriteTokenHeaderName()} header`
       },
       { status: 401 }
+    );
+  }
+
+  const originCheck = validateOrigin(request);
+  if (!originCheck.valid) {
+    return NextResponse.json(
+      { error: "Invalid origin", origin: originCheck.origin },
+      { status: 403 }
     );
   }
 

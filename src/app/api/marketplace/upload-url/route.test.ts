@@ -106,7 +106,10 @@ describe("marketplace upload-url route", () => {
     const response = await POST(
       new Request("http://localhost/api/marketplace/upload-url", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Origin: "http://localhost:3000"
+        },
         body: JSON.stringify({
           filename: "listing.gif",
           contentType: "image/gif",
@@ -140,7 +143,8 @@ describe("marketplace upload-url route", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-marketplace-write-token": "secret"
+          "x-marketplace-write-token": "secret",
+          Origin: "http://localhost:3000"
         },
         body: JSON.stringify({
           filename: "listing.png",

@@ -90,7 +90,8 @@ describe("marketplace route", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-marketplace-write-token": "abc123"
+          "x-marketplace-write-token": "abc123",
+          Origin: "http://localhost:3000"
         },
         body: JSON.stringify({
           title: "Example Listing",
@@ -124,7 +125,8 @@ describe("marketplace route", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-marketplace-write-token": "abc123"
+          "x-marketplace-write-token": "abc123",
+          Origin: "http://localhost:3000"
         },
         body: JSON.stringify({
           title: "Pending Listing",
@@ -173,7 +175,8 @@ describe("marketplace route", () => {
         headers: {
           "Content-Type": "application/json",
           "x-marketplace-write-token": "abc123",
-          "x-forwarded-for": "203.0.113.10"
+          "x-forwarded-for": "203.0.113.10",
+          Origin: "http://localhost:3000"
         },
         body: JSON.stringify({
           title: "Rate Limit Listing",
