@@ -6,14 +6,14 @@ test.describe("Smoke Tests", () => {
 
     // Check header is visible
     await expect(page.locator("header")).toBeVisible();
-    await expect(page.getByText("Constellation")).toBeVisible();
+    await expect(page.getByText("Constellation", { exact: true })).toBeVisible();
 
     // Check navigation links exist
-    await expect(page.getByRole("link", { name: "Tonight" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Events" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Dark-Sky" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Planner" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Marketplace" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Tonight", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Events", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Dark-Sky", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Planner", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Marketplace", exact: true })).toBeVisible();
 
     // Check footer is visible
     await expect(page.locator("footer")).toBeVisible();
@@ -48,15 +48,15 @@ test.describe("Smoke Tests", () => {
     await page.goto("/");
 
     // Navigate to Events
-    await page.getByRole("link", { name: "Events" }).click();
+    await page.getByRole("link", { name: "Events", exact: true }).click();
     await expect(page).toHaveURL("/events");
 
     // Navigate to Locations
-    await page.getByRole("link", { name: "Dark-Sky" }).click();
+    await page.getByRole("link", { name: "Dark-Sky", exact: true }).click();
     await expect(page).toHaveURL("/locations");
 
     // Navigate back home
-    await page.getByRole("link", { name: "Tonight" }).click();
+    await page.getByRole("link", { name: "Tonight", exact: true }).click();
     await expect(page).toHaveURL("/");
   });
 });
