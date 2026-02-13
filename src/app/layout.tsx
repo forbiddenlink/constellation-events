@@ -66,11 +66,12 @@ export const metadata: Metadata = {
     }
   },
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png"
-  },
-  manifest: "/site.webmanifest"
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon", type: "image/png", sizes: "32x32" }
+    ],
+    apple: "/apple-icon"
+  }
 };
 
 const navLinks = [
