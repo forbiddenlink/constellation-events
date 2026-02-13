@@ -1,0 +1,8 @@
+# Constellation - Astronomy Event Tracker
+# https://constellation.app
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://constellation.app/sitemap.xml

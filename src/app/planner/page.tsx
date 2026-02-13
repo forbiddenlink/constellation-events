@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import SectionHeading from "@/components/SectionHeading";
 import PlannerDate from "@/components/PlannerDate";
 import TonightPlannerPanel from "@/components/TonightPlannerPanel";
+
+export const metadata: Metadata = {
+  title: "Observation Planner",
+  description: "Plan your stargazing session with moon phases, sunset times, visible planets, and meteor shower forecasts. Get personalized recommendations for tonight.",
+  openGraph: {
+    title: "Observation Planner | Constellation",
+    description: "Plan your stargazing session with moon phases, visible planets, and meteor shower forecasts."
+  }
+};
 
 export default function PlannerPage() {
   return (

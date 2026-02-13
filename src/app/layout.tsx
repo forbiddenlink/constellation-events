@@ -23,8 +23,53 @@ const dmSerif = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Constellation — Astronomy Event Tracker",
-  description: "Track celestial events, find dark skies, and gear up for your next night out under the stars."
+  title: {
+    default: "Constellation — Astronomy Event Tracker",
+    template: "%s | Constellation"
+  },
+  description: "Track celestial events, find dark skies, and gear up for your next night out under the stars. Real-time sky conditions, meteor shower forecasts, and dark-sky location finder.",
+  keywords: ["astronomy", "stargazing", "celestial events", "dark sky", "meteor shower", "moon phases", "night sky", "telescope", "star map"],
+  authors: [{ name: "Constellation Team" }],
+  creator: "Constellation",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://constellation.app"),
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Constellation",
+    title: "Constellation — Astronomy Event Tracker",
+    description: "Your nightly mission control for the sky above. Track celestial events, find dark skies, and plan your stargazing adventures.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Constellation - Astronomy Event Tracker"
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Constellation — Astronomy Event Tracker",
+    description: "Your nightly mission control for the sky above. Track celestial events, find dark skies, and plan your stargazing adventures.",
+    images: ["/og-image.png"]
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1
+    }
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png"
+  },
+  manifest: "/site.webmanifest"
 };
 
 const navLinks = [

@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import SectionHeading from "@/components/SectionHeading";
 import LocationsFeed from "@/components/LocationsFeed";
 import LocationsMapPanel from "@/components/LocationsMapPanel";
+
+export const metadata: Metadata = {
+  title: "Dark-Sky Locations",
+  description: "Find the best dark-sky locations near you. Interactive light pollution map with Bortle scale ratings, distance calculations, and real-time conditions.",
+  openGraph: {
+    title: "Dark-Sky Locations | Constellation",
+    description: "Find the best dark-sky locations near you with interactive light pollution mapping and Bortle scale ratings."
+  }
+};
 
 export default function LocationsPage() {
   return (

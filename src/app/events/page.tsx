@@ -1,5 +1,15 @@
+import type { Metadata } from "next";
 import SectionHeading from "@/components/SectionHeading";
 import EventsFeed from "@/components/EventsFeed";
+
+export const metadata: Metadata = {
+  title: "Celestial Events",
+  description: "Discover upcoming meteor showers, planetary alignments, eclipses, and lunar events. Get visibility scores based on your location and optimal viewing times.",
+  openGraph: {
+    title: "Celestial Events | Constellation",
+    description: "Discover upcoming meteor showers, planetary alignments, eclipses, and lunar events with location-based visibility scores."
+  }
+};
 
 export default function EventsPage() {
   return (
