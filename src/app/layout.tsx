@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, DM_Serif_Display } from "next/font/google";
 import Link from "next/link";
 import { clsx } from "clsx";
+import { Analytics } from "@vercel/analytics/react";
 import ClientErrorBoundary from "@/components/ClientErrorBoundary";
 import { logConfigStatus } from "@/lib/config";
 
@@ -122,6 +123,7 @@ export default function RootLayout({
             </footer>
           </div>
         </div>
+        <Analytics />
       </body>
     </html>
   );
