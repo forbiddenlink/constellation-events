@@ -45,7 +45,11 @@ export async function fetchSkyQuality(lat: number, lng: number): Promise<SkyQual
       default:
         return buildEstimatedSkyQuality();
     }
-  } catch {
+  } catch (error) {
+    console.warn("[weather] Failed to fetch sky quality, using estimate:", {
+      provider: PROVIDER,
+      error: error instanceof Error ? error.message : String(error)
+    });
     return buildEstimatedSkyQuality();
   }
 }
@@ -55,8 +59,10 @@ async function fetchAuto(lat: number, lng: number): Promise<SkyQuality> {
   if (openWeatherKey) {
     try {
       return await fetchOpenWeather(lat, lng);
-    } catch {
-      // Fall through to Open-Meteo
+    } catch (error) {
+      console.warn("[weather] OpenWeather failed, falling back to Open-Meteo:", {
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   }
   return fetchOpenMeteo(lat, lng);

@@ -43,16 +43,20 @@ export async function getISSPasses(
   if (n2yoKey) {
     try {
       return await fetchN2YOPasses(coords, n2yoKey, count, minAltitude);
-    } catch {
-      // Fall through to open-notify
+    } catch (error) {
+      console.warn("[iss] N2YO API failed, falling back to open-notify:", {
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   }
 
   // Try open-notify API (simpler but less detailed)
   try {
     return await fetchOpenNotifyPasses(coords, count);
-  } catch {
-    // Return empty array if all APIs fail
+  } catch (error) {
+    console.warn("[iss] All ISS pass APIs failed:", {
+      error: error instanceof Error ? error.message : String(error)
+    });
     return [];
   }
 }
@@ -84,7 +88,10 @@ export async function getISSPosition(): Promise<ISSPosition | null> {
       velocity: 27600, // Average ISS velocity km/h
       timestamp: new Date((data.timestamp ?? Date.now() / 1000) * 1000)
     };
-  } catch {
+  } catch (error) {
+    console.warn("[iss] Failed to fetch ISS position:", {
+      error: error instanceof Error ? error.message : String(error)
+    });
     return null;
   }
 }
