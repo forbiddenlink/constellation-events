@@ -97,4 +97,15 @@ test.describe("API Health Checks", () => {
     expect(data.quality).toBeDefined();
     expect(typeof data.quality).toBe("number");
   });
+
+  test("aurora API returns forecast data", async ({ request }) => {
+    const response = await request.get("/api/aurora?lat=45");
+    expect(response.ok()).toBeTruthy();
+
+    const data = await response.json();
+    expect(data.current).toBeDefined();
+    expect(typeof data.current.kp).toBe("number");
+    expect(data.visibility).toBeDefined();
+    expect(data.source).toBeDefined();
+  });
 });

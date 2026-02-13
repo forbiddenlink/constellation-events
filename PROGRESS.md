@@ -177,7 +177,7 @@ Your pipeline scripts are ready in `scripts/tiles/`:
 - Add real moon phase calculation to weather module
 - Implement Clear Outside API integration for better seeing forecasts
 - Add cloud coverage predictions
-- Integrate aurora forecasts (NOAA SWPC)
+- [x] Integrate aurora forecasts (NOAA SWPC) ✓
 - [x] Add International Space Station pass predictions ✓
 
 ### LOW PRIORITY
