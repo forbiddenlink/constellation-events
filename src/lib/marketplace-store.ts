@@ -58,18 +58,20 @@ async function flush() {
 
   await mkdir(getDataDir(), { recursive: true });
 
-  // Chain the write operation with error recovery to prevent queue breakage
-  writeQueue = writeQueue
-    .then(() => writeFile(filePath, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8"))
-    .catch((error) => {
-      // Log the error but don't reject - this keeps the queue chain intact
-      console.error("[marketplace-store] Write failed:", error);
-      // Reset queue to allow future writes to proceed
-      writeQueue = Promise.resolve();
-      throw error; // Re-throw so caller knows the write failed
-    });
+  // Create the write operation
+  const writeOp = writeQueue.then(async () => {
+    await writeFile(filePath, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
+  });
 
-  await writeQueue;
+  // Update queue to continue after this operation (success or failure)
+  // This ensures the queue chain is never broken by errors
+  writeQueue = writeOp.catch((error) => {
+    console.error("[marketplace-store] Write failed:", error);
+    // Swallow error for queue continuity - caller will still see it
+  });
+
+  // Await the original operation so caller sees any errors
+  await writeOp;
 }
 
 export async function listMarketplaceListings() {

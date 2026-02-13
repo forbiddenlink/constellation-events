@@ -1,3 +1,5 @@
+import { timingSafeEqual } from "node:crypto";
+
 const WRITE_TOKEN_HEADER = "x-marketplace-write-token";
 
 type WriteAuthResult = {
@@ -9,6 +11,24 @@ function getConfiguredToken() {
   return process.env.MARKETPLACE_WRITE_TOKEN?.trim() || "";
 }
 
+/**
+ * Timing-safe token comparison to prevent timing attacks.
+ * Compares tokens in constant time regardless of where they differ.
+ */
+function tokensMatch(provided: string, configured: string): boolean {
+  if (provided.length === 0 || configured.length === 0) {
+    return false;
+  }
+  // Pad to same length to prevent length-based timing leaks
+  const maxLen = Math.max(provided.length, configured.length);
+  const providedBuf = Buffer.alloc(maxLen);
+  const configuredBuf = Buffer.alloc(maxLen);
+  providedBuf.write(provided);
+  configuredBuf.write(configured);
+  // timingSafeEqual requires equal length buffers
+  return provided.length === configured.length && timingSafeEqual(providedBuf, configuredBuf);
+}
+
 export function getMarketplaceWriteAuth(request: Request): WriteAuthResult {
   const configuredToken = getConfiguredToken();
   if (!configuredToken) {
@@ -17,7 +37,7 @@ export function getMarketplaceWriteAuth(request: Request): WriteAuthResult {
 
   const providedToken = request.headers.get(WRITE_TOKEN_HEADER)?.trim() || "";
   return {
-    allowed: providedToken.length > 0 && providedToken === configuredToken,
+    allowed: tokensMatch(providedToken, configuredToken),
     writeProtected: true
   };
 }
@@ -54,7 +74,14 @@ export function validateOrigin(request: Request): { valid: boolean; origin: stri
   // Check if origin matches any allowed origin
   const isAllowed = allowedOrigins.some((allowed) => {
     if (allowed === "*") return true;
-    return sourceUrl === allowed || sourceUrl.endsWith(`.${new URL(allowed).hostname}`);
+    try {
+      const allowedHost = new URL(allowed).hostname;
+      const sourceHost = new URL(sourceUrl).hostname;
+      // Exact match or subdomain match (e.g., api.example.com matches example.com)
+      return sourceHost === allowedHost || sourceHost.endsWith(`.${allowedHost}`);
+    } catch {
+      return false;
+    }
   });
 
   return { valid: isAllowed, origin: sourceUrl };

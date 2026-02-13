@@ -13,7 +13,25 @@ type RateLimitResult = {
 
 const RATE_LIMIT_BUCKETS = new Map<string, RateLimitState>();
 
+// Cleanup expired entries periodically to prevent memory leak
+const CLEANUP_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+let lastCleanup = Date.now();
+
+function cleanupExpiredBuckets() {
+  const now = Date.now();
+  if (now - lastCleanup < CLEANUP_INTERVAL_MS) return;
+
+  for (const [key, state] of RATE_LIMIT_BUCKETS) {
+    if (state.resetAt <= now) {
+      RATE_LIMIT_BUCKETS.delete(key);
+    }
+  }
+  lastCleanup = now;
+}
+
 export function checkRateLimit(key: string, options: { limit: number; windowMs: number }): RateLimitResult {
+  // Clean up expired entries periodically
+  cleanupExpiredBuckets();
   const { limit, windowMs } = options;
   const now = Date.now();
   const existing = RATE_LIMIT_BUCKETS.get(key);
@@ -51,14 +69,21 @@ export function checkRateLimit(key: string, options: { limit: number; windowMs: 
 }
 
 export function getClientIp(request: Request) {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) {
-    const first = forwarded.split(",")[0]?.trim();
-    if (first) return first;
-  }
-
+  // Prefer Vercel's trusted x-real-ip header (set by platform, not spoofable)
   const realIp = request.headers.get("x-real-ip");
   if (realIp) return realIp.trim();
+
+  // Fallback to x-forwarded-for, but use rightmost IP
+  // The rightmost IP is the one added by the first trusted proxy,
+  // while leftmost can be spoofed by the client
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const ips = forwarded.split(",").map((ip) => ip.trim()).filter(Boolean);
+    if (ips.length > 0) {
+      // Use rightmost IP (closest to server, added by trusted proxy)
+      return ips[ips.length - 1];
+    }
+  }
 
   return "unknown";
 }
