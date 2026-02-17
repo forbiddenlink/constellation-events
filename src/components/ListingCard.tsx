@@ -8,12 +8,10 @@ function isMarketplaceListing(listing: ListingModel): listing is MarketplaceList
 }
 
 function formatCondition(value: MarketplaceListing["condition"] | string) {
-  if (value === "like-new") return "Like new";
-  if (value === "excellent") return "Excellent";
-  if (value === "good") return "Good";
-  if (value === "Very good") return "Very good";
-  if (value === "Like new") return "Like new";
-  if (value === "Excellent") return "Excellent";
+  if (value === "like-new" || value === "Like new") return "Like new";
+  if (value === "excellent" || value === "Excellent") return "Excellent";
+  if (value === "good" || value === "Good") return "Good";
+  if (value === "fair" || value === "Fair") return "Fair";
   return "Fair";
 }
 
@@ -25,53 +23,67 @@ function formatPrice(value: number) {
   }).format(value);
 }
 
-export default function ListingCard({ listing }: { listing: ListingModel }) {
+export default function ListingCard({ listing }: { readonly listing: ListingModel }) {
   const price = isMarketplaceListing(listing) ? formatPrice(listing.priceUsd) : listing.price;
-  const locationMeta = isMarketplaceListing(listing)
-    ? `${listing.city} · ${listing.shipping ? "Ships" : "Pickup"}`
-    : null;
-  const ratingMeta = isMarketplaceListing(listing)
-    ? `Seller rating ${listing.sellerRating.toFixed(1)}/5`
-    : null;
-  const description = isMarketplaceListing(listing) ? listing.description : null;
   const imageUrl = isMarketplaceListing(listing) ? listing.imageUrl : null;
   const moderationStatus = isMarketplaceListing(listing) ? listing.status : null;
-  const statusTone =
-    moderationStatus === "hidden"
-      ? "text-ember border-ember/40"
-      : moderationStatus === "pending"
-        ? "text-amber-300 border-amber-300/40"
-        : "text-emerald-300 border-emerald-300/40";
+  
+  let statusTone = "text-emerald-300 border-emerald-300/40";
+  if (moderationStatus === "hidden") statusTone = "text-ember border-ember/40";
+  else if (moderationStatus === "pending") statusTone = "text-amber-300 border-amber-300/40";
 
   return (
-    <div className="glass rounded-2xl p-5">
-      {imageUrl ? (
-        <div
-          className="mb-4 h-36 w-full rounded-xl border border-white/10 bg-cover bg-center"
-          style={{ backgroundImage: `url(${imageUrl})` }}
-        />
-      ) : null}
-      <div className="flex items-center justify-between">
-        <span className="rounded-full border border-white/20 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-aurora/70">
-          {listing.tag}
-        </span>
-        <div className="flex items-center gap-2">
-          {moderationStatus ? (
-            <span className={`rounded-full border px-2 py-0.5 text-[10px] uppercase ${statusTone}`}>
-              {moderationStatus}
-            </span>
-          ) : null}
-          <span className="text-xs text-starlight/60">{formatCondition(listing.condition)}</span>
+    <div className="group relative flex items-center justify-between border-b border-white/10 bg-white/0 py-4 px-4 transition-all hover:bg-white/5 hover:border-aurora/30">
+        {/* Hover "Scan" Effect */}
+        <div className="absolute inset-0 -z-10 translate-x-[-100%] bg-gradient-to-r from-transparent via-aurora/5 to-transparent transition-transform duration-700 group-hover:translate-x-[100%]" />
+        
+        {/* Leading Data Block */}
+        <div className="flex items-center gap-6">
+            <div className="font-mono text-xs text-starlight/40">
+                {String(listing.id).padStart(4, '0')}
+            </div>
+            
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-deep-space ring-1 ring-white/10 group-hover:ring-aurora/50">
+                {imageUrl ? (
+                    <div className="h-full w-full bg-cover bg-center opacity-80" style={{ backgroundImage: `url(${imageUrl})` }} />
+                ) : (
+                    <div className="h-2 w-2 rounded-full bg-white/20" />
+                )}
+            </div>
+
+            <div>
+                <h3 className="font-mono text-sm font-bold uppercase tracking-wider text-starlight group-hover:text-aurora">
+                    {listing.title}
+                </h3>
+                <div className="flex items-center gap-3 text-[10px] uppercase text-starlight/50">
+                    <span className="tracking-widest">{listing.tag}</span>
+                    <span className="h-3 w-px bg-white/10" />
+                    <span>{formatCondition(listing.condition)}</span>
+                </div>
+            </div>
         </div>
-      </div>
-      <h3 className="mt-4 text-lg font-semibold text-starlight">{listing.title}</h3>
-      {description ? <div className="mt-2 text-sm text-starlight/70">{description}</div> : null}
-      {locationMeta ? <div className="mt-2 text-xs text-starlight/60">{locationMeta}</div> : null}
-      <div className="mt-3 text-xl font-semibold text-ember">{price}</div>
-      {ratingMeta ? <div className="mt-2 text-xs text-starlight/60">{ratingMeta}</div> : null}
-      <button className="mt-4 w-full rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-starlight/70 transition hover:border-aurora hover:text-aurora">
-        View listing
-      </button>
+
+        {/* Trailing Data Block */}
+        <div className="flex items-center gap-8">
+            {moderationStatus && (
+                <div className={`font-mono text-[10px] uppercase ${statusTone}`}>
+                    [{moderationStatus}]
+                </div>
+            )}
+            
+            <div className="text-right">
+                <div className="font-mono text-lg text-aurora">{price}</div>
+                <div className="text-[9px] uppercase tracking-widest text-starlight/30">Credits</div>
+            </div>
+            
+            <button className="hidden rounded border border-white/20 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-starlight transition hover:border-aurora hover:bg-aurora/10 hover:text-aurora sm:block">
+                Inspect
+            </button>
+        </div>
+
+        {/* Corner Brackets (Visual Flair) */}
+        <div className="absolute left-0 top-0 h-2 w-2 border-l border-t border-white/0 transition-all group-hover:border-aurora" />
+        <div className="absolute bottom-0 right-0 h-2 w-2 border-r border-b border-white/0 transition-all group-hover:border-aurora" />
     </div>
   );
 }

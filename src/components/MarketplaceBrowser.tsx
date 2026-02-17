@@ -182,6 +182,17 @@ export default function MarketplaceBrowser() {
     status: "approved" as MarketplaceListing["status"]
   });
 
+  const [showSellerForm, setShowSellerForm] = useState(false);
+  const [selectedListing, setSelectedListing] = useState<MarketplaceListing | null>(null);
+  const filteredListings = data?.listings ?? [];
+
+  // Select first listing by default when data loads
+  useEffect(() => {
+    if (data?.listings?.length && !selectedListing) {
+      setSelectedListing(data.listings[0]);
+    }
+  }, [data?.listings, selectedListing]);
+
   const queryString = useMemo(() => {
     const params = new URLSearchParams();
     if (query.trim()) params.set("q", query.trim());
@@ -392,347 +403,236 @@ export default function MarketplaceBrowser() {
 
   if (status === "loading" && !data) {
     return (
-      <div className="glass rounded-3xl p-6">
-        <LoadingSpinner message="Loading marketplace inventory..." />
+      <div className="glass-panel flex min-h-[400px] items-center justify-center rounded-3xl">
+        <LoadingSpinner message="Scanning deep-space inventory..." />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="glass rounded-3xl p-6">
-        <div className="mb-4 rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-starlight/70">
-          <div className="font-semibold text-starlight/90">Write access</div>
-          <div className="mt-1">
-            {data?.auth?.writeProtected
-              ? `Protected. Add ${data.auth.tokenHeader || "x-marketplace-write-token"} to create/update listings.`
-              : "Open write mode (no token configured)."}
-          </div>
-          <input
-            value={writeToken}
-            onChange={(event) => setWriteToken(event.target.value)}
-            placeholder="Marketplace write token (optional unless protected)"
-            className="mt-3 w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight outline-none focus:border-aurora/60"
-          />
-        </div>
-        <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search scopes, cameras, mounts..."
-            className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-starlight outline-none ring-0 placeholder:text-starlight/40 focus:border-aurora/60"
-          />
-          <select
-            value={category}
-            onChange={(event) => setCategory(event.target.value)}
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-sm text-starlight outline-none focus:border-aurora/60"
-          >
-            <option value="all">All categories</option>
-            {MARKETPLACE_CATEGORIES.map((item) => (
-              <option key={item.value} value={item.value}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-          <select
-            value={condition}
-            onChange={(event) => setCondition(event.target.value)}
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-sm text-starlight outline-none focus:border-aurora/60"
-          >
-            <option value="all">Any condition</option>
-            {MARKETPLACE_CONDITIONS.map((item) => (
-              <option key={item.value} value={item.value}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-          <select
-            value={sort}
-            onChange={(event) => setSort(event.target.value as MarketplaceSort)}
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-3 text-sm text-starlight outline-none focus:border-aurora/60"
-          >
-            <option value="featured">Featured</option>
-            <option value="newest">Newest</option>
-            <option value="price-asc">Price: low to high</option>
-            <option value="price-desc">Price: high to low</option>
-          </select>
-        </div>
+    <div className="relative min-h-screen">
+      {/* Background Grid Lines to enhance 'Technical' feel */}
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
 
-        <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
-          <div className="mb-2 flex items-center justify-between text-xs text-starlight/60">
-            <span>Max price</span>
-            <span>${maxPrice}</span>
-          </div>
-          <input
-            type="range"
-            min={80}
-            max={3000}
-            step={10}
-            value={maxPrice}
-            onChange={(event) => setMaxPrice(Number(event.target.value))}
-            className="h-2 w-full cursor-pointer accent-ember"
-          />
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-starlight/60">
-          <div>{data?.count ?? 0} matching listings</div>
-          <div>
-            Updated{" "}
-            {data?.generatedAt
-              ? new Date(data.generatedAt).toLocaleTimeString(undefined, {
-                  hour: "numeric",
-                  minute: "2-digit"
-                })
-              : "just now"}
-          </div>
-        </div>
-      </div>
-
-      <div className="glass rounded-3xl p-6">
-        <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Seller quick post</div>
-        <form onSubmit={submitListing} className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          <input
-            value={sellerForm.title}
-            onChange={(event) => setSellerForm((prev) => ({ ...prev, title: event.target.value }))}
-            placeholder="Listing title"
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight outline-none focus:border-aurora/60"
-            required
-          />
-          <input
-            value={sellerForm.tag}
-            onChange={(event) => setSellerForm((prev) => ({ ...prev, tag: event.target.value }))}
-            placeholder="Tag (example: Deep-sky)"
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight outline-none focus:border-aurora/60"
-            required
-          />
-          <input
-            value={sellerForm.city}
-            onChange={(event) => setSellerForm((prev) => ({ ...prev, city: event.target.value }))}
-            placeholder="City, State"
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight outline-none focus:border-aurora/60"
-            required
-          />
-          <input
-            type="number"
-            min={1}
-            value={sellerForm.priceUsd}
-            onChange={(event) =>
-              setSellerForm((prev) => ({ ...prev, priceUsd: Number(event.target.value) || 0 }))
-            }
-            placeholder="Price USD"
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight outline-none focus:border-aurora/60"
-            required
-          />
-          <input
-            value={sellerForm.description}
-            onChange={(event) =>
-              setSellerForm((prev) => ({ ...prev, description: event.target.value }))
-            }
-            placeholder="Short description (optional)"
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight outline-none focus:border-aurora/60 md:col-span-2"
-            maxLength={320}
-          />
-          <label className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight md:col-span-2">
-            <span className="text-xs text-starlight/70">Listing image (optional)</span>
-            <input
-              key={imageInputKey}
-              type="file"
-              accept="image/png,image/jpeg,image/webp,image/avif"
-              onChange={handleSellerImageUpload}
-              className="mt-2 block w-full text-xs text-starlight/80 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-aurora/20 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-aurora"
-            />
-            <div className="mt-1 text-[11px] text-starlight/50">
-              PNG/JPEG/WEBP/AVIF. Files are optimized client-side before upload.
+      <div className="mx-auto max-w-[1600px] p-6">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+          
+          {/* LEFT PANEL: The Manifest (List) */}
+          <div className="flex flex-col gap-6 lg:col-span-7 xl:col-span-8">
+            
+            {/* Control Deck (Filters) */}
+            <div className="glass-panel relative rounded-lg border border-white/10 p-6">
+                <div className="absolute top-0 left-0 h-2 w-2 border-l-2 border-t-2 border-aurora" />
+                <div className="absolute top-0 right-0 h-2 w-2 border-r-2 border-t-2 border-aurora" />
+                
+                <h2 className="mb-4 font-mono text-xs uppercase tracking-[0.2em] text-aurora">System Query Protocol</h2>
+                
+                <div className="grid gap-4 md:grid-cols-2">
+                    <div className="relative">
+                        <input
+                            value={query}
+                            onChange={(event) => setQuery(event.target.value)}
+                            placeholder="SEARCH MANIFEST..."
+                            className="w-full bg-deep-space/50 p-3 font-mono text-sm text-starlight placeholder:text-starlight/20 focus:outline-none focus:ring-1 focus:ring-aurora"
+                        />
+                        <div className="absolute right-3 top-3 h-2 w-2 animate-pulse bg-aurora rounded-full" />
+                    </div>
+                     <select
+                        value={category}
+                        onChange={(event) => setCategory(event.target.value)}
+                        className="bg-deep-space/50 p-3 font-mono text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora uppercase"
+                    >
+                        <option value="all">Category: All</option>
+                        {MARKETPLACE_CATEGORIES.map((item) => (
+                        <option key={item.value} value={item.value}>
+                            Category: {item.label}
+                        </option>
+                        ))}
+                    </select>
+                </div>
             </div>
-            {uploadStatus === "preparing" ? (
-              <div className="mt-2 text-xs text-starlight/70">Optimizing image...</div>
-            ) : null}
-            {uploadStatus === "requesting" || uploadStatus === "uploading" ? (
-              <div className="mt-2 space-y-2">
-                <div className="text-xs text-starlight/70">
-                  Uploading image{uploadStatus === "uploading" ? ` (${uploadPercent}%)` : "..."}
+
+            {/* Manifest List */}
+            <div className="min-h-[600px] border-t border-white/20">
+                <div className="flex items-center justify-between border-b border-white/10 py-2 px-4 font-mono text-[10px] uppercase tracking-widest text-starlight/50">
+                    <span>ID / Visual</span>
+                    <span>Specification</span>
+                    <span className="hidden sm:inline-block">Status</span>
                 </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
-                  <div
-                    className="h-full bg-aurora transition-[width] duration-150"
-                    style={{ width: `${uploadPercent}%` }}
-                  />
+                
+                {status === "loading" && !data ? (
+                    <div className="flex h-96 flex-col items-center justify-center gap-4 text-aurora">
+                        <div className="h-16 w-16 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                        <div className="font-mono text-xs animate-pulse">ACCESSING DATABASE...</div>
+                    </div>
+                ) : (
+                    <>
+                        {filteredListings.length === 0 ? (
+                            <div className="py-20 text-center font-mono text-starlight/30">
+                                NO RESULTS FOUND IN SECTOR
+                            </div>
+                        ) : (
+                            <div className="flex flex-col">
+                                {filteredListings.map((listing) => (
+                                     <button 
+                                        key={listing.id} 
+                                        onClick={() => setSelectedListing(listing)}
+                                        className="w-full text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-aurora"
+                                        type="button"
+                                     >
+                                        <ListingCard listing={listing} />
+                                     </button>
+                                ))}
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
+            
+            {/* Seller Command Center (Collapsible) */}
+             <div className="mt-8">
+                 <button 
+                    onClick={() => setShowSellerForm(!showSellerForm)}
+                    className="flex w-full items-center justify-between border border-white/10 bg-white/5 p-4 text-left font-mono text-xs uppercase tracking-widest text-starlight hover:bg-white/10"
+                 >
+                     <span>{showSellerForm ? "[-] Terminate Uplink" : "[+] Initialize Seller Uplink"}</span>
+                     <span className={showSellerForm ? "text-aurora" : "text-starlight/30"}>{showSellerForm ? "ACTIVE" : "STANDBY"}</span>
+                 </button>
+                 
+                {showSellerForm && (
+                <div className="mt-4 border border-white/10 bg-midnight p-6">
+                    <div className="mb-6 flex items-center justify-between">
+                        <div className="font-mono text-xs uppercase text-aurora">New Manifest Entry</div>
+                    </div>
+                    
+                    <form onSubmit={submitListing} className="grid gap-6">
+                        <div>
+                             <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
+                                 Item Designation
+                                 <input
+                                    value={sellerForm.title}
+                                    onChange={(e) => setSellerForm({...sellerForm, title: e.target.value})}
+                                    required
+                                    className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
+                                    placeholder="E.g. CELESTRON 8SE"
+                                />
+                             </label>
+                        </div>
+                        {/* Compact Grid for other inputs */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
+                                    Value (Credits)
+                                    <input
+                                        type="number"
+                                        value={sellerForm.priceUsd}
+                                        onChange={(e) => setSellerForm({...sellerForm, priceUsd: Number(e.target.value)})}
+                                        required
+                                        className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
+                                    />
+                                </label>
+                            </div>
+                            <div>
+                                <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
+                                    Class
+                                    <select 
+                                        value={sellerForm.tag}
+                                        onChange={(e) => setSellerForm({...sellerForm, tag: e.target.value})}
+                                        className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
+                                    >
+                                        {MARKETPLACE_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                             <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
+                                 Technical Specs / Description
+                                 <textarea
+                                    value={sellerForm.description}
+                                    onChange={(e) => setSellerForm({...sellerForm, description: e.target.value})}
+                                    required
+                                    rows={4}
+                                    className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
+                                />
+                             </label>
+                        </div>
+
+                         <div className="flex justify-end">
+                            <button type="submit" disabled={createStatus === "saving"} className="bg-aurora px-6 py-2 font-mono text-xs font-bold text-deep-space hover:bg-white">
+                                {createStatus === "saving" ? "TRANSMITTING..." : "UPLOAD MANIFEST"}
+                            </button>
+                         </div>
+                    </form>
                 </div>
-              </div>
-            ) : null}
-            {uploadStatus === "success" && sellerForm.imageUrl ? (
-              <div className="mt-2 space-y-2 text-xs text-aurora">
-                <div>{uploadMessage}</div>
-                <div
-                  className="h-20 w-20 rounded-lg border border-white/10 bg-cover bg-center"
-                  style={{ backgroundImage: `url(${sellerForm.imageUrl})` }}
-                />
-              </div>
-            ) : null}
-            {uploadStatus === "error" ? (
-              <div className="mt-2 text-xs text-ember">{uploadMessage}</div>
-            ) : null}
-          </label>
-          <select
-            value={sellerForm.category}
-            onChange={(event) =>
-              setSellerForm((prev) => ({
-                ...prev,
-                category: event.target.value as MarketplaceCategory
-              }))
-            }
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight outline-none focus:border-aurora/60"
-          >
-            {MARKETPLACE_CATEGORIES.map((item) => (
-              <option key={item.value} value={item.value}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-          <select
-            value={sellerForm.condition}
-            onChange={(event) =>
-              setSellerForm((prev) => ({
-                ...prev,
-                condition: event.target.value as MarketplaceCondition
-              }))
-            }
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight outline-none focus:border-aurora/60"
-          >
-            {MARKETPLACE_CONDITIONS.map((item) => (
-              <option key={item.value} value={item.value}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-          <label className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight">
-            <input
-              type="checkbox"
-              checked={sellerForm.shipping}
-              onChange={(event) =>
-                setSellerForm((prev) => ({ ...prev, shipping: event.target.checked }))
-              }
-              className="accent-aurora"
-            />
-            Shipping available
-          </label>
-          <button
-            type="submit"
-            disabled={
-              createStatus === "saving" ||
-              uploadStatus === "requesting" ||
-              uploadStatus === "uploading"
-            }
-            className="button-primary disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {createStatus === "saving" ? "Posting..." : "Post listing"}
-          </button>
-        </form>
-        {createStatus === "success" ? (
-          <div className="mt-3 text-xs text-aurora">Listing posted successfully.</div>
-        ) : null}
-        {createStatus === "error" ? (
-          <div className="mt-3 text-xs text-ember">Could not post listing. Check fields and try again.</div>
-        ) : null}
-      </div>
+                )}
+             </div>
 
-      <div className="glass rounded-3xl p-6">
-        <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Quick update</div>
-        <form onSubmit={submitEdit} className="mt-4 grid gap-3 md:grid-cols-4">
-          <select
-            value={editForm.id}
-            onChange={(event) => {
-              const selected = data?.listings.find((listing) => listing.id === event.target.value);
-              if (!selected) return;
-              setEditForm({
-                id: selected.id,
-                priceUsd: selected.priceUsd,
-                condition: selected.condition,
-                status: selected.status
-              });
-            }}
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight outline-none focus:border-aurora/60"
-            disabled={!data?.listings.length}
-          >
-            {(data?.listings ?? []).map((listing) => (
-              <option key={listing.id} value={listing.id}>
-                {listing.title}
-              </option>
-            ))}
-          </select>
-          <input
-            type="number"
-            min={1}
-            value={editForm.priceUsd}
-            onChange={(event) =>
-              setEditForm((prev) => ({ ...prev, priceUsd: Number(event.target.value) || 0 }))
-            }
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight outline-none focus:border-aurora/60"
-            required
-          />
-          <select
-            value={editForm.condition}
-            onChange={(event) =>
-              setEditForm((prev) => ({
-                ...prev,
-                condition: event.target.value as MarketplaceCondition
-              }))
-            }
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight outline-none focus:border-aurora/60"
-          >
-            {MARKETPLACE_CONDITIONS.map((item) => (
-              <option key={item.value} value={item.value}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-          <select
-            value={editForm.status}
-            onChange={(event) =>
-              setEditForm((prev) => ({
-                ...prev,
-                status: event.target.value as MarketplaceListing["status"]
-              }))
-            }
-            className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-starlight outline-none focus:border-aurora/60"
-          >
-            <option value="approved">Approved</option>
-            <option value="pending">Pending</option>
-            <option value="hidden">Hidden</option>
-          </select>
-          <button
-            type="submit"
-            disabled={editStatus === "saving" || !editForm.id}
-            className="button-primary disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {editStatus === "saving" ? "Updating..." : "Update listing"}
-          </button>
-        </form>
-        {editStatus === "success" ? (
-          <div className="mt-3 text-xs text-aurora">Listing updated.</div>
-        ) : null}
-        {editStatus === "error" ? (
-          <div className="mt-3 text-xs text-ember">Could not update listing.</div>
-        ) : null}
-      </div>
+          </div>
 
-      {status === "error" ? (
-        <div className="glass rounded-2xl p-4 text-sm text-ember">
-          Marketplace data is temporarily unavailable.
+          {/* RIGHT PANEL: The Lens (Preview) */}
+          <div className="hidden lg:col-span-5 lg:block xl:col-span-4">
+            <div className="sticky top-24">
+                <div className="relative overflow-hidden border border-white/20 bg-deep-space/80 backdrop-blur-xl p-1 shadow-cinematic">
+                     <div className="absolute top-0 right-0 p-2">
+                        <div className="font-mono text-[10px] text-aurora animate-pulse">LIVE FEED // ONLINE</div>
+                     </div>
+                     
+                     {/* Placeholder for 'Selected Item' - defaulting to first item or selectedListing state if we added it */}
+                     {selectedListing ? (
+                        <>
+                             {selectedListing.imageUrl ? (
+                                <div className="h-64 w-full bg-cover bg-center" style={{ backgroundImage: `url(${selectedListing.imageUrl})` }}>
+                                    <div className="h-full w-full bg-gradient-to-t from-deep-space to-transparent" />
+                                </div>
+                             ) : (
+                                <div className="flex h-64 w-full items-center justify-center bg-white/5">
+                                    <span className="font-mono text-xs text-white/20">NO VISUAL DATA</span>
+                                </div>
+                             )}
+                             
+                             <div className="p-6">
+                                <h2 className="font-mono text-2xl font-bold text-starlight uppercase">{selectedListing.title}</h2>
+                                <div className="mt-4 grid grid-cols-2 gap-4 border-y border-white/10 py-4">
+                                    <div>
+                                        <div className="font-mono text-[9px] text-starlight/50 uppercase">Classification</div>
+                                        <div className="text-aurora">{selectedListing.tag}</div>
+                                    </div>
+                                    <div>
+                                        <div className="font-mono text-[9px] text-starlight/50 uppercase">Condition</div>
+                                        <div className="text-starlight">{selectedListing.condition}</div>
+                                    </div>
+                                </div>
+                                <p className="mt-4 font-mono text-xs leading-relaxed text-starlight/70">
+                                    {selectedListing.description}
+                                </p>
+                                
+                                <button className="mt-6 w-full border border-aurora bg-aurora/10 py-3 font-mono text-xs uppercase tracking-widest text-aurora hover:bg-aurora hover:text-deep-space transition-colors">
+                                    Initiate Acquisition
+                                </button>
+                             </div>
+                        </>
+                     ) : (
+                         <div className="flex h-96 items-center justify-center text-center">
+                            <div className="font-mono text-xs text-starlight/30">
+                                SELECT TARGET FROM MANIFEST
+                            </div>
+                         </div>
+                     )}
+                     
+                     {/* Decoration */}
+                     <div className="absolute bottom-2 right-2 flex gap-1">
+                         <div className="h-1 w-1 bg-aurora rounded-full" />
+                         <div className="h-1 w-1 bg-aurora/50 rounded-full" />
+                         <div className="h-1 w-1 bg-aurora/20 rounded-full" />
+                     </div>
+                </div>
+            </div>
+          </div>
+
         </div>
-      ) : null}
-
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {(data?.listings ?? []).map((listing) => (
-          <ListingCard key={listing.id} listing={listing} />
-        ))}
       </div>
-
-      {data && data.listings.length === 0 ? (
-        <div className="glass rounded-2xl p-5 text-sm text-starlight/70">
-          No listings match those filters. Increase max price or broaden category/condition.
-        </div>
-      ) : null}
     </div>
   );
 }

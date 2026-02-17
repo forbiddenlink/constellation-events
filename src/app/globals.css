@@ -6,6 +6,7 @@
 
 :root {
   color-scheme: dark;
+  --noise-url: url("https://grainy-gradients.vercel.app/noise.svg"); /* Fallback or local asset if available */
 }
 
 * {
@@ -15,28 +16,82 @@
 html,
 body {
   height: 100%;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
-  background: #05060f;
-  color: #e8f1ff;
+  background: #020204;
+  color: #F1F5F9;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Cinematic Noise Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-image: var(--noise-url);
+  opacity: 0.03;
+  pointer-events: none;
+  mix-blend-mode: overlay;
 }
 
 ::selection {
-  background: rgba(94, 242, 193, 0.25);
+  background: rgba(56, 189, 248, 0.3);
+  color: #fff;
 }
 
+/* Glass Utilities */
 .glass {
-  background: rgba(12, 16, 32, 0.6);
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(18px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.glass-panel {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
 .button-primary {
-  @apply rounded-full bg-aurora px-5 py-2.5 text-sm font-semibold text-midnight shadow-glow transition hover:scale-[1.02];
+  @apply relative overflow-hidden rounded-xl bg-aurora/90 px-6 py-3 text-sm font-bold text-deep-space shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-all hover:scale-[1.02] hover:bg-aurora hover:shadow-[0_0_30px_rgba(56,189,248,0.5)];
 }
 
 .button-ghost {
-  @apply rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-starlight/80 transition hover:border-aurora hover:text-aurora;
+  @apply rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-medium text-starlight/80 transition-all hover:bg-white/10 hover:text-white hover:border-white/20;
+}
+
+/* Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #020204;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
+}
+
+.noise-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0.05;
+    background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+    filter: contrast(150%) brightness(100%);
 }

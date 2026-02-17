@@ -8,7 +8,8 @@ A cinematic, data-driven stargazing hub with event planning, dark-sky scouting, 
 - **Event Planning** - Track meteor showers, eclipses, planetary alignments
 - **Dark-Sky Locations** - Find optimal stargazing spots based on light pollution data
 - **Interactive Star Maps** - Visualize constellations and celestial objects
-- **Marketplace** - Curated astronomy gear and equipment
+- **Marketplace** - Curated astronomy gear with a "Deep Space Manifest" Master-Detail interface
+- **Deep Space Aesthetics** - immersive HUD-style design with monospace typography and scanline effects
 - **Custom Light Pollution Tiles** - NASA VIIRS data hosted on Cloudflare R2
 
 ## 🚀 Getting Started
