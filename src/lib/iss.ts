@@ -106,7 +106,7 @@ async function fetchOpenNotifyPasses(
   url.searchParams.set("n", String(count));
 
   const response = await fetch(url.toString(), {
-    signal: AbortSignal.timeout(10000),
+    signal: AbortSignal.timeout(5000),
     next: { revalidate: 300 } // Cache for 5 minutes
   });
 

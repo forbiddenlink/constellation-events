@@ -347,8 +347,14 @@ export default function MarketplaceBrowser() {
       setUploadPercent(0);
       setUploadMessage("");
       setImageInputKey((value) => value + 1);
+      
+      // Optimistically add the new listing
+      const newListing = await response.json();
+      if (newListing.listing) {
+          setData(prev => prev ? { ...prev, listings: [newListing.listing, ...prev.listings], count: prev.count + 1 } : null);
+      }
+
       setCreateStatus("success");
-      setRefreshTick((tick) => tick + 1);
       setTimeout(() => setCreateStatus("idle"), 1600);
     } catch {
       setCreateStatus("error");

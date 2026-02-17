@@ -75,8 +75,13 @@ async function flush() {
 }
 
 export async function listMarketplaceListings() {
-  await ensureLoaded();
-  return [...(cachedListings ?? [])];
+  try {
+    await ensureLoaded();
+    return [...(cachedListings ?? [])];
+  } catch (error) {
+    console.error("[marketplace] Failed to list listings:", error);
+    return [...DEFAULT_MARKETPLACE_LISTINGS];
+  }
 }
 
 export async function createMarketplaceListing(

@@ -89,40 +89,45 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={clsx(spaceGrotesk.variable, dmSerif.variable, "font-sans")}> 
-        <div className="min-h-screen bg-nebula-gradient">
-          <div className="absolute inset-0 starfield opacity-60" />
-          <div className="absolute inset-0 grid-overlay opacity-30" />
-          <div className="relative">
-            <header className="sticky top-0 z-50 border-b border-white/10 bg-deep-space/70 backdrop-blur">
-              <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full border border-white/20 bg-aurora/10 shadow-glow" />
-                  <div>
-                    <div className="font-display text-lg tracking-wide">Constellation</div>
-                    <div className="text-xs text-starlight/60">Astronomy Event Tracker</div>
-                  </div>
-                </div>
-                <nav className="hidden items-center gap-6 text-sm text-starlight/70 md:flex">
-                  {navLinks.map((link) => (
-                    <Link key={link.href} href={link.href} className="transition hover:text-aurora">
-                      {link.label}
-                    </Link>
-                  ))}
-                </nav>
-                <div className="flex items-center gap-3">
-                  <button className="button-ghost hidden sm:inline-flex">Sign in</button>
-                  <button className="button-primary">Start Tonight</button>
+      <body className={clsx(spaceGrotesk.variable, dmSerif.variable, "font-sans bg-deep-space")}>
+        <div className="fixed inset-0 z-0">
+          <img
+            src="/background.png"
+            alt=""
+            className="h-full w-full object-cover opacity-80"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-deep-space/60 via-deep-space/20 to-deep-space/90" />
+        </div>
+        
+        <div className="relative z-10 min-h-screen text-starlight selection:bg-cyan-500/30">
+          <header className="sticky top-0 z-50 border-b border-white/10 bg-deep-space/70 backdrop-blur">
+            <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+              <div className="flex items-center gap-3">
+                <img src="/icon.png" alt="Constellation Logo" className="h-10 w-10 rounded-full shadow-glow" />
+                <div>
+                  <div className="font-display text-lg tracking-wide">Constellation</div>
+                  <div className="text-xs text-starlight/60">Astronomy Event Tracker</div>
                 </div>
               </div>
-            </header>
-            <main className="mx-auto max-w-6xl px-6 py-10">
-              <ClientErrorBoundary>{children}</ClientErrorBoundary>
-            </main>
-            <footer className="border-t border-white/10 py-8 text-center text-xs text-starlight/50">
-              Built for stargazers. Powered by open astronomy data.
-            </footer>
-          </div>
+              <nav className="hidden items-center gap-6 text-sm text-starlight/70 md:flex">
+                {navLinks.map((link) => (
+                  <Link key={link.href} href={link.href} className="transition hover:text-aurora">
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+              <div className="flex items-center gap-3">
+                <button className="button-ghost hidden sm:inline-flex">Sign in</button>
+                <Link href="/planner" className="button-primary">Start Tonight</Link>
+              </div>
+            </div>
+          </header>
+          <main className="mx-auto max-w-6xl px-6 py-10">
+            <ClientErrorBoundary>{children}</ClientErrorBoundary>
+          </main>
+          <footer className="border-t border-white/10 py-8 text-center text-xs text-starlight/50">
+            Built for stargazers. Powered by open astronomy data.
+          </footer>
         </div>
         <Analytics />
       </body>

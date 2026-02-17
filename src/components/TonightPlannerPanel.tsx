@@ -50,7 +50,7 @@ export default function TonightPlannerPanel() {
 
   const loadPlan = useCallback((mode: "initial" | "refresh" = "initial") => {
     setStatus(mode === "refresh" && data ? "refreshing" : "loading");
-    fetch(`/api/planner/tonight${query ? `?${query}` : ""}`)
+    fetch(`/api/planner/tonight${query ? `?${query}` : ""}`, { cache: "no-store" })
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Planner request failed: ${res.status}`);

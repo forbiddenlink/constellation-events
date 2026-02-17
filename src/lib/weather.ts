@@ -76,7 +76,7 @@ async function fetchOpenWeather(lat: number, lng: number): Promise<SkyQuality> {
 
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${apiKey}&units=metric`;
   const response = await fetch(url, {
-    signal: AbortSignal.timeout(10000),
+    signal: AbortSignal.timeout(5000),
     next: { revalidate: 1800 }
   });
 
