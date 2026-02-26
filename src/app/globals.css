@@ -95,3 +95,76 @@ body::before {
     background-image: url("https://grainy-gradients.vercel.app/noise.svg");
     filter: contrast(150%) brightness(100%);
 }
+
+/* ===== Night Vision Mode ===== */
+/* Red-shifted colors for preserving night vision in the field */
+
+:root {
+  --nv-bg-primary: #0a0000;
+  --nv-bg-elevated: #120000;
+  --nv-text-primary: #ff4040;
+  --nv-text-secondary: #cc3030;
+  --nv-accent: #ff2020;
+  --nv-border: rgba(255, 64, 64, 0.2);
+}
+
+/* Night vision mode class - apply to html element */
+.night-vision {
+  filter: saturate(0.7);
+}
+
+.night-vision body {
+  background: var(--nv-bg-primary) !important;
+  color: var(--nv-text-primary) !important;
+}
+
+.night-vision .glass,
+.night-vision .glass-panel {
+  background: rgba(20, 0, 0, 0.6) !important;
+  border-color: var(--nv-border) !important;
+}
+
+.night-vision a,
+.night-vision button {
+  color: var(--nv-text-primary) !important;
+}
+
+.night-vision .bg-aurora,
+.night-vision [class*="bg-aurora"] {
+  background-color: var(--nv-accent) !important;
+}
+
+.night-vision .text-aurora,
+.night-vision [class*="text-aurora"] {
+  color: var(--nv-text-primary) !important;
+}
+
+.night-vision .text-starlight,
+.night-vision [class*="text-starlight"] {
+  color: var(--nv-text-primary) !important;
+}
+
+.night-vision .border-white\/10,
+.night-vision [class*="border-white"] {
+  border-color: var(--nv-border) !important;
+}
+
+.night-vision .bg-white\/5,
+.night-vision [class*="bg-white"] {
+  background-color: rgba(255, 64, 64, 0.05) !important;
+}
+
+/* Night vision toggle button styles */
+.night-vision-toggle {
+  @apply flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium transition-all hover:bg-white/10;
+}
+
+.night-vision .night-vision-toggle {
+  border-color: var(--nv-border) !important;
+  background-color: rgba(255, 64, 64, 0.1) !important;
+}
+
+/* Preserve map colors in night vision by isolating the map */
+.night-vision .mapboxgl-map {
+  filter: hue-rotate(0deg) saturate(0.5) brightness(0.7);
+}

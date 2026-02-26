@@ -2,9 +2,11 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Space_Grotesk, DM_Serif_Display, JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
+import Image from "next/image";
 import { clsx } from "clsx";
 import { Analytics } from "@vercel/analytics/react";
 import ClientErrorBoundary from "@/components/ClientErrorBoundary";
+import NightModeToggle from "@/components/NightModeToggle";
 import { logConfigStatus } from "@/lib/config";
 
 // Log configuration status on server startup
@@ -110,7 +112,7 @@ export default function RootLayout({
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <div className="absolute inset-0 animate-pulse rounded-full bg-aurora/20 blur-md" />
-                  <img src="/icon.png" alt="Constellation" className="relative h-8 w-8 rounded-full shadow-lg" />
+                  <Image src="/icon.png" alt="Constellation" width={32} height={32} className="relative rounded-full shadow-lg" />
                 </div>
                 <div className="hidden sm:block">
                   <div className="font-display text-lg tracking-wide text-starlight">Constellation</div>
@@ -130,6 +132,7 @@ export default function RootLayout({
               </nav>
 
               <div className="flex items-center gap-3">
+                 <NightModeToggle />
                  <Link href="/planner" className="group relative overflow-hidden rounded-full bg-aurora px-5 py-2 text-xs font-bold text-deep-space transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(56,189,248,0.4)]">
                     <span className="relative z-10">Launch</span>
                     <div className="absolute inset-0 -z-0 bg-gradient-to-r from-white/0 via-white/40 to-white/0 opacity-0 transition-opacity group-hover:animate-shimmer group-hover:opacity-100" />

@@ -7,6 +7,7 @@ import ListingCard from "@/components/ListingCard";
 import ConstellationViz from "@/components/ConstellationViz";
 import TonightAtGlance from "@/components/TonightAtGlance";
 import LiveSkyStatus from "@/components/LiveSkyStatus";
+import APODCard from "@/components/APODCard";
 import { featuredListings, nearbyLocations, upcomingEvents } from "@/lib/mock";
 
 export default function HomePage() {
@@ -42,14 +43,18 @@ export default function HomePage() {
 
       <section>
         <SectionHeading
-          eyebrow="Forecast"
-          title="Upcoming celestial events"
-          subtitle="Stay ahead of every transit, meteor shower, and lunar feature with precision timing and visibility notes."
+          eyebrow="Today's Feature"
+          title="Astronomy Picture of the Day"
+          subtitle="NASA's daily showcase of our cosmos — from distant galaxies to breathtaking nebulae."
         />
-        <div className="grid gap-6 md:grid-cols-3">
-          {upcomingEvents.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
+        <div className="grid gap-6 lg:grid-cols-2">
+          <APODCard />
+          <div className="space-y-4">
+            <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Upcoming Events</div>
+            {upcomingEvents.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </div>
         </div>
       </section>
 
