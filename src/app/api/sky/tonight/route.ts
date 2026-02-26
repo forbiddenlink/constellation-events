@@ -3,6 +3,7 @@ import { tonightHighlights, type TonightObject } from "@/lib/mock";
 import { parseCoordinates } from "@/lib/geo";
 import { fetchObserverTable, getDefaultTargets, type HorizonsPoint } from "@/lib/horizons";
 import { checkRateLimit, getClientIp, RATE_LIMITS } from "@/lib/rate-limit";
+import { getVisiblePlanets, getMoonInfo, PLANETS } from "@/lib/celestial-engine";
 
 const fallbackLocation = { lat: 36.1147, lng: -115.1728 };
 
@@ -25,6 +26,55 @@ function buildHighlightsFromHorizons(targets: ReturnType<typeof getDefaultTarget
       metricLabel: "Alt",
       highlight: `Peak elevation ${Math.round(best.elevation)}°`
     });
+  });
+
+  return highlights;
+}
+
+/**
+ * Build highlights from celestial-engine when Horizons is unavailable.
+ * Uses client-side ephemeris calculations for accurate fallback data.
+ */
+function buildHighlightsFromCelestialEngine(
+  lat: number,
+  lon: number,
+  date: Date = new Date()
+): TonightObject[] {
+  const highlights: TonightObject[] = [];
+
+  // Get moon info
+  const moonInfo = getMoonInfo(lat, lon, date);
+  if (moonInfo.altitude > 0 || moonInfo.illumination > 20) {
+    highlights.push({
+      id: "moon",
+      name: moonInfo.name,
+      type: "Moon Phase",
+      bestTime: moonInfo.altitude > 0 ? "Now visible" : "Rising later",
+      magnitude: `${Math.round(moonInfo.illumination)}%`,
+      metricLabel: "Illum",
+      highlight:
+        moonInfo.illumination < 25
+          ? "Low glare tonight, ideal for deep sky"
+          : moonInfo.illumination > 75
+            ? "Bright moon - great for lunar features"
+            : "Moderate moonlight",
+    });
+  }
+
+  // Get visible planets
+  const visiblePlanets = getVisiblePlanets(lat, lon, date);
+  visiblePlanets.forEach((planet) => {
+    if (planet.altitude > 15) {
+      highlights.push({
+        id: planet.name.toLowerCase(),
+        name: `${planet.name} ${planet.symbol}`,
+        type: "Planet",
+        bestTime: `Alt: ${Math.round(planet.altitude)}°`,
+        magnitude: `${Math.round(planet.altitude)}°`,
+        metricLabel: "Alt",
+        highlight: `Currently ${Math.round(planet.altitude)}° above horizon`,
+      });
+    }
   });
 
   return highlights;
@@ -54,17 +104,39 @@ export async function GET(request: Request) {
     const tableMap: TableMap = new Map(tables);
     const highlights = buildHighlightsFromHorizons(targets, tableMap);
 
+    if (highlights.length > 0) {
+      return NextResponse.json({
+        highlights,
+        source: "JPL Horizons",
+        generatedAt: new Date().toISOString(),
+      });
+    }
+
+    // Horizons returned no data - use celestial-engine
+    const celestialHighlights = buildHighlightsFromCelestialEngine(
+      coords.lat,
+      coords.lng
+    );
+
     return NextResponse.json({
-      highlights: highlights.length ? highlights : tonightHighlights,
-      source: highlights.length ? "JPL Horizons" : "mock",
-      generatedAt: new Date().toISOString()
+      highlights:
+        celestialHighlights.length > 0 ? celestialHighlights : tonightHighlights,
+      source: celestialHighlights.length > 0 ? "astronomy-engine" : "mock",
+      generatedAt: new Date().toISOString(),
     });
   } catch (error) {
+    // Use celestial-engine for real calculations when Horizons is unavailable
+    const celestialHighlights = buildHighlightsFromCelestialEngine(
+      coords.lat,
+      coords.lng
+    );
+
     return NextResponse.json({
-      highlights: tonightHighlights,
-      source: "mock",
+      highlights:
+        celestialHighlights.length > 0 ? celestialHighlights : tonightHighlights,
+      source: celestialHighlights.length > 0 ? "astronomy-engine" : "mock",
       generatedAt: new Date().toISOString(),
-      error: error instanceof Error ? error.message : "Horizons unavailable"
+      error: error instanceof Error ? error.message : "Horizons unavailable",
     });
   }
 }

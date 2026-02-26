@@ -1,12 +1,21 @@
 /**
  * Astronomy calculations and utilities
- * 
+ *
  * Provides functions for:
  * - Moon phase and illumination calculations
  * - Sun/moon rise/set times
  * - Visibility scoring for celestial objects
  * - Optimal observation window calculations
+ *
+ * Uses astronomy-engine via celestial-engine.ts for accurate ephemeris calculations.
  */
+
+import {
+  getMoonInfo,
+  getSunTimes,
+  getMoonTimes,
+  getOptimalObservationWindow,
+} from "./celestial-engine";
 
 export type MoonPhase = {
   phase: number; // 0-1 (0=new, 0.25=first quarter, 0.5=full, 0.75=last quarter)
@@ -40,81 +49,57 @@ export type VisibilityScore = {
 };
 
 /**
- * Calculate current moon phase
- * Based on astronomical algorithms
+ * Calculate current moon phase using astronomy-engine
+ * Provides accurate ephemeris-based calculations
  */
-export function calculateMoonPhase(date: Date = new Date()): MoonPhase {
-  // Julian date calculation
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  
-  let a = Math.floor((14 - month) / 12);
-  let y = year + 4800 - a;
-  let m = month + 12 * a - 3;
-  
-  let jd = day + Math.floor((153 * m + 2) / 5) + 365 * y + 
-           Math.floor(y / 4) - Math.floor(y / 100) + 
-           Math.floor(y / 400) - 32045;
-  
-  // Days since known new moon (Jan 6, 2000)
-  const daysSinceNew = jd - 2451550.1;
-  const newMoons = daysSinceNew / 29.53058867; // Synodic month
-  const phase = newMoons % 1;
-  
-  // Calculate illumination (0-100%)
-  const illumination = (1 - Math.cos(phase * 2 * Math.PI)) * 50;
-  
-  // Moon age in days
-  const age = phase * 29.53058867;
-  
-  // Phase name
-  let name: string;
-  if (phase < 0.033 || phase > 0.967) name = "New Moon";
-  else if (phase < 0.216) name = "Waxing Crescent";
-  else if (phase < 0.284) name = "First Quarter";
-  else if (phase < 0.466) name = "Waxing Gibbous";
-  else if (phase < 0.534) name = "Full Moon";
-  else if (phase < 0.716) name = "Waning Gibbous";
-  else if (phase < 0.784) name = "Last Quarter";
-  else name = "Waning Crescent";
-  
+export function calculateMoonPhase(
+  date: Date = new Date(),
+  lat = 0,
+  lon = 0
+): MoonPhase {
+  const moonInfo = getMoonInfo(lat, lon, date);
+
   return {
-    phase,
-    illumination: Math.round(illumination * 10) / 10,
-    age: Math.round(age * 10) / 10,
-    name
+    phase: moonInfo.phase,
+    illumination: moonInfo.illumination,
+    age: moonInfo.age,
+    name: moonInfo.name,
   };
 }
 
 /**
- * Calculate sun and moon rise/set times
- * Simplified calculation - for production, use a library like suncalc
+ * Calculate sun and moon rise/set times using astronomy-engine
+ * Provides accurate location-aware calculations
  */
 export function calculateSunMoonTimes(
   lat: number,
   lng: number,
   date: Date = new Date()
 ): SunMoonTimes {
-  // This is a simplified implementation
-  // For production, use: npm install suncalc
-  // import SunCalc from 'suncalc';
-  
-  // Placeholder implementation
+  const sunTimes = getSunTimes(lat, lng, date);
+  const moonTimes = getMoonTimes(lat, lng, date);
+
+  // Fallback times for polar regions or calculation failures
   const now = new Date(date);
   now.setHours(0, 0, 0, 0);
-  
+  const fallbackSunrise = new Date(now.getTime() + 6.5 * 3600000);
+  const fallbackSunset = new Date(now.getTime() + 18 * 3600000);
+
   return {
-    sunrise: new Date(now.getTime() + 6.5 * 3600000),
-    sunset: new Date(now.getTime() + 18 * 3600000),
-    civilDusk: new Date(now.getTime() + 18.5 * 3600000),
-    nauticalDusk: new Date(now.getTime() + 19 * 3600000),
-    astronomicalDusk: new Date(now.getTime() + 19.5 * 3600000),
-    civilDawn: new Date(now.getTime() + 6 * 3600000),
-    nauticalDawn: new Date(now.getTime() + 5.5 * 3600000),
-    astronomicalDawn: new Date(now.getTime() + 5 * 3600000),
-    moonrise: new Date(now.getTime() + 19 * 3600000),
-    moonset: new Date(now.getTime() + 7 * 3600000)
+    sunrise: sunTimes.sunrise ?? fallbackSunrise,
+    sunset: sunTimes.sunset ?? fallbackSunset,
+    civilDusk: sunTimes.civilDusk ?? new Date(now.getTime() + 18.5 * 3600000),
+    nauticalDusk:
+      sunTimes.nauticalDusk ?? new Date(now.getTime() + 19 * 3600000),
+    astronomicalDusk:
+      sunTimes.astronomicalDusk ?? new Date(now.getTime() + 19.5 * 3600000),
+    civilDawn: sunTimes.civilDawn ?? new Date(now.getTime() + 6 * 3600000),
+    nauticalDawn:
+      sunTimes.nauticalDawn ?? new Date(now.getTime() + 5.5 * 3600000),
+    astronomicalDawn:
+      sunTimes.astronomicalDawn ?? new Date(now.getTime() + 5 * 3600000),
+    moonrise: moonTimes.moonrise,
+    moonset: moonTimes.moonset,
   };
 }
 
@@ -195,24 +180,29 @@ export function calculateVisibilityScore(params: {
 }
 
 /**
- * Calculate optimal observation window for tonight
+ * Calculate optimal observation window for tonight using astronomy-engine
  */
 export function calculateOptimalWindow(
   lat: number,
   lng: number,
   date: Date = new Date()
 ): { start: Date; end: Date; quality: number } {
-  const times = calculateSunMoonTimes(lat, lng, date);
-  const moonPhase = calculateMoonPhase(date);
-  
-  // Optimal window is between astronomical dusk and dawn
-  // Quality depends on moon phase
-  const moonQuality = 100 - (moonPhase.illumination * 0.8);
-  
+  const window = getOptimalObservationWindow(lat, lng, date);
+
+  // Fallback for polar regions or calculation failures
+  if (!window.start || !window.end) {
+    const times = calculateSunMoonTimes(lat, lng, date);
+    return {
+      start: times.astronomicalDusk,
+      end: times.astronomicalDawn,
+      quality: window.quality,
+    };
+  }
+
   return {
-    start: times.astronomicalDusk,
-    end: times.astronomicalDawn,
-    quality: Math.round(moonQuality)
+    start: window.start,
+    end: window.end,
+    quality: window.quality,
   };
 }
 
