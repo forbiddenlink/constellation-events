@@ -7,7 +7,8 @@ export const metadata: Metadata = {
   description: "Buy and sell quality astronomy equipment. Curated listings for telescopes, mounts, cameras, eyepieces, and accessories with verified seller ratings.",
   openGraph: {
     title: "Telescope Marketplace | Constellation",
-    description: "Buy and sell quality astronomy equipment. Curated telescope, mount, and accessory listings."
+    description: "Buy and sell quality astronomy equipment. Curated telescope, mount, and accessory listings.",
+    images: ["/og-image.png"]
   }
 };
 
@@ -17,7 +18,8 @@ export default function MarketplacePage() {
       <SectionHeading
         eyebrow="Marketplace"
         title="Curated telescope marketplace"
-        subtitle="Trusted listings reviewed by our team. Filters focus on optics quality, condition, and price." 
+        subtitle="Trusted listings reviewed by our team. Filters focus on optics quality, condition, and price."
+        as="h1"
       />
       <MarketplaceBrowser />
     </div>

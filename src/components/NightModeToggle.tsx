@@ -17,9 +17,23 @@ export default function NightModeToggle() {
       <button
         className="night-vision-toggle opacity-50"
         disabled
-        aria-label="Loading theme"
+        aria-label="Loading night vision toggle"
       >
-        <span className="text-starlight/70">NV</span>
+        <svg
+          className="h-4 w-4 text-starlight/70 animate-pulse"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+          />
+        </svg>
+        <span className="hidden sm:inline text-starlight/70" aria-hidden="true">NV</span>
       </button>
     );
   }
@@ -57,7 +71,7 @@ export default function NightModeToggle() {
               d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
             />
           </svg>
-          <span className="hidden sm:inline text-starlight/70">NV</span>
+          <span className="hidden sm:inline text-starlight/70" aria-hidden="true">NV</span>
         </>
       )}
     </button>

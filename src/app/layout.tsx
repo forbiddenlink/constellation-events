@@ -36,7 +36,10 @@ export const metadata: Metadata = {
     default: "Constellation — Astronomy Event Tracker",
     template: "%s | Constellation"
   },
-  description: "Track celestial events, find dark skies, and gear up for your next night out under the stars. Real-time sky conditions, meteor shower forecasts, and dark-sky location finder.",
+  description: "Track celestial events, find dark skies, and gear up for stargazing. Real-time sky conditions, meteor showers, and dark-sky finder.",
+  alternates: {
+    canonical: "/"
+  },
   keywords: ["astronomy", "stargazing", "celestial events", "dark sky", "meteor shower", "moon phases", "night sky", "telescope", "star map"],
   authors: [{ name: "Constellation Team" }],
   creator: "Constellation",
@@ -46,21 +49,12 @@ export const metadata: Metadata = {
     locale: "en_US",
     siteName: "Constellation",
     title: "Constellation — Astronomy Event Tracker",
-    description: "Your nightly mission control for the sky above. Track celestial events, find dark skies, and plan your stargazing adventures.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Constellation - Astronomy Event Tracker"
-      }
-    ]
+    description: "Your nightly mission control for the sky above. Track celestial events, find dark skies, and plan your stargazing adventures."
   },
   twitter: {
     card: "summary_large_image",
     title: "Constellation — Astronomy Event Tracker",
-    description: "Your nightly mission control for the sky above. Track celestial events, find dark skies, and plan your stargazing adventures.",
-    images: ["/og-image.png"]
+    description: "Your nightly mission control for the sky above. Track celestial events, find dark skies, and plan your stargazing adventures."
   },
   robots: {
     index: true,
@@ -75,10 +69,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
       { url: "/icon", type: "image/png", sizes: "32x32" }
     ],
-    apple: "/apple-icon"
+    apple: [
+      { url: "/apple-icon", sizes: "180x180", type: "image/png" }
+    ]
   }
 };
 
@@ -112,7 +107,7 @@ export default function RootLayout({
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <div className="absolute inset-0 animate-pulse rounded-full bg-aurora/20 blur-md" />
-                  <Image src="/icon.png" alt="Constellation" width={32} height={32} className="relative rounded-full shadow-lg" />
+                  <Image src="/icon" alt="Constellation" width={32} height={32} className="relative rounded-full shadow-lg" unoptimized />
                 </div>
                 <div className="hidden sm:block">
                   <div className="font-display text-lg tracking-wide text-starlight">Constellation</div>
@@ -147,9 +142,9 @@ export default function RootLayout({
 
           <footer className="border-t border-white/5 bg-black/20 py-12 text-center text-xs text-starlight/30 backdrop-blur-sm">
             <div className="mb-4 flex justify-center gap-6">
-                 <span className="cursor-pointer hover:text-aurora">Privacy Protocol</span>
-                 <span className="cursor-pointer hover:text-aurora">System Status</span>
-                 <span className="cursor-pointer hover:text-aurora">Transmission Logs</span>
+                 <Link href="/about" className="hover:text-aurora">About</Link>
+                 <Link href="/contact" className="hover:text-aurora">Contact</Link>
+                 <Link href="/privacy" className="hover:text-aurora">Privacy</Link>
             </div>
             Constellation Network © 2026. All systems nominal.
           </footer>

@@ -104,16 +104,18 @@ export default function LocationsMapPanel() {
       </div>
       <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
         <div className="mb-2 flex items-center justify-between text-xs text-starlight/60">
-          <span>Light pollution intensity</span>
+          <label htmlFor="light-pollution-slider">Light pollution intensity</label>
           <span>{Math.round(overlayOpacity * 100)}%</span>
         </div>
         <input
+          id="light-pollution-slider"
           type="range"
           min={20}
           max={90}
           value={Math.round(overlayOpacity * 100)}
           onChange={(event) => setOverlayOpacity(Number(event.target.value) / 100)}
           className="h-2 w-full cursor-pointer accent-aurora"
+          aria-label="Light pollution intensity slider"
         />
         <div className="mt-3 flex items-center justify-between text-[11px] text-starlight/50">
           <span>Darker is better</span>

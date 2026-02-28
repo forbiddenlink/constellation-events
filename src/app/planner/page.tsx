@@ -8,7 +8,8 @@ export const metadata: Metadata = {
   description: "Plan your stargazing session with moon phases, sunset times, visible planets, and meteor shower forecasts. Get personalized recommendations for tonight.",
   openGraph: {
     title: "Observation Planner | Constellation",
-    description: "Plan your stargazing session with moon phases, visible planets, and meteor shower forecasts."
+    description: "Plan your stargazing session with moon phases, visible planets, and meteor shower forecasts.",
+    images: ["/og-image.png"]
   }
 };
 
@@ -19,6 +20,7 @@ export default function PlannerPage() {
         eyebrow="Planner"
         title="Build your stargazing itinerary"
         subtitle="Blend the right night, the right horizon, and the best targets into one mission plan."
+        as="h1"
       />
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <TonightPlannerPanel />

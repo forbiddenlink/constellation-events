@@ -7,7 +7,8 @@ export const metadata: Metadata = {
   description: "Discover upcoming meteor showers, planetary alignments, eclipses, and lunar events. Get visibility scores based on your location and optimal viewing times.",
   openGraph: {
     title: "Celestial Events | Constellation",
-    description: "Discover upcoming meteor showers, planetary alignments, eclipses, and lunar events with location-based visibility scores."
+    description: "Discover upcoming meteor showers, planetary alignments, eclipses, and lunar events with location-based visibility scores.",
+    images: ["/og-image.png"]
   }
 };
 
@@ -18,6 +19,7 @@ export default function EventsPage() {
         eyebrow="Events"
         title="Celestial calendar"
         subtitle="Plan for meteor showers, planetary alignments, and rare lunar features with visibility scored by location."
+        as="h1"
       />
       <div className="glass rounded-3xl p-6">
         <div className="grid gap-6 md:grid-cols-2">
