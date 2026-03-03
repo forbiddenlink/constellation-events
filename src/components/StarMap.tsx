@@ -44,8 +44,10 @@ export default function StarMap({ showLightPollution, overlayOpacity }: StarMapP
 
     return () => {
       mapRef.current?.remove();
+      mapRef.current = null;
     };
-  }, [geo.lat, geo.lng]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!mapRef.current || geo.lat === null || geo.lng === null) return;

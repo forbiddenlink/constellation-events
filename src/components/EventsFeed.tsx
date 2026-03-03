@@ -26,7 +26,10 @@ export default function EventsFeed() {
     }
 
     fetch(`/api/events?${params.toString()}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`Events request failed: ${res.status}`);
+        return res.json();
+      })
       .then((payload: EventsResponse) => {
         setData(payload);
         setStatus("idle");

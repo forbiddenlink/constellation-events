@@ -8,7 +8,7 @@
  * - Solar system events
  */
 
-import { calculateMoonPhase, calculateVisibilityScore, formatTimeRange } from "./astronomy";
+import { calculateMoonPhase, formatTimeRange } from "./astronomy";
 import type { Coordinates } from "./geo";
 
 export type AstronomyEvent = {

@@ -528,20 +528,73 @@ export default function MarketplaceBrowser() {
                                         value={sellerForm.priceUsd}
                                         onChange={(e) => setSellerForm({...sellerForm, priceUsd: Number(e.target.value)})}
                                         required
+                                        min={1}
                                         className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
                                     />
                                 </label>
                             </div>
                             <div>
                                 <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
-                                    Class
+                                    Category
                                     <select 
-                                        value={sellerForm.tag}
-                                        onChange={(e) => setSellerForm({...sellerForm, tag: e.target.value})}
+                                        value={sellerForm.category}
+                                        onChange={(e) => setSellerForm({...sellerForm, category: e.target.value as MarketplaceCategory})}
                                         className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
                                     >
                                         {MARKETPLACE_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                                     </select>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
+                                    Condition
+                                    <select
+                                        value={sellerForm.condition}
+                                        onChange={(e) => setSellerForm({...sellerForm, condition: e.target.value as MarketplaceCondition})}
+                                        className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
+                                    >
+                                        {MARKETPLACE_CONDITIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                                    </select>
+                                </label>
+                            </div>
+                            <div>
+                                <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
+                                    Location (City)
+                                    <input
+                                        value={sellerForm.city}
+                                        onChange={(e) => setSellerForm({...sellerForm, city: e.target.value})}
+                                        required
+                                        className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
+                                        placeholder="E.g. TUCSON, AZ"
+                                    />
+                                </label>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
+                                    Tag
+                                    <input
+                                        value={sellerForm.tag}
+                                        onChange={(e) => setSellerForm({...sellerForm, tag: e.target.value})}
+                                        className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
+                                        placeholder="E.g. Motorized tracking"
+                                    />
+                                </label>
+                            </div>
+                            <div className="flex items-end">
+                                <label className="flex items-center gap-3 p-2 font-mono text-[10px] uppercase text-aurora cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={sellerForm.shipping}
+                                        onChange={(e) => setSellerForm({...sellerForm, shipping: e.target.checked})}
+                                        className="h-4 w-4 accent-aurora"
+                                    />
+                                    Shipping Available
                                 </label>
                             </div>
                         </div>
@@ -559,8 +612,48 @@ export default function MarketplaceBrowser() {
                              </label>
                         </div>
 
+                        <div>
+                            <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
+                                Image Upload
+                                <input
+                                    key={imageInputKey}
+                                    type="file"
+                                    accept="image/png,image/jpeg,image/webp,image/avif"
+                                    onChange={handleSellerImageUpload}
+                                    disabled={uploadStatus === "uploading" || uploadStatus === "requesting"}
+                                    className="mt-2 block w-full font-mono text-sm text-starlight file:mr-4 file:rounded-none file:border file:border-white/10 file:bg-deep-space file:px-4 file:py-2 file:font-mono file:text-xs file:text-aurora hover:file:bg-white/10"
+                                />
+                            </label>
+                            {uploadStatus !== "idle" && (
+                                <div className="mt-2 font-mono text-[10px]">
+                                    {uploadStatus === "preparing" && <span className="text-starlight/50">Optimizing image...</span>}
+                                    {uploadStatus === "requesting" && <span className="text-starlight/50">Requesting upload slot...</span>}
+                                    {uploadStatus === "uploading" && (
+                                        <div className="flex items-center gap-2">
+                                            <div className="h-1 flex-1 bg-white/10">
+                                                <div className="h-full bg-aurora transition-all" style={{ width: `${uploadPercent}%` }} />
+                                            </div>
+                                            <span className="text-aurora">{uploadPercent}%</span>
+                                        </div>
+                                    )}
+                                    {uploadStatus === "success" && <span className="text-aurora">{uploadMessage}</span>}
+                                    {uploadStatus === "error" && <span className="text-ember">{uploadMessage}</span>}
+                                </div>
+                            )}
+                            {sellerForm.imageUrl && (
+                                <div className="mt-2 font-mono text-[10px] text-aurora truncate">Image ready: {sellerForm.imageUrl}</div>
+                            )}
+                        </div>
+
+                        {createStatus === "error" && (
+                            <div className="font-mono text-xs text-ember">Transmission failed. Check fields and try again.</div>
+                        )}
+                        {createStatus === "success" && (
+                            <div className="font-mono text-xs text-aurora">Manifest entry uploaded successfully.</div>
+                        )}
+
                          <div className="flex justify-end">
-                            <button type="submit" disabled={createStatus === "saving"} className="bg-aurora px-6 py-2 font-mono text-xs font-bold text-deep-space hover:bg-white">
+                            <button type="submit" disabled={createStatus === "saving" || uploadStatus === "uploading" || uploadStatus === "requesting"} className="bg-aurora px-6 py-2 font-mono text-xs font-bold text-deep-space hover:bg-white disabled:opacity-50">
                                 {createStatus === "saving" ? "TRANSMITTING..." : "UPLOAD MANIFEST"}
                             </button>
                          </div>

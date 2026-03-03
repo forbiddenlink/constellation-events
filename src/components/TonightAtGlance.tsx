@@ -31,7 +31,10 @@ export default function TonightAtGlance() {
     }
 
     fetch(`/api/sky/tonight?${params.toString()}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`Sky feed request failed: ${res.status}`);
+        return res.json();
+      })
       .then((payload: TonightResponse) => {
         if (!isMounted) return;
         setData(payload);
