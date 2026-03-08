@@ -54,7 +54,7 @@ describe("marketplace id route", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ priceUsd: 450 })
       }),
-      { params: { id: "missing" } }
+      { params: Promise.resolve({ id: "\1" }) }
     );
 
     expect(response.status).toBe(401);
@@ -86,7 +86,7 @@ describe("marketplace id route", () => {
         },
         body: JSON.stringify({ priceUsd: 499, condition: "excellent" })
       }),
-      { params: { id: created.id } }
+      { params: Promise.resolve({ id: created.id } }
     );
 
     const body = (await response.json()) as {
@@ -112,7 +112,7 @@ describe("marketplace id route", () => {
         },
         body: JSON.stringify({ priceUsd: 350 })
       }),
-      { params: { id: "does-not-exist" } }
+      { params: Promise.resolve({ id: "\1" }) }
     );
 
     expect(response.status).toBe(404);
@@ -148,8 +148,8 @@ describe("marketplace id route", () => {
         body: JSON.stringify({ priceUsd: 430 })
       });
 
-    const first = await PATCH(buildRequest(), { params: { id: created.id } });
-    const second = await PATCH(buildRequest(), { params: { id: created.id } });
+    const first = await PATCH(buildRequest(), { params: Promise.resolve({ id: created.id } });
+    const second = await PATCH(buildRequest(), { params: Promise.resolve({ id: created.id } });
 
     expect(first.status).toBe(200);
     expect(second.status).toBe(429);

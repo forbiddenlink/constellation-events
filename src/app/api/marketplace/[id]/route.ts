@@ -15,10 +15,11 @@ import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { updateMarketplaceListing } from "@/lib/marketplace-store";
 
 type RouteContext = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function PATCH(request: Request, context: RouteContext) {
+  const { id } = await context.params;
   const auth = getMarketplaceWriteAuth(request);
   if (!auth.allowed) {
     return NextResponse.json(
@@ -60,7 +61,6 @@ export async function PATCH(request: Request, context: RouteContext) {
     );
   }
 
-  const id = context.params.id;
   const payload = await request.json().catch(() => null);
 
   const patch: {

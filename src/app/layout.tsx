@@ -1,5 +1,5 @@
 import "./globals.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, DM_Serif_Display, JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
@@ -31,6 +31,12 @@ const jetBrainsMono = JetBrains_Mono({
     display: "swap"
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#0a0e17"
+};
+
 export const metadata: Metadata = {
   title: {
     default: "Constellation — Astronomy Event Tracker",
@@ -49,12 +55,21 @@ export const metadata: Metadata = {
     locale: "en_US",
     siteName: "Constellation",
     title: "Constellation — Astronomy Event Tracker",
-    description: "Your nightly mission control for the sky above. Track celestial events, find dark skies, and plan your stargazing adventures."
+    description: "Your nightly mission control for the sky above. Track celestial events, find dark skies, and plan your stargazing adventures.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Constellation - Astronomy Event Tracker"
+      }
+    ]
   },
   twitter: {
     card: "summary_large_image",
     title: "Constellation — Astronomy Event Tracker",
-    description: "Your nightly mission control for the sky above. Track celestial events, find dark skies, and plan your stargazing adventures."
+    description: "Your nightly mission control for the sky above. Track celestial events, find dark skies, and plan your stargazing adventures.",
+    images: ["/opengraph-image"]
   },
   robots: {
     index: true,
@@ -92,6 +107,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+      </head>
       <body className={clsx(spaceGrotesk.variable, dmSerif.variable, jetBrainsMono.variable, "font-sans bg-midnight overflow-x-hidden")}>
         {/* Cinematic Background Layer */}
         <div className="fixed inset-0 z-0">
