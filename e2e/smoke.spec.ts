@@ -6,7 +6,7 @@ test.describe("Smoke Tests", () => {
 
     // Check header is visible (use first to handle layout + page headers)
     await expect(page.locator("header").first()).toBeVisible();
-    await expect(page.getByText("Constellation")).toBeVisible();
+    await expect(page.getByText("Constellation", { exact: true }).first()).toBeVisible();
 
     // Check navigation links exist
     await expect(page.getByRole("link", { name: "Tonight", exact: true })).toBeVisible();
