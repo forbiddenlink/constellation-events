@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { clsx } from "clsx";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import ClientErrorBoundary from "@/components/ClientErrorBoundary";
 import NightModeToggle from "@/components/NightModeToggle";
 import { logConfigStatus } from "@/lib/config";
@@ -168,6 +169,7 @@ export default function RootLayout({
           </footer>
         </div>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
