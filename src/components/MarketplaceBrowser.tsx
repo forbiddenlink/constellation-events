@@ -184,6 +184,7 @@ export default function MarketplaceBrowser() {
 
   const [showSellerForm, setShowSellerForm] = useState(false);
   const [selectedListing, setSelectedListing] = useState<MarketplaceListing | null>(null);
+  const [contactSent, setContactSent] = useState(false);
   const filteredListings = data?.listings ?? [];
 
   // Select first listing by default when data loads
@@ -404,327 +405,380 @@ export default function MarketplaceBrowser() {
   if (status === "loading" && !data) {
     return (
       <div className="glass-panel flex min-h-[400px] items-center justify-center rounded-3xl">
-        <LoadingSpinner message="Scanning deep-space inventory..." />
+        <LoadingSpinner message="Loading listings..." />
       </div>
     );
   }
 
-  return (
-    <div className="relative min-h-screen">
-      {/* Background Grid Lines to enhance 'Technical' feel */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+  if (status === "error" && !data) {
+    return (
+      <div className="glass rounded-3xl p-8 text-center">
+        <div className="text-ember">Unable to load marketplace listings</div>
+        <p className="mt-2 text-sm text-starlight/60">The marketplace is temporarily unavailable. Please try again.</p>
+        <button onClick={() => setRefreshTick((t) => t + 1)} className="button-ghost mt-4">
+          Retry
+        </button>
+      </div>
+    );
+  }
 
-      <div className="mx-auto max-w-[1600px] p-6">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-          
-          {/* LEFT PANEL: The Manifest (List) */}
-          <div className="flex flex-col gap-6 lg:col-span-7 xl:col-span-8">
-            
-            {/* Control Deck (Filters) */}
-            <div className="glass-panel relative rounded-lg border border-white/10 p-6">
-                <div className="absolute top-0 left-0 h-2 w-2 border-l-2 border-t-2 border-aurora" />
-                <div className="absolute top-0 right-0 h-2 w-2 border-r-2 border-t-2 border-aurora" />
-                
-                <h2 className="mb-4 font-mono text-xs uppercase tracking-[0.2em] text-aurora">System Query Protocol</h2>
-                
-                <div className="grid gap-4 md:grid-cols-2">
-                    <div className="relative">
-                        <input
-                            value={query}
-                            onChange={(event) => setQuery(event.target.value)}
-                            placeholder="SEARCH MANIFEST..."
-                            className="w-full bg-deep-space/50 p-3 font-mono text-sm text-starlight placeholder:text-starlight/20 focus:outline-none focus:ring-1 focus:ring-aurora"
-                        />
-                        <div className="absolute right-3 top-3 h-2 w-2 animate-pulse bg-aurora rounded-full" />
-                    </div>
-                     <select
-                        value={category}
-                        onChange={(event) => setCategory(event.target.value)}
-                        className="bg-deep-space/50 p-3 font-mono text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora uppercase"
-                    >
-                        <option value="all">Category: All</option>
-                        {MARKETPLACE_CATEGORIES.map((item) => (
-                        <option key={item.value} value={item.value}>
-                            Category: {item.label}
-                        </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
+  function handleContactSeller(listing: MarketplaceListing) {
+    const subject = encodeURIComponent(`Inquiry about: ${listing.title} (ID: ${listing.id})`);
+    const body = encodeURIComponent(`Hi,\n\nI'm interested in your listing "${listing.title}" priced at $${listing.priceUsd}.\n\nPlease let me know if it's still available.\n\nThanks`);
+    window.open(`mailto:marketplace@constellation.app?subject=${subject}&body=${body}`, "_self");
+    setContactSent(true);
+    setTimeout(() => setContactSent(false), 5000);
+  }
 
-            {/* Manifest List */}
-            <div className="min-h-[600px] border-t border-white/20">
-                <div className="flex items-center justify-between border-b border-white/10 py-2 px-4 font-mono text-[10px] uppercase tracking-widest text-starlight/50">
-                    <span>ID / Visual</span>
-                    <span>Specification</span>
-                    <span className="hidden sm:inline-block">Status</span>
-                </div>
-                
-                {status === "loading" && !data ? (
-                    <div className="flex h-96 flex-col items-center justify-center gap-4 text-aurora">
-                        <div className="h-16 w-16 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                        <div className="font-mono text-xs animate-pulse">ACCESSING DATABASE...</div>
-                    </div>
-                ) : (
-                    <>
-                        {filteredListings.length === 0 ? (
-                            <div className="py-20 text-center font-mono text-starlight/30">
-                                NO RESULTS FOUND IN SECTOR
-                            </div>
-                        ) : (
-                            <div className="flex flex-col">
-                                {filteredListings.map((listing) => (
-                                     <button 
-                                        key={listing.id} 
-                                        onClick={() => setSelectedListing(listing)}
-                                        className="w-full text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-aurora"
-                                        type="button"
-                                     >
-                                        <ListingCard listing={listing} />
-                                     </button>
-                                ))}
-                            </div>
-                        )}
-                    </>
-                )}
-            </div>
-            
-            {/* Seller Command Center (Collapsible) */}
-             <div className="mt-8">
-                 <button 
-                    onClick={() => setShowSellerForm(!showSellerForm)}
-                    className="flex w-full items-center justify-between border border-white/10 bg-white/5 p-4 text-left font-mono text-xs uppercase tracking-widest text-starlight hover:bg-white/10"
-                 >
-                     <span>{showSellerForm ? "[-] Terminate Uplink" : "[+] Initialize Seller Uplink"}</span>
-                     <span className={showSellerForm ? "text-aurora" : "text-starlight/30"}>{showSellerForm ? "ACTIVE" : "STANDBY"}</span>
-                 </button>
-                 
-                {showSellerForm && (
-                <div className="mt-4 border border-white/10 bg-midnight p-6">
-                    <div className="mb-6 flex items-center justify-between">
-                        <div className="font-mono text-xs uppercase text-aurora">New Manifest Entry</div>
-                    </div>
-                    
-                    <form onSubmit={submitListing} className="grid gap-6">
-                        <div>
-                             <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
-                                 Item Designation
-                                 <input
-                                    value={sellerForm.title}
-                                    onChange={(e) => setSellerForm({...sellerForm, title: e.target.value})}
-                                    required
-                                    className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
-                                    placeholder="E.g. CELESTRON 8SE"
-                                />
-                             </label>
-                        </div>
-                        {/* Compact Grid for other inputs */}
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
-                                    Value (Credits)
-                                    <input
-                                        type="number"
-                                        value={sellerForm.priceUsd}
-                                        onChange={(e) => setSellerForm({...sellerForm, priceUsd: Number(e.target.value)})}
-                                        required
-                                        min={1}
-                                        className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
-                                    />
-                                </label>
-                            </div>
-                            <div>
-                                <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
-                                    Category
-                                    <select 
-                                        value={sellerForm.category}
-                                        onChange={(e) => setSellerForm({...sellerForm, category: e.target.value as MarketplaceCategory})}
-                                        className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
-                                    >
-                                        {MARKETPLACE_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
-                                    </select>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
-                                    Condition
-                                    <select
-                                        value={sellerForm.condition}
-                                        onChange={(e) => setSellerForm({...sellerForm, condition: e.target.value as MarketplaceCondition})}
-                                        className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
-                                    >
-                                        {MARKETPLACE_CONDITIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
-                                    </select>
-                                </label>
-                            </div>
-                            <div>
-                                <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
-                                    Location (City)
-                                    <input
-                                        value={sellerForm.city}
-                                        onChange={(e) => setSellerForm({...sellerForm, city: e.target.value})}
-                                        required
-                                        className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
-                                        placeholder="E.g. TUCSON, AZ"
-                                    />
-                                </label>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
-                                    Tag
-                                    <input
-                                        value={sellerForm.tag}
-                                        onChange={(e) => setSellerForm({...sellerForm, tag: e.target.value})}
-                                        className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
-                                        placeholder="E.g. Motorized tracking"
-                                    />
-                                </label>
-                            </div>
-                            <div className="flex items-end">
-                                <label className="flex items-center gap-3 p-2 font-mono text-[10px] uppercase text-aurora cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        checked={sellerForm.shipping}
-                                        onChange={(e) => setSellerForm({...sellerForm, shipping: e.target.checked})}
-                                        className="h-4 w-4 accent-aurora"
-                                    />
-                                    Shipping Available
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <div>
-                             <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
-                                 Technical Specs / Description
-                                 <textarea
-                                    value={sellerForm.description}
-                                    onChange={(e) => setSellerForm({...sellerForm, description: e.target.value})}
-                                    required
-                                    rows={4}
-                                    className="mt-2 w-full bg-deep-space border border-white/10 p-2 font-mono text-sm text-starlight focus:border-aurora focus:outline-none"
-                                />
-                             </label>
-                        </div>
-
-                        <div>
-                            <label className="mb-2 block font-mono text-[10px] uppercase text-aurora">
-                                Image Upload
-                                <input
-                                    key={imageInputKey}
-                                    type="file"
-                                    accept="image/png,image/jpeg,image/webp,image/avif"
-                                    onChange={handleSellerImageUpload}
-                                    disabled={uploadStatus === "uploading" || uploadStatus === "requesting"}
-                                    className="mt-2 block w-full font-mono text-sm text-starlight file:mr-4 file:rounded-none file:border file:border-white/10 file:bg-deep-space file:px-4 file:py-2 file:font-mono file:text-xs file:text-aurora hover:file:bg-white/10"
-                                />
-                            </label>
-                            {uploadStatus !== "idle" && (
-                                <div className="mt-2 font-mono text-[10px]">
-                                    {uploadStatus === "preparing" && <span className="text-starlight/50">Optimizing image...</span>}
-                                    {uploadStatus === "requesting" && <span className="text-starlight/50">Requesting upload slot...</span>}
-                                    {uploadStatus === "uploading" && (
-                                        <div className="flex items-center gap-2">
-                                            <div className="h-1 flex-1 bg-white/10">
-                                                <div className="h-full bg-aurora transition-all" style={{ width: `${uploadPercent}%` }} />
-                                            </div>
-                                            <span className="text-aurora">{uploadPercent}%</span>
-                                        </div>
-                                    )}
-                                    {uploadStatus === "success" && <span className="text-aurora">{uploadMessage}</span>}
-                                    {uploadStatus === "error" && <span className="text-ember">{uploadMessage}</span>}
-                                </div>
-                            )}
-                            {sellerForm.imageUrl && (
-                                <div className="mt-2 font-mono text-[10px] text-aurora truncate">Image ready: {sellerForm.imageUrl}</div>
-                            )}
-                        </div>
-
-                        {createStatus === "error" && (
-                            <div className="font-mono text-xs text-ember">Transmission failed. Check fields and try again.</div>
-                        )}
-                        {createStatus === "success" && (
-                            <div className="font-mono text-xs text-aurora">Manifest entry uploaded successfully.</div>
-                        )}
-
-                         <div className="flex justify-end">
-                            <button type="submit" disabled={createStatus === "saving" || uploadStatus === "uploading" || uploadStatus === "requesting"} className="bg-aurora px-6 py-2 font-mono text-xs font-bold text-deep-space hover:bg-white disabled:opacity-50">
-                                {createStatus === "saving" ? "TRANSMITTING..." : "UPLOAD MANIFEST"}
-                            </button>
-                         </div>
-                    </form>
-                </div>
-                )}
-             </div>
-
+  // Shared detail panel content (used on both desktop and mobile)
+  function renderDetailPanel(listing: MarketplaceListing) {
+    return (
+      <>
+        {listing.imageUrl ? (
+          <div className="h-48 lg:h-64 w-full bg-cover bg-center rounded-2xl overflow-hidden" style={{ backgroundImage: `url(${listing.imageUrl})` }}>
+            <div className="h-full w-full bg-gradient-to-t from-deep-space to-transparent" />
           </div>
-
-          {/* RIGHT PANEL: The Lens (Preview) */}
-          <div className="hidden lg:col-span-5 lg:block xl:col-span-4">
-            <div className="sticky top-24">
-                <div className="relative overflow-hidden border border-white/20 bg-deep-space/80 backdrop-blur-xl p-1 shadow-cinematic">
-                     <div className="absolute top-0 right-0 p-2">
-                        <div className="font-mono text-[10px] text-aurora animate-pulse">LIVE FEED // ONLINE</div>
-                     </div>
-                     
-                     {/* Placeholder for 'Selected Item' - defaulting to first item or selectedListing state if we added it */}
-                     {selectedListing ? (
-                        <>
-                             {selectedListing.imageUrl ? (
-                                <div className="h-64 w-full bg-cover bg-center" style={{ backgroundImage: `url(${selectedListing.imageUrl})` }}>
-                                    <div className="h-full w-full bg-gradient-to-t from-deep-space to-transparent" />
-                                </div>
-                             ) : (
-                                <div className="flex h-64 w-full items-center justify-center bg-white/5">
-                                    <span className="font-mono text-xs text-white/20">NO VISUAL DATA</span>
-                                </div>
-                             )}
-                             
-                             <div className="p-6">
-                                <h2 className="font-mono text-2xl font-bold text-starlight uppercase">{selectedListing.title}</h2>
-                                <div className="mt-4 grid grid-cols-2 gap-4 border-y border-white/10 py-4">
-                                    <div>
-                                        <div className="font-mono text-[9px] text-starlight/50 uppercase">Classification</div>
-                                        <div className="text-aurora">{selectedListing.tag}</div>
-                                    </div>
-                                    <div>
-                                        <div className="font-mono text-[9px] text-starlight/50 uppercase">Condition</div>
-                                        <div className="text-starlight">{selectedListing.condition}</div>
-                                    </div>
-                                </div>
-                                <p className="mt-4 font-mono text-xs leading-relaxed text-starlight/70">
-                                    {selectedListing.description}
-                                </p>
-                                
-                                <button className="mt-6 w-full border border-aurora bg-aurora/10 py-3 font-mono text-xs uppercase tracking-widest text-aurora hover:bg-aurora hover:text-deep-space transition-colors">
-                                    Initiate Acquisition
-                                </button>
-                             </div>
-                        </>
-                     ) : (
-                         <div className="flex h-96 items-center justify-center text-center">
-                            <div className="font-mono text-xs text-starlight/30">
-                                SELECT TARGET FROM MANIFEST
-                            </div>
-                         </div>
-                     )}
-                     
-                     {/* Decoration */}
-                     <div className="absolute bottom-2 right-2 flex gap-1">
-                         <div className="h-1 w-1 bg-aurora rounded-full" />
-                         <div className="h-1 w-1 bg-aurora/50 rounded-full" />
-                         <div className="h-1 w-1 bg-aurora/20 rounded-full" />
-                     </div>
-                </div>
+        ) : (
+          <div className="flex h-48 lg:h-64 w-full items-center justify-center rounded-2xl bg-white/5">
+            <span className="text-xs text-starlight/30">No image available</span>
+          </div>
+        )}
+        <div className="p-5">
+          <h2 className="font-display text-xl lg:text-2xl font-bold text-starlight">{listing.title}</h2>
+          <div className="mt-4 grid grid-cols-2 gap-4 border-y border-white/10 py-4">
+            <div>
+              <div className="text-[10px] uppercase tracking-wider text-starlight/50">Tag</div>
+              <div className="text-sm text-aurora">{listing.tag}</div>
+            </div>
+            <div>
+              <div className="text-[10px] uppercase tracking-wider text-starlight/50">Condition</div>
+              <div className="text-sm text-starlight">{listing.condition === "like-new" ? "Like new" : listing.condition.charAt(0).toUpperCase() + listing.condition.slice(1)}</div>
             </div>
           </div>
-
+          <p className="mt-4 text-sm leading-relaxed text-starlight/70">
+            {listing.description}
+          </p>
+          <button
+            onClick={() => handleContactSeller(listing)}
+            className="button-primary mt-6 w-full"
+          >
+            {contactSent ? "Email opened ✓" : "Inquire about listing"}
+          </button>
+          <p className="mt-2 text-center text-[11px] text-starlight/40">
+            {contactSent
+              ? "If your email app didn\u0027t open, email marketplace@constellation.app directly."
+              : "Opens your email app with a pre-filled inquiry."}
+          </p>
         </div>
+      </>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+
+        {/* LEFT PANEL: Listings */}
+        <div className="flex flex-col gap-6 lg:col-span-7 xl:col-span-8">
+
+          {/* Filters */}
+          <div className="glass rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Search &amp; filter</div>
+              {data?.generatedAt && (
+                <div className="text-[10px] text-starlight/30">
+                  Updated {new Date(data.generatedAt).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
+                </div>
+              )}
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="relative">
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search listings..."
+                  className="w-full rounded-xl bg-white/5 border border-white/10 p-3 text-sm text-starlight placeholder:text-starlight/30 focus:outline-none focus:ring-1 focus:ring-aurora"
+                />
+              </div>
+              <select
+                value={category}
+                onChange={(event) => setCategory(event.target.value)}
+                className="rounded-xl bg-white/5 border border-white/10 p-3 text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora"
+              >
+                <option value="all">All categories</option>
+                {MARKETPLACE_CATEGORIES.map((item) => (
+                  <option key={item.value} value={item.value}>{item.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mt-4 grid gap-4 md:grid-cols-3">
+              <select
+                value={condition}
+                onChange={(event) => setCondition(event.target.value)}
+                className="rounded-xl bg-white/5 border border-white/10 p-3 text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora"
+              >
+                <option value="all">All conditions</option>
+                {MARKETPLACE_CONDITIONS.map((item) => (
+                  <option key={item.value} value={item.value}>{item.label}</option>
+                ))}
+              </select>
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between text-xs text-starlight/50">
+                  <span>Max price</span>
+                  <span className="font-mono">${maxPrice.toLocaleString()}</span>
+                </div>
+                <input
+                  type="range"
+                  min={50}
+                  max={3000}
+                  step={50}
+                  value={maxPrice}
+                  onChange={(event) => setMaxPrice(Number(event.target.value))}
+                  className="h-2 w-full cursor-pointer accent-aurora"
+                  aria-label="Maximum price"
+                />
+              </div>
+              <select
+                value={sort}
+                onChange={(event) => setSort(event.target.value as MarketplaceSort)}
+                className="rounded-xl bg-white/5 border border-white/10 p-3 text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora"
+              >
+                <option value="featured">Sort: Featured</option>
+                <option value="price-asc">Price: Low → High</option>
+                <option value="price-desc">Price: High → Low</option>
+                <option value="newest">Newest first</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Listing table */}
+          <div className="glass rounded-2xl overflow-hidden">
+            <div className="flex items-center justify-between border-b border-white/10 py-2 px-4 text-[10px] uppercase tracking-widest text-starlight/50">
+              <span>Item</span>
+              <span>Price</span>
+            </div>
+
+            {status === "loading" && !data ? (
+              <div className="flex h-96 flex-col items-center justify-center gap-4">
+                <LoadingSpinner message="Loading listings..." />
+              </div>
+            ) : filteredListings.length === 0 ? (
+              <div className="py-20 text-center text-sm text-starlight/40">
+                No results found. Try adjusting your filters.
+              </div>
+            ) : (
+              <div className="flex flex-col">
+                {filteredListings.map((listing) => (
+                  <button
+                    key={listing.id}
+                    onClick={() => setSelectedListing(listing)}
+                    className={`w-full text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-aurora transition-colors ${
+                      selectedListing?.id === listing.id ? "bg-white/5" : ""
+                    }`}
+                    type="button"
+                  >
+                    <ListingCard listing={listing} />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Mobile detail panel (shows below list on small screens) */}
+          {selectedListing && (
+            <div className="glass rounded-2xl overflow-hidden lg:hidden">
+              <div className="px-5 pt-4">
+                <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Selected listing</div>
+              </div>
+              {renderDetailPanel(selectedListing)}
+            </div>
+          )}
+
+          {/* Seller access */}
+          <div className="glass rounded-2xl p-4">
+            <div className="text-xs uppercase tracking-[0.3em] text-starlight/50 mb-3">Seller access</div>
+            <div className="flex items-center gap-3">
+              <input
+                type="password"
+                value={writeToken}
+                onChange={(e) => setWriteToken(e.target.value)}
+                placeholder="Enter seller token..."
+                className="flex-1 rounded-xl bg-white/5 border border-white/10 p-2.5 text-xs text-starlight placeholder:text-starlight/30 focus:outline-none focus:ring-1 focus:ring-aurora"
+              />
+              {writeToken.trim() && (
+                <span className="text-[10px] text-aurora">Authenticated</span>
+              )}
+            </div>
+            <p className="mt-2 text-[11px] text-starlight/30">
+              Sellers use tokens to manage their listings. Don&apos;t have one? Email marketplace@constellation.app to apply.
+            </p>
+          </div>
+
+          {/* Seller form (collapsible, only visible with token) */}
+          {writeToken.trim() && (
+          <div>
+            <button
+              onClick={() => setShowSellerForm(!showSellerForm)}
+              className="flex w-full items-center justify-between glass rounded-2xl p-4 text-left text-xs text-starlight hover:bg-white/5 transition-colors"
+            >
+              <span className="font-medium">{showSellerForm ? "Close listing form" : "Create a new listing"}</span>
+              <span className={`text-xs transition-transform ${showSellerForm ? "rotate-180 text-aurora" : "text-starlight/40"}`}>▾</span>
+            </button>
+
+            {showSellerForm && (
+              <div className="glass mt-3 rounded-2xl p-6">
+                <div className="text-xs uppercase tracking-[0.3em] text-starlight/50 mb-6">New listing</div>
+                <form onSubmit={submitListing} className="grid gap-5">
+                  <label className="block text-xs text-starlight/60">
+                    Title
+                    <input
+                      value={sellerForm.title}
+                      onChange={(e) => setSellerForm({...sellerForm, title: e.target.value})}
+                      required
+                      className="mt-1.5 w-full rounded-xl bg-white/5 border border-white/10 p-2.5 text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora"
+                      placeholder="e.g. Celestron NexStar 8SE"
+                    />
+                  </label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <label className="block text-xs text-starlight/60">
+                      Price (USD)
+                      <input
+                        type="number"
+                        value={sellerForm.priceUsd}
+                        onChange={(e) => setSellerForm({...sellerForm, priceUsd: Number(e.target.value)})}
+                        required
+                        min={1}
+                        className="mt-1.5 w-full rounded-xl bg-white/5 border border-white/10 p-2.5 text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora"
+                      />
+                    </label>
+                    <label className="block text-xs text-starlight/60">
+                      Category
+                      <select
+                        value={sellerForm.category}
+                        onChange={(e) => setSellerForm({...sellerForm, category: e.target.value as MarketplaceCategory})}
+                        className="mt-1.5 w-full rounded-xl bg-white/5 border border-white/10 p-2.5 text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora"
+                      >
+                        {MARKETPLACE_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                      </select>
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <label className="block text-xs text-starlight/60">
+                      Condition
+                      <select
+                        value={sellerForm.condition}
+                        onChange={(e) => setSellerForm({...sellerForm, condition: e.target.value as MarketplaceCondition})}
+                        className="mt-1.5 w-full rounded-xl bg-white/5 border border-white/10 p-2.5 text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora"
+                      >
+                        {MARKETPLACE_CONDITIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                      </select>
+                    </label>
+                    <label className="block text-xs text-starlight/60">
+                      City
+                      <input
+                        value={sellerForm.city}
+                        onChange={(e) => setSellerForm({...sellerForm, city: e.target.value})}
+                        required
+                        className="mt-1.5 w-full rounded-xl bg-white/5 border border-white/10 p-2.5 text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora"
+                        placeholder="e.g. Tucson, AZ"
+                      />
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <label className="block text-xs text-starlight/60">
+                      Tag
+                      <input
+                        value={sellerForm.tag}
+                        onChange={(e) => setSellerForm({...sellerForm, tag: e.target.value})}
+                        className="mt-1.5 w-full rounded-xl bg-white/5 border border-white/10 p-2.5 text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora"
+                        placeholder="e.g. Motorized tracking"
+                      />
+                    </label>
+                    <div className="flex items-end">
+                      <label className="flex items-center gap-3 p-2.5 text-xs text-starlight/60 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={sellerForm.shipping}
+                          onChange={(e) => setSellerForm({...sellerForm, shipping: e.target.checked})}
+                          className="h-4 w-4 accent-aurora"
+                        />
+                        Shipping available
+                      </label>
+                    </div>
+                  </div>
+                  <label className="block text-xs text-starlight/60">
+                    Description
+                    <textarea
+                      value={sellerForm.description}
+                      onChange={(e) => setSellerForm({...sellerForm, description: e.target.value})}
+                      required
+                      rows={4}
+                      className="mt-1.5 w-full rounded-xl bg-white/5 border border-white/10 p-2.5 text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora"
+                    />
+                  </label>
+                  <label className="block text-xs text-starlight/60">
+                    Image
+                    <input
+                      key={imageInputKey}
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/avif"
+                      onChange={handleSellerImageUpload}
+                      disabled={uploadStatus === "uploading" || uploadStatus === "requesting"}
+                      className="mt-1.5 block w-full text-sm text-starlight file:mr-4 file:rounded-xl file:border file:border-white/10 file:bg-white/5 file:px-4 file:py-2 file:text-xs file:text-aurora hover:file:bg-white/10"
+                    />
+                  </label>
+                  {uploadStatus !== "idle" && (
+                    <div className="text-xs">
+                      {uploadStatus === "preparing" && <span className="text-starlight/50">Optimizing image...</span>}
+                      {uploadStatus === "requesting" && <span className="text-starlight/50">Requesting upload slot...</span>}
+                      {uploadStatus === "uploading" && (
+                        <div className="flex items-center gap-2">
+                          <div className="h-1 flex-1 rounded-full bg-white/10"><div className="h-full rounded-full bg-aurora transition-all" style={{ width: `${uploadPercent}%` }} /></div>
+                          <span className="text-aurora">{uploadPercent}%</span>
+                        </div>
+                      )}
+                      {uploadStatus === "success" && <span className="text-aurora">{uploadMessage}</span>}
+                      {uploadStatus === "error" && <span className="text-ember">{uploadMessage}</span>}
+                    </div>
+                  )}
+                  {sellerForm.imageUrl && (
+                    <div className="text-xs text-aurora truncate">Image ready: {sellerForm.imageUrl}</div>
+                  )}
+                  {createStatus === "error" && <div className="text-xs text-ember">Submission failed. Check fields and try again.</div>}
+                  {createStatus === "success" && <div className="text-xs text-aurora">Listing created successfully.</div>}
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      disabled={createStatus === "saving" || uploadStatus === "uploading" || uploadStatus === "requesting"}
+                      className="button-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {createStatus === "saving" ? "Submitting..." : "Submit listing"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+          </div>
+          )}
+        </div>
+
+        {/* RIGHT PANEL: Detail (desktop only) */}
+        <div className="hidden lg:col-span-5 lg:block xl:col-span-4">
+          <div className="sticky top-24">
+            <div className="glass rounded-2xl overflow-hidden">
+              {selectedListing ? (
+                renderDetailPanel(selectedListing)
+              ) : (
+                <div className="flex h-96 items-center justify-center text-center">
+                  <div className="text-sm text-starlight/40">
+                    Select a listing to see details
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ describe("ConstellationViz", () => {
 
     const svg = document.querySelector("svg");
     expect(svg).toHaveAttribute("role", "img");
-    expect(svg).toHaveAttribute("aria-label", "Constellation star pattern visualization");
+    expect(svg).toHaveAttribute("aria-label", "Decorative star pattern illustration");
   });
 
   it("renders constellation line path", () => {
@@ -70,11 +70,10 @@ describe("ConstellationViz", () => {
     expect(radii).toContain("2");
   });
 
-  it("displays AR-ready description text", () => {
+  it("displays description text", () => {
     render(<ConstellationViz />);
 
-    expect(screen.getByText(/Live constellation overlay/)).toBeInTheDocument();
-    expect(screen.getByText(/AR-ready layout for Phase 2/)).toBeInTheDocument();
+    expect(screen.getByText(/Star pattern illustration/)).toBeInTheDocument();
   });
 
   it("applies gradient background styling", () => {
@@ -102,8 +101,8 @@ describe("ConstellationViz", () => {
   it("description text has proper styling", () => {
     render(<ConstellationViz />);
 
-    const description = screen.getByText(/Live constellation overlay/).closest("div");
-    expect(description).toHaveClass("relative", "mt-4", "text-xs", "text-starlight/60");
+    const description = screen.getByText(/Star pattern illustration/).closest("div");
+    expect(description).toHaveClass("relative", "mt-4", "text-xs", "text-starlight/40");
   });
 
   it("constellation line has proper stroke styling", () => {

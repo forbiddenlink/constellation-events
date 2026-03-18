@@ -186,7 +186,7 @@ describe("LocationsFeed", () => {
     render(<LocationsFeed />);
 
     await waitFor(() => {
-      expect(screen.getByText(/No listed dark-sky sites in this radius yet/)).toBeInTheDocument();
+      expect(screen.getByText(/No dark-sky sites found near your location/)).toBeInTheDocument();
     });
   });
 

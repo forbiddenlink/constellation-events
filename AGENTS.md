@@ -10,24 +10,24 @@ Constellation is a cinematic astronomy event tracker and stargazing hub built wi
 
 ### Development
 ```
-npm run dev          # Start dev server at localhost:3000
-npm run build        # Production build (also runs lint + typecheck)
-npm run start        # Serve production build
+pnpm dev             # Start dev server at localhost:3000
+pnpm build           # Production build (also runs lint + typecheck)
+pnpm start           # Serve production build
 ```
 
 ### Testing
 ```
-npm test             # Run all vitest unit tests (47 tests across 9 files)
-npx vitest run src/lib/rate-limit.test.ts   # Run a single test file
-npx vitest -t "allows requests within limit"  # Run a single test by name
-npm run test:e2e     # Playwright E2E tests (needs dev server or will start one)
-npm run test:e2e:ui  # Playwright interactive UI mode
+pnpm test            # Run all vitest unit tests (47 tests across 9 files)
+pnpm vitest run src/lib/rate-limit.test.ts   # Run a single test file
+pnpm vitest -t "allows requests within limit"  # Run a single test by name
+pnpm test:e2e        # Playwright E2E tests (needs dev server or will start one)
+pnpm test:e2e:ui     # Playwright interactive UI mode
 ```
 
 ### Linting & Type Checking
 ```
-npm run lint         # ESLint (next/core-web-vitals config)
-npx tsc --noEmit     # TypeScript type check
+pnpm lint            # ESLint (next/core-web-vitals config)
+pnpm tsc --noEmit    # TypeScript type check
 ```
 
 ### CI

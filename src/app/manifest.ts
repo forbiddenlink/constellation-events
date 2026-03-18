@@ -8,14 +8,9 @@ export default function manifest(): MetadataRoute.Manifest {
       "Your nightly mission control for the sky above. Track celestial events, find dark skies, and plan your stargazing adventures.",
     start_url: "/",
     display: "standalone",
-    background_color: "#05060F",
-    theme_color: "#22d3ee",
+    background_color: "#020204",
+    theme_color: "#0a0e17",
     icons: [
-      {
-        src: "/icon.svg",
-        sizes: "any",
-        type: "image/svg+xml",
-      },
       {
         src: "/icon",
         sizes: "32x32",

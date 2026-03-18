@@ -27,7 +27,7 @@ function getConditionColor(status: SkyCondition["status"]) {
     case "good":
       return "bg-aurora";
     case "fair":
-      return "bg-yellow-400";
+      return "bg-caution";
     case "poor":
       return "bg-ember";
     case "error":
@@ -72,7 +72,7 @@ export default function LiveSkyStatus() {
                           data.seeing === "fair" ? "Fair" : "Poor";
         setCondition({
           status: qualityToStatus(data.quality),
-          message: `Sky: ${statusText} (${data.quality}% clear, ${100 - data.cloudCover}% visibility)`,
+          message: `Clarity: ${statusText} (${data.quality}% clear, ${100 - data.cloudCover}% visibility)`,
           quality: data.quality,
           seeing: data.seeing,
           source: data.source

@@ -19,7 +19,7 @@ export default function EventCard({ event }: EventCardProps) {
     switch(vis.toLowerCase()) {
       case 'excellent': return 'text-aurora border-aurora/30';
       case 'good': return 'text-starlight border-starlight/30';
-      case 'fair': return 'text-yellow-400 border-yellow-400/30';
+      case 'fair': return 'text-caution border-caution/30';
       case 'poor': return 'text-ember border-ember/30';
       default: return 'text-starlight/80 border-white/20';
     }

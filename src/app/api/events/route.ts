@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { parseCoordinates } from "@/lib/geo";
 import { generateUpcomingEvents } from "@/lib/events";
+import { checkRateLimit, getClientIp, RATE_LIMITS } from "@/lib/rate-limit";
 
 /**
  * GET /api/events
@@ -9,6 +10,17 @@ import { generateUpcomingEvents } from "@/lib/events";
  * Query params: lat, lng, from (ISO date), days (number of days ahead)
  */
 export async function GET(request: Request) {
+  const rateLimit = checkRateLimit(
+    `events:${getClientIp(request)}`,
+    RATE_LIMITS.externalApi
+  );
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded", retryAfterSeconds: rateLimit.retryAfterSeconds },
+      { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } }
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const coords = parseCoordinates(searchParams.get("lat"), searchParams.get("lng"));
   

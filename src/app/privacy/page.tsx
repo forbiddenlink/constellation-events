@@ -18,11 +18,11 @@ export default function PrivacyPage() {
         eyebrow="Legal"
         title="Privacy Policy"
         subtitle="How we handle your data while helping you navigate the cosmos."
+        as="h1"
       />
 
       <div className="glass rounded-3xl p-8 space-y-8">
         <section>
-          <h1 className="sr-only">Constellation Privacy Policy</h1>
           <h2 className="font-display text-xl text-starlight mb-4">Data Collection</h2>
           <div className="space-y-3 text-sm text-starlight/70">
             <p>

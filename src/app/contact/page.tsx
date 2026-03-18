@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import SectionHeading from "@/components/SectionHeading";
+import ContactForm from "@/components/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact the Constellation Team",
@@ -20,6 +21,8 @@ export default function ContactPage() {
         subtitle="Questions, feedback, or cosmic observations to share? We'd love to hear from you."
         as="h1"
       />
+
+      <ContactForm />
 
       <div className="glass rounded-3xl p-8">
         <div className="grid gap-8 lg:grid-cols-2">

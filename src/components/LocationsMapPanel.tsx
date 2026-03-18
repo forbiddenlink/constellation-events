@@ -91,15 +91,27 @@ export default function LocationsMapPanel() {
         </div>
         <div className="flex items-center gap-2 text-xs">
           <button
-            className={`rounded-full border px-3 py-1 ${
-              showLightPollution ? "border-aurora text-aurora" : "border-white/20 text-starlight/60"
+            className={`rounded-full border px-3 py-1 transition-all ${
+              showLightPollution ? "border-aurora text-aurora" : "border-white/20 text-starlight/60 hover:border-white/30"
             }`}
             onClick={() => setShowLightPollution((prev) => !prev)}
           >
             Light pollution
           </button>
-          <span className="rounded-full border border-white/20 px-3 py-1 text-starlight/60">Clouds</span>
-          <span className="rounded-full border border-white/20 px-3 py-1 text-starlight/60">Moon</span>
+          <button
+            disabled
+            className="rounded-full border border-white/10 px-3 py-1 text-starlight/30 cursor-not-allowed"
+            title="Cloud overlay coming soon"
+          >
+            Clouds
+          </button>
+          <button
+            disabled
+            className="rounded-full border border-white/10 px-3 py-1 text-starlight/30 cursor-not-allowed"
+            title="Moon illumination overlay coming soon"
+          >
+            Moon
+          </button>
         </div>
       </div>
       <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
@@ -124,13 +136,14 @@ export default function LocationsMapPanel() {
       </div>
       <div className="mt-4 grid gap-4 sm:grid-cols-3">
         {[
-          { label: "Bortle", value: estimatedBortle },
-          { label: "Clouds", value: stats.cloudCover === null ? "n/a" : `${stats.cloudCover}%` },
-          { label: "Moon", value: stats.moonIllumination === null ? "n/a" : `${Math.round(stats.moonIllumination)}%` }
+          { label: "Bortle (1–9)", value: estimatedBortle, hint: "1 = darkest sky" },
+          { label: "Clouds", value: stats.cloudCover === null ? "n/a" : `${stats.cloudCover}%`, hint: null },
+          { label: "Moon", value: stats.moonIllumination === null ? "n/a" : `${Math.round(stats.moonIllumination)}%`, hint: null }
         ].map((item) => (
           <div key={item.label} className="rounded-2xl border border-white/10 bg-white/5 p-4">
             <div className="text-xs text-starlight/50">{item.label}</div>
-            <div className="mt-2 text-lg font-semibold text-aurora">{item.value}</div>
+            {item.hint && <div className="text-[10px] text-starlight/30">{item.hint}</div>}
+            <div className="mt-2 font-mono text-lg font-semibold text-aurora">{item.value}</div>
           </div>
         ))}
       </div>
@@ -143,9 +156,11 @@ export default function LocationsMapPanel() {
       <div className="mt-6">
         <StarMap showLightPollution={showLightPollution} overlayOpacity={overlayOpacity} />
       </div>
-      <p className="mt-4 text-sm text-starlight/60">
-        Add `NEXT_PUBLIC_LIGHTPOLLUTION_TILES` to overlay a light pollution raster layer.
-      </p>
+      {!process.env.NEXT_PUBLIC_LIGHTPOLLUTION_TILES && (
+        <p className="mt-4 text-sm text-starlight/40 italic">
+          Light pollution tile overlay unavailable.
+        </p>
+      )}
     </div>
   );
 }

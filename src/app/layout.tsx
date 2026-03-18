@@ -2,12 +2,11 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, DM_Serif_Display, JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
-import Image from "next/image";
 import { clsx } from "clsx";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import ClientErrorBoundary from "@/components/ClientErrorBoundary";
-import NightModeToggle from "@/components/NightModeToggle";
+import NavBar from "@/components/NavBar";
 import { logConfigStatus } from "@/lib/config";
 
 // Log configuration status on server startup
@@ -93,13 +92,6 @@ export const metadata: Metadata = {
   }
 };
 
-const navLinks = [
-  { href: "/", label: "Tonight" },
-  { href: "/events", label: "Events" },
-  { href: "/locations", label: "Dark-Sky" },
-  { href: "/planner", label: "Planner" },
-  { href: "/marketplace", label: "Marketplace" }
-];
 
 export default function RootLayout({
   children
@@ -112,50 +104,18 @@ export default function RootLayout({
         <meta charSet="utf-8" />
       </head>
       <body className={clsx(spaceGrotesk.variable, dmSerif.variable, jetBrainsMono.variable, "font-sans bg-midnight overflow-x-hidden")}>
+        <a href="#main-content" className="skip-to-content">Skip to content</a>
         {/* Cinematic Background Layer */}
         <div className="fixed inset-0 z-0">
           <div className="absolute inset-0 bg-[url('/background.png')] bg-cover bg-center opacity-60 mix-blend-overlay" />
           <div className="absolute inset-0 bg-nebula-gradient" />
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
+          <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay" />
         </div>
         
         <div className="relative z-10 flex min-h-screen flex-col">
-          {/* Floating Glass Navigation */}
-          <header className="sticky top-6 z-50 mx-auto w-full max-w-5xl px-4">
-            <div className="glass-panel mt-2 flex items-center justify-between rounded-full border border-white/10 px-6 py-3 shadow-cinematic backdrop-blur-xl">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="absolute inset-0 animate-pulse rounded-full bg-aurora/20 blur-md" />
-                  <Image src="/icon" alt="Constellation" width={32} height={32} className="relative rounded-full shadow-lg" unoptimized />
-                </div>
-                <div className="hidden sm:block">
-                  <div className="font-display text-lg tracking-wide text-starlight">Constellation</div>
-                </div>
-              </div>
-              
-              <nav className="flex items-center gap-1 rounded-full bg-white/5 p-1">
-                {navLinks.map((link) => (
-                  <Link 
-                    key={link.href} 
-                    href={link.href} 
-                    className="rounded-full px-4 py-1.5 text-xs font-medium text-starlight/70 transition-all hover:bg-white/10 hover:text-white hover:shadow-lg"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </nav>
+          <NavBar />
 
-              <div className="flex items-center gap-3">
-                 <NightModeToggle />
-                 <Link href="/planner" className="group relative overflow-hidden rounded-full bg-aurora px-5 py-2 text-xs font-bold text-deep-space transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(56,189,248,0.4)]">
-                    <span className="relative z-10">Launch</span>
-                    <div className="absolute inset-0 -z-0 bg-gradient-to-r from-white/0 via-white/40 to-white/0 opacity-0 transition-opacity group-hover:animate-shimmer group-hover:opacity-100" />
-                 </Link>
-              </div>
-            </div>
-          </header>
-
-          <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12 md:py-20">
+          <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-12 md:py-20">
             <ClientErrorBoundary>{children}</ClientErrorBoundary>
           </main>
 
@@ -165,7 +125,7 @@ export default function RootLayout({
                  <Link href="/contact" className="hover:text-aurora">Contact</Link>
                  <Link href="/privacy" className="hover:text-aurora">Privacy</Link>
             </div>
-            Constellation Network © 2026. All systems nominal.
+            Constellation © 2026 — Free to use.
           </footer>
         </div>
         <Analytics />

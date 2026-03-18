@@ -21,8 +21,9 @@ export default function LocationCard({ location }: LocationCardProps) {
           <p className="text-xs text-starlight/50">{distance} away</p>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-semibold text-aurora">{location.darkSkyScore}</div>
+          <div className="font-mono text-2xl font-semibold text-aurora">{location.darkSkyScore}</div>
           <div className="text-[10px] uppercase tracking-[0.3em] text-starlight/50">Score</div>
+          <div className="text-[10px] text-starlight/30">out of 100</div>
         </div>
       </div>
       <p className="mt-3 text-sm text-starlight/70">{description}</p>

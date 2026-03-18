@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="space-y-12">
+    <div className="space-y-10">
       {/* Hero Section */}
       <div className="text-center">
         <div className="text-xs uppercase tracking-[0.3em] text-aurora/70">About</div>
@@ -61,10 +61,10 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div className="text-xs text-starlight/50 uppercase tracking-wider">Community Marketplace</div>
+            <div className="text-xs text-starlight/50 uppercase tracking-wider">Community Marketplace</div>
               <p className="mt-2 text-sm text-starlight/70">
-                A trusted space for buying and selling astronomy gear, with verified listings
-                and community ratings.
+                A curated space for buying and selling astronomy gear, with detailed condition
+                notes and seller descriptions.
               </p>
             </div>
           </div>
@@ -106,31 +106,31 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Technology Section */}
+      {/* Powered By Section */}
       <section className="glass rounded-3xl p-8">
         <div className="text-center mb-8">
-          <div className="text-xs uppercase tracking-[0.3em] text-aurora/70">Built With</div>
+          <div className="text-xs uppercase tracking-[0.3em] text-aurora/70">Powered By</div>
           <h2 className="font-display text-2xl text-starlight mt-2">
-            Modern astronomy meets modern technology
+            Precision data you can trust in the field
           </h2>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
-            <div className="text-2xl font-semibold text-aurora">Next.js</div>
+            <div className="text-2xl font-semibold text-aurora">NASA Data</div>
             <p className="mt-2 text-sm text-starlight/70">
-              Fast, server-rendered React framework for optimal performance
+              Authoritative celestial event data and daily featured imagery direct from NASA
             </p>
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
-            <div className="text-2xl font-semibold text-aurora">Astronomy Engine</div>
+            <div className="text-2xl font-semibold text-aurora">Precise Positioning</div>
             <p className="mt-2 text-sm text-starlight/70">
-              Precise ephemeris calculations for celestial body positions
+              Planet and moon positions calculated for your exact location and time — accurate to the arc-second
             </p>
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
-            <div className="text-2xl font-semibold text-aurora">NASA APIs</div>
+            <div className="text-2xl font-semibold text-aurora">Live Conditions</div>
             <p className="mt-2 text-sm text-starlight/70">
-              Daily content from APOD and authoritative event data
+              Cloud cover, seeing quality, and light pollution scored in real time from multiple weather sources
             </p>
           </div>
         </div>
@@ -157,7 +157,7 @@ export default function AboutPage() {
         </p>
         <div className="mt-6 flex justify-center gap-4">
           <Link href="/planner" className="button-primary">
-            Launch Planner
+            Create a plan
           </Link>
           <Link href="/events" className="button-ghost">
             View Events

@@ -3,7 +3,7 @@ import { tonightHighlights, type TonightObject } from "@/lib/mock";
 import { parseCoordinates } from "@/lib/geo";
 import { fetchObserverTable, getDefaultTargets, type HorizonsPoint } from "@/lib/horizons";
 import { checkRateLimit, getClientIp, RATE_LIMITS } from "@/lib/rate-limit";
-import { getVisiblePlanets, getMoonInfo, PLANETS } from "@/lib/celestial-engine";
+import { getVisiblePlanets, getMoonInfo } from "@/lib/celestial-engine";
 
 const fallbackLocation = { lat: 36.1147, lng: -115.1728 };
 

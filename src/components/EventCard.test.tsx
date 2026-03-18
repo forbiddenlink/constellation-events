@@ -58,7 +58,7 @@ describe("EventCard", () => {
     render(<EventCard event={fairEvent} />);
 
     const badge = screen.getByText("fair");
-    expect(badge).toHaveClass("text-yellow-400", "border-yellow-400/30");
+    expect(badge).toHaveClass("text-caution", "border-caution/30");
   });
 
   it("applies ember color for poor visibility", () => {

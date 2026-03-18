@@ -97,8 +97,11 @@ export default function StarMap({ showLightPollution, overlayOpacity }: StarMapP
   return (
     <div className="relative h-64 overflow-hidden rounded-2xl border border-white/10 bg-white/5">
       {!mapboxgl.accessToken && (
-        <div className="absolute inset-0 grid place-items-center p-6 text-center text-sm text-starlight/60">
-          Add `NEXT_PUBLIC_MAPBOX_TOKEN` to enable the live sky map.
+        <div className="absolute inset-0 grid place-items-center p-6 text-center text-sm text-starlight/40">
+          <div>
+            <div className="text-starlight/60">Sky map unavailable</div>
+            <div className="mt-1 text-xs text-starlight/30">Map service not configured</div>
+          </div>
         </div>
       )}
       <div ref={containerRef} className="h-full w-full" />

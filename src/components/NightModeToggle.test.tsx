@@ -63,12 +63,14 @@ describe("NightModeToggle", () => {
       mounted: true
     });
 
-    render(<NightModeToggle />);
+    const { container } = render(<NightModeToggle />);
 
     const button = screen.getByRole("button");
     expect(button).toHaveAttribute("aria-label", "Disable night vision mode");
     expect(button).toHaveAttribute("title", "Exit night vision mode");
-    expect(screen.getByText("NV ON")).toBeInTheDocument();
+    // NV ON text removed — icon-only toggle. Verify sun icon renders.
+    const svgElement = container.querySelector("svg");
+    expect(svgElement).toHaveAttribute("fill", "currentColor");
   });
 
   it("renders NV text when night vision is off", () => {
@@ -82,7 +84,7 @@ describe("NightModeToggle", () => {
 
     render(<NightModeToggle />);
 
-    expect(screen.getByText("NV")).toBeInTheDocument();
+    // Icons only - no text labels
   });
 
   it("calls toggle when button is clicked", () => {
@@ -171,7 +173,7 @@ describe("NightModeToggle", () => {
     expect(svgElement).toHaveClass("text-starlight/70");
   });
 
-  it("renders NV ON text with red color when active", () => {
+  it("renders sun icon with red color when active", () => {
     mockUseNightMode.mockReturnValue({
       mode: "night-vision",
       setMode: vi.fn(),
@@ -180,9 +182,9 @@ describe("NightModeToggle", () => {
       mounted: true
     });
 
-    render(<NightModeToggle />);
+    const { container } = render(<NightModeToggle />);
 
-    const nvText = screen.getByText("NV ON");
-    expect(nvText).toHaveClass("text-red-400");
+    const svgElement = container.querySelector("svg");
+    expect(svgElement).toHaveClass("text-red-400");
   });
 });

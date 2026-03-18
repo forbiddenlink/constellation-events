@@ -236,27 +236,27 @@ describe("APODCard", () => {
     });
   });
 
-  it("returns null when fetch fails", async () => {
+  it("shows fallback card when fetch fails", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: false,
       status: 500
     });
 
-    const { container } = render(<APODCard />);
+    render(<APODCard />);
 
     await waitFor(() => {
-      expect(container.firstChild).toBeNull();
+      expect(screen.getByText(/temporarily unavailable/)).toBeInTheDocument();
     });
   });
 
-  it("returns null when fetch throws error", async () => {
+  it("shows fallback card when fetch throws error", async () => {
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     mockFetch.mockRejectedValueOnce(new Error("Network error"));
 
-    const { container } = render(<APODCard />);
+    render(<APODCard />);
 
     await waitFor(() => {
-      expect(container.firstChild).toBeNull();
+      expect(screen.getByText(/temporarily unavailable/)).toBeInTheDocument();
     });
 
     expect(consoleSpy).toHaveBeenCalledWith("Failed to fetch APOD:", expect.any(Error));

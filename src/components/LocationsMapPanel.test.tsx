@@ -169,7 +169,7 @@ describe("LocationsMapPanel", () => {
     render(<LocationsMapPanel />);
 
     await waitFor(() => {
-      expect(screen.getByText("Bortle")).toBeInTheDocument();
+      expect(screen.getByText(/Bortle \(1–9\)/)).toBeInTheDocument();
       // Bortle = 9 - (68 / 12) = 9 - 5.67 = 3.33 -> 3
       expect(screen.getByText("3")).toBeInTheDocument();
     });
@@ -273,12 +273,12 @@ describe("LocationsMapPanel", () => {
     expect(glassContainer).toBeInTheDocument();
   });
 
-  it("renders env var instruction text", () => {
+  it("renders unavailable text when no tile env var", () => {
     mockFetch.mockImplementation(() => new Promise(() => {}));
 
     render(<LocationsMapPanel />);
 
-    expect(screen.getByText(/Add `NEXT_PUBLIC_LIGHTPOLLUTION_TILES`/)).toBeInTheDocument();
+    expect(screen.getByText(/Light pollution tile overlay unavailable/)).toBeInTheDocument();
   });
 
   it("renders Bortle map overlay label", () => {

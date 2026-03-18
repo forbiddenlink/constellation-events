@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Telescope Marketplace | Constellation",
     description: "Buy and sell quality astronomy equipment. Curated telescope, mount, and accessory listings.",
-    images: ["/og-image.png"]
+    images: ["/opengraph-image"]
   }
 };
 

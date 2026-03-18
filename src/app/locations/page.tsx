@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Dark-Sky Locations | Constellation",
     description: "Find the best dark-sky locations near you with interactive light pollution mapping and Bortle scale ratings.",
-    images: ["/og-image.png"]
+    images: ["/opengraph-image"]
   }
 };
 

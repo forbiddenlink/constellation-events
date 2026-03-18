@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import LocationCard from "@/components/LocationCard";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import type { DarkSkyLocation } from "@/lib/locations";
 import useGeolocation from "@/hooks/useGeolocation";
 
@@ -53,7 +54,7 @@ export default function LocationsFeed() {
   }, [geo.status, geo.lat, geo.lng]);
 
   if (status === "loading") {
-    return <div className="text-sm text-starlight/60">Loading nearby dark-sky sites...</div>;
+    return <LoadingSpinner message="Loading nearby dark-sky sites..." />;
   }
 
   if (status === "error") {
@@ -77,7 +78,7 @@ export default function LocationsFeed() {
       ))}
       {data && data.locations.length === 0 ? (
         <div className="glass rounded-2xl p-4 text-sm text-starlight/60">
-          No listed dark-sky sites in this radius yet. Expand distance and try again.
+          No dark-sky sites found near your location.
         </div>
       ) : null}
     </div>

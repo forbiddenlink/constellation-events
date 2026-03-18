@@ -6,7 +6,7 @@
 
 :root {
   color-scheme: dark;
-  --noise-url: url("https://grainy-gradients.vercel.app/noise.svg"); /* Fallback or local asset if available */
+  --noise-url: url("/noise.svg");
 }
 
 * {
@@ -31,7 +31,7 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 1;
   background-image: var(--noise-url);
   opacity: 0.03;
   pointer-events: none;
@@ -41,6 +41,22 @@ body::before {
 ::selection {
   background: rgba(56, 189, 248, 0.3);
   color: #fff;
+}
+
+/* Focus indicators for keyboard navigation */
+:focus-visible {
+  outline: 2px solid #38BDF8;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #38BDF8;
+  outline-offset: 2px;
 }
 
 /* Glass Utilities */
@@ -68,6 +84,12 @@ body::before {
   @apply rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-medium text-starlight/80 transition-all hover:bg-white/10 hover:text-white hover:border-white/20;
 }
 
+/* Select option styling for desktop browsers */
+select option {
+  background: #0F172A;
+  color: #F1F5F9;
+}
+
 /* Minimal Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -83,18 +105,6 @@ body::before {
   background: #38bdf8;
 }
 
-.noise-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 50;
-    opacity: 0.05;
-    background-image: url("https://grainy-gradients.vercel.app/noise.svg");
-    filter: contrast(150%) brightness(100%);
-}
 
 /* ===== Night Vision Mode ===== */
 /* Red-shifted colors for preserving night vision in the field */
@@ -167,4 +177,9 @@ body::before {
 /* Preserve map colors in night vision by isolating the map */
 .night-vision .mapboxgl-map {
   filter: hue-rotate(0deg) saturate(0.5) brightness(0.7);
+}
+
+/* Skip-to-content link for keyboard/screen-reader users */
+.skip-to-content {
+  @apply absolute -top-full left-4 z-[100] rounded-xl bg-aurora px-4 py-2 text-sm font-bold text-deep-space transition-all focus:top-4;
 }

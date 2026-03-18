@@ -107,13 +107,13 @@ describe("StarMap", () => {
 
     render(<StarMap showLightPollution={false} overlayOpacity={0.5} />);
 
-    expect(screen.getByText(/Add `NEXT_PUBLIC_MAPBOX_TOKEN` to enable the live sky map/)).toBeInTheDocument();
+    expect(screen.getByText(/Sky map unavailable/)).toBeInTheDocument();
   });
 
   it("does not show fallback message when token is present", () => {
     render(<StarMap showLightPollution={false} overlayOpacity={0.5} />);
 
-    expect(screen.queryByText(/Add `NEXT_PUBLIC_MAPBOX_TOKEN`/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Sky map unavailable/)).not.toBeInTheDocument();
   });
 
   it("renders inner container for map", () => {

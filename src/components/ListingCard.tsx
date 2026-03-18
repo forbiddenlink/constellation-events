@@ -28,35 +28,28 @@ export default function ListingCard({ listing }: { readonly listing: ListingMode
   const imageUrl = isMarketplaceListing(listing) ? listing.imageUrl : null;
   const moderationStatus = isMarketplaceListing(listing) ? listing.status : null;
   
-  let statusTone = "text-emerald-300 border-emerald-300/40";
+  let statusTone = "text-success border-success/40";
   if (moderationStatus === "hidden") statusTone = "text-ember border-ember/40";
-  else if (moderationStatus === "pending") statusTone = "text-amber-300 border-amber-300/40";
+  else if (moderationStatus === "pending") statusTone = "text-caution border-caution/40";
 
   return (
-    <div className="group relative flex items-center justify-between border-b border-white/10 bg-white/0 py-4 px-4 transition-all hover:bg-white/5 hover:border-aurora/30">
-        {/* Hover "Scan" Effect */}
-        <div className="absolute inset-0 -z-10 translate-x-[-100%] bg-gradient-to-r from-transparent via-aurora/5 to-transparent transition-transform duration-700 group-hover:translate-x-[100%]" />
-        
+    <div className="group relative flex items-center justify-between border-b border-white/10 py-4 px-4 transition-all hover:bg-white/5">
         {/* Leading Data Block */}
-        <div className="flex items-center gap-6">
-            <div className="font-mono text-xs text-starlight/40">
-                {String(listing.id).padStart(4, '0')}
-            </div>
-            
-            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-deep-space ring-1 ring-white/10 group-hover:ring-aurora/50">
+        <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-aurora/30">
                 {imageUrl ? (
-                    <div className="h-full w-full bg-cover bg-center opacity-80" style={{ backgroundImage: `url(${imageUrl})` }} />
+                    <div className="h-full w-full bg-cover bg-center" style={{ backgroundImage: `url(${imageUrl})` }} />
                 ) : (
                     <div className="h-2 w-2 rounded-full bg-white/20" />
                 )}
             </div>
 
             <div>
-                <h3 className="font-mono text-sm font-bold uppercase tracking-wider text-starlight group-hover:text-aurora">
+                <h3 className="text-sm font-semibold text-starlight group-hover:text-aurora transition-colors truncate max-w-[200px] sm:max-w-[300px]">
                     {listing.title}
                 </h3>
-                <div className="flex items-center gap-3 text-[10px] uppercase text-starlight/50">
-                    <span className="tracking-widest">{listing.tag}</span>
+                <div className="flex items-center gap-3 text-xs text-starlight/50">
+                    <span>{listing.tag}</span>
                     <span className="h-3 w-px bg-white/10" />
                     <span>{formatCondition(listing.condition)}</span>
                 </div>
@@ -64,26 +57,21 @@ export default function ListingCard({ listing }: { readonly listing: ListingMode
         </div>
 
         {/* Trailing Data Block */}
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-6">
             {moderationStatus && (
-                <div className={`font-mono text-[10px] uppercase ${statusTone}`}>
-                    [{moderationStatus}]
+                <div className={`text-[10px] uppercase ${statusTone}`}>
+                    {moderationStatus}
                 </div>
             )}
-            
-            <div className="text-right">
-                <div className="font-mono text-lg text-aurora">{price}</div>
-                <div className="text-[9px] uppercase tracking-widest text-starlight/30">Credits</div>
-            </div>
-            
-            <button className="hidden rounded border border-white/20 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-starlight transition hover:border-aurora hover:bg-aurora/10 hover:text-aurora sm:block">
-                Inspect
-            </button>
-        </div>
 
-        {/* Corner Brackets (Visual Flair) */}
-        <div className="absolute left-0 top-0 h-2 w-2 border-l border-t border-white/0 transition-all group-hover:border-aurora" />
-        <div className="absolute bottom-0 right-0 h-2 w-2 border-r border-b border-white/0 transition-all group-hover:border-aurora" />
+            <div className="text-right">
+                <div className="font-mono text-lg font-semibold text-aurora">{price}</div>
+            </div>
+
+            <svg className="h-4 w-4 flex-shrink-0 text-starlight/30 transition group-hover:text-aurora" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+        </div>
     </div>
   );
 }

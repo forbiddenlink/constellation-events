@@ -73,7 +73,7 @@ export default function TonightAtGlance() {
             </div>
             <div className="text-right">
               <div className="text-sm font-semibold text-aurora">{item.magnitude}</div>
-              <div className="text-[10px] uppercase tracking-[0.3em] text-starlight/40">
+              <div className="text-[10px] uppercase tracking-[0.3em] text-starlight/40" title="Astronomical magnitude — lower numbers are brighter">
                 {item.metricLabel ?? "Mag"}
               </div>
             </div>

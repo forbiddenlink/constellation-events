@@ -1,18 +1,20 @@
 import Link from "next/link";
 import SectionHeading from "@/components/SectionHeading";
-import StatCard from "@/components/StatCard";
-import EventCard from "@/components/EventCard";
-import LocationCard from "@/components/LocationCard";
-import ListingCard from "@/components/ListingCard";
 import ConstellationViz from "@/components/ConstellationViz";
 import TonightAtGlance from "@/components/TonightAtGlance";
 import LiveSkyStatus from "@/components/LiveSkyStatus";
 import APODCard from "@/components/APODCard";
-import { featuredListings, nearbyLocations, upcomingEvents } from "@/lib/mock";
+import HeroStats from "@/components/HeroStats";
+import DarkSkyPreview from "@/components/DarkSkyPreview";
+import HomepageEvents from "@/components/HomepageEvents";
+import HomepageLocations from "@/components/HomepageLocations";
+import HomepageListings from "@/components/HomepageListings";
+import LocationOnboarding from "@/components/LocationOnboarding";
 
 export default function HomePage() {
   return (
     <div className="space-y-16">
+      <LocationOnboarding />
       <section className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="space-y-6">
           <LiveSkyStatus />
@@ -20,20 +22,17 @@ export default function HomePage() {
             Your nightly mission control for the sky above.
           </h1>
           <p className="max-w-xl text-base text-starlight/70">
-            Constellation blends real-time celestial data, dark-sky scouting, and curated gear into one
-            cinematic stargazing hub. Plan where to go, what to watch, and how to capture it.
+            Whether you&apos;re a backyard stargazer or a deep-sky photographer, Constellation blends
+            real-time celestial data, dark-sky scouting, and curated gear into one hub. Plan where to go,
+            what to watch, and how to capture it.
           </p>
           <div className="flex flex-wrap gap-4">
-            <button className="button-primary">Generate Tonight Plan</button>
+            <Link href="/planner" className="button-primary">Generate Tonight Plan</Link>
             <Link href="/events" className="button-ghost">
               Explore events
             </Link>
           </div>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <StatCard label="Tonight" value="7 prime targets" detail="Moon low, seeing high" />
-            <StatCard label="Dark sky" value="92 score" detail="Best nearby window 9pm-2am" />
-            <StatCard label="Next event" value="Feb 9" detail="Venus greatest elongation" />
-          </div>
+          <HeroStats />
         </div>
         <div className="space-y-6">
           <ConstellationViz />
@@ -49,12 +48,7 @@ export default function HomePage() {
         />
         <div className="grid gap-6 lg:grid-cols-2">
           <APODCard />
-          <div className="space-y-4">
-            <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Upcoming Events</div>
-            {upcomingEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
+          <HomepageEvents />
         </div>
       </section>
 
@@ -65,7 +59,7 @@ export default function HomePage() {
           subtitle="Light-pollution overlays and atmospheric scoring help you choose the perfect observation site in minutes."
         />
         <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="glass relative min-h-[320px] rounded-3xl p-6">
+          <div className="glass relative min-h-[200px] sm:min-h-[320px] rounded-3xl p-6">
             <div className="absolute inset-0 rounded-3xl bg-[radial-gradient(circle_at_30%_30%,rgba(94,242,193,0.22),transparent_55%),radial-gradient(circle_at_70%_70%,rgba(255,141,92,0.2),transparent_45%)]" />
             <div className="relative">
               <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Light pollution layers</div>
@@ -73,30 +67,13 @@ export default function HomePage() {
               <p className="mt-2 text-sm text-starlight/70">
                 Toggle Bortle scale, cloud cover, and moon illumination to plan your route.
               </p>
-              <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="text-xs text-starlight/50">Bortle</div>
-                  <div className="mt-2 text-lg font-semibold text-aurora">2 - 3</div>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="text-xs text-starlight/50">Clouds</div>
-                  <div className="mt-2 text-lg font-semibold text-starlight">12%</div>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="text-xs text-starlight/50">Moon</div>
-                  <div className="mt-2 text-lg font-semibold text-ember">18%</div>
-                </div>
-              </div>
+              <DarkSkyPreview />
               <Link href="/locations" className="mt-6 inline-flex text-sm text-aurora">
                 Explore full map →
               </Link>
             </div>
           </div>
-          <div className="space-y-4">
-            {nearbyLocations.map((location) => (
-              <LocationCard key={location.id} location={location} />
-            ))}
-          </div>
+          <HomepageLocations />
         </div>
       </section>
 
@@ -104,13 +81,9 @@ export default function HomePage() {
         <SectionHeading
           eyebrow="Marketplace"
           title="Curated gear for every observer"
-          subtitle="Verified listings, trusted condition notes, and community ratings keep your kit mission-ready."
+        subtitle="Curated listings with detailed condition notes to help you find mission-ready gear."
         />
-        <div className="grid gap-6 md:grid-cols-3">
-          {featuredListings.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} />
-          ))}
-        </div>
+        <HomepageListings />
       </section>
 
       <section className="glass rounded-3xl p-8">
@@ -122,19 +95,16 @@ export default function HomePage() {
               subtitle="Combine your best viewing window, drive time, and object list into a single shareable plan."
             />
             <div className="flex flex-wrap gap-4">
-              <button className="button-primary">Create a plan</button>
-              <Link href="/planner" className="button-ghost">
-                Open planner
-              </Link>
+              <Link href="/planner" className="button-primary">Create a plan</Link>
             </div>
           </div>
           <div className="glass rounded-2xl p-5">
-            <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Sample itinerary</div>
+            <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Example itinerary</div>
             <div className="mt-4 space-y-3 text-sm text-starlight/70">
-              <div>8:30 PM — Depart city, 42 miles to Sierra Vista Overlook</div>
-              <div>9:05 PM — Setup, align mount, calibrate tracker</div>
-              <div>9:20 PM — Jupiter transit + moons</div>
-              <div>10:15 PM — Orion Nebula imaging</div>
+              <div>8:30 PM — Depart, 42 miles to Sierra Vista Overlook</div>
+              <div>9:05 PM — Set up telescope and polar align</div>
+              <div>9:20 PM — Jupiter and its moons</div>
+              <div>10:15 PM — Orion Nebula imaging session</div>
             </div>
           </div>
         </div>

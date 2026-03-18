@@ -12,7 +12,9 @@ const config: Config = {
         "aurora": "#38BDF8", // Electric Sky Blue (Cyan-like)
         "comet": "#818CF8", // Indigo-Purple
         "ember": "#F472B6", // Pink-Rose for accents
-        "void": "#000000" // Absolute black
+        "void": "#000000", // Absolute black
+        "caution": "#FBBF24", // Amber for warnings/fair status
+        "success": "#34D399" // Green for positive/approved status
       },
       fontFamily: {
         display: ["var(--font-display)", "serif"],
@@ -25,7 +27,8 @@ const config: Config = {
         "glass-md": "0 8px 32px 0 rgba(0, 0, 0, 0.3)",
         cinematic: "0 20px 60px -10px rgba(0, 0, 0, 0.7)",
         "hud-light": "0 0 10px rgba(56, 189, 248, 0.5)", // New HUD glow
-        "hud-strong": "0 0 20px rgba(56, 189, 248, 0.8)"
+        "hud-strong": "0 0 20px rgba(56, 189, 248, 0.8)",
+        "comet": "0 8px 30px -4px rgba(129, 140, 248, 0.25)"
       },
       backgroundImage: {
         "nebula-gradient": "radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.15), transparent 60%), radial-gradient(circle at 80% 20%, rgba(129, 140, 248, 0.15), transparent 50%), linear-gradient(180deg, #020204 0%, #050A14 100%)",

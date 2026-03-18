@@ -2,7 +2,7 @@ export default function ConstellationViz() {
   return (
     <div className="glass relative h-72 overflow-hidden rounded-3xl p-6">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(94,242,193,0.18),transparent_55%),radial-gradient(circle_at_80%_60%,rgba(123,140,255,0.2),transparent_50%)]" />
-      <svg className="relative h-full w-full" viewBox="0 0 600 300" fill="none" role="img" aria-label="Constellation star pattern visualization">
+      <svg className="relative h-full w-full" viewBox="0 0 600 300" fill="none" role="img" aria-label="Decorative star pattern illustration">
         <g stroke="rgba(232,241,255,0.45)" strokeWidth="1.5">
           <path d="M80 240 L140 170 L220 190 L280 130 L360 150 L430 110 L520 140" />
         </g>
@@ -21,8 +21,8 @@ export default function ConstellationViz() {
           <circle cx="320" cy="40" r="2" />
         </g>
       </svg>
-      <div className="relative mt-4 text-xs text-starlight/60">
-        Live constellation overlay — AR-ready layout for Phase 2.
+      <div className="relative mt-4 text-xs text-starlight/40">
+        Star pattern illustration
       </div>
     </div>
   );

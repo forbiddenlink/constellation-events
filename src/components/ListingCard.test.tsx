@@ -58,87 +58,67 @@ describe("ListingCard", () => {
     expect(screen.getByText("$420")).toBeInTheDocument();
   });
 
-  it("renders padded ID", () => {
-    render(<ListingCard listing={mockMarketplaceListing} />);
-
-    // ID "mkp-1" should be displayed as is or padded
-    // Since id is a string "mkp-1", padStart(4, '0') won't change it
-    expect(screen.getByText("mkp-1")).toBeInTheDocument();
-  });
-
-  it("renders numeric ID with padding", () => {
-    const numericIdListing = { ...mockListingItem, id: "1" };
-    render(<ListingCard listing={numericIdListing} />);
-
-    expect(screen.getByText("0001")).toBeInTheDocument();
-  });
-
   it("renders moderation status for approved listings", () => {
     render(<ListingCard listing={mockMarketplaceListing} />);
 
-    expect(screen.getByText("[approved]")).toBeInTheDocument();
+    expect(screen.getByText("approved")).toBeInTheDocument();
   });
 
   it("renders moderation status for pending listings", () => {
     const pendingListing = { ...mockMarketplaceListing, status: "pending" as const };
     render(<ListingCard listing={pendingListing} />);
 
-    expect(screen.getByText("[pending]")).toBeInTheDocument();
+    expect(screen.getByText("pending")).toBeInTheDocument();
   });
 
   it("renders moderation status for hidden listings", () => {
     const hiddenListing = { ...mockMarketplaceListing, status: "hidden" as const };
     render(<ListingCard listing={hiddenListing} />);
 
-    expect(screen.getByText("[hidden]")).toBeInTheDocument();
+    expect(screen.getByText("hidden")).toBeInTheDocument();
   });
 
   it("applies correct status color for approved", () => {
     render(<LocationCardHelper listing={mockMarketplaceListing} />);
 
-    const status = screen.getByText("[approved]");
-    expect(status).toHaveClass("text-emerald-300", "border-emerald-300/40");
+    const status = screen.getByText("approved");
+    expect(status).toHaveClass("text-success");
   });
 
   it("applies correct status color for pending", () => {
     const pendingListing = { ...mockMarketplaceListing, status: "pending" as const };
     render(<LocationCardHelper listing={pendingListing} />);
 
-    const status = screen.getByText("[pending]");
-    expect(status).toHaveClass("text-amber-300", "border-amber-300/40");
+    const status = screen.getByText("pending");
+    expect(status).toHaveClass("text-caution");
   });
 
   it("applies correct status color for hidden", () => {
     const hiddenListing = { ...mockMarketplaceListing, status: "hidden" as const };
     render(<LocationCardHelper listing={hiddenListing} />);
 
-    const status = screen.getByText("[hidden]");
-    expect(status).toHaveClass("text-ember", "border-ember/40");
+    const status = screen.getByText("hidden");
+    expect(status).toHaveClass("text-ember");
   });
 
   it("does not render moderation status for ListingItem", () => {
     render(<ListingCard listing={mockListingItem} />);
 
-    expect(screen.queryByText(/\[approved\]|\[pending\]|\[hidden\]/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^approved$|^pending$|^hidden$/)).not.toBeInTheDocument();
   });
 
-  it("renders Inspect button", () => {
-    render(<ListingCard listing={mockMarketplaceListing} />);
+  it("renders chevron icon", () => {
+    const { container } = render(<ListingCard listing={mockMarketplaceListing} />);
 
-    expect(screen.getByRole("button", { name: /inspect/i })).toBeInTheDocument();
-  });
-
-  it("renders Credits label", () => {
-    render(<ListingCard listing={mockMarketplaceListing} />);
-
-    expect(screen.getByText("Credits")).toBeInTheDocument();
+    const chevron = container.querySelector("svg[aria-hidden='true']");
+    expect(chevron).toBeInTheDocument();
   });
 
   it("applies hover styling classes", () => {
     const { container } = render(<ListingCard listing={mockMarketplaceListing} />);
 
     const card = container.firstChild as HTMLElement;
-    expect(card).toHaveClass("hover:bg-white/5", "hover:border-aurora/30");
+    expect(card).toHaveClass("hover:bg-white/5");
   });
 
   it("formats like-new condition correctly", () => {

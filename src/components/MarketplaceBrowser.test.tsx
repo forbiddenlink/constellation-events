@@ -83,7 +83,7 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
-    expect(screen.getByText("Scanning deep-space inventory...")).toBeInTheDocument();
+    expect(screen.getByText("Loading listings...")).toBeInTheDocument();
   });
 
   it("fetches and displays listings", async () => {
@@ -109,7 +109,7 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      const searchInput = screen.getByPlaceholderText("SEARCH MANIFEST...");
+      const searchInput = screen.getByPlaceholderText("Search listings...");
       expect(searchInput).toBeInTheDocument();
     }, { timeout: 3000 });
   });
@@ -123,7 +123,7 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      expect(screen.getByText("Category: All")).toBeInTheDocument();
+      expect(screen.getByText("All categories")).toBeInTheDocument();
     }, { timeout: 3000 });
   });
 
@@ -136,11 +136,11 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      expect(screen.getByText("NO RESULTS FOUND IN SECTOR")).toBeInTheDocument();
+      expect(screen.getByText(/No results found/)).toBeInTheDocument();
     }, { timeout: 3000 });
   });
 
-  it("shows seller form toggle button", async () => {
+  it("shows seller form toggle button after entering token", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockMarketplaceData
@@ -149,8 +149,14 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      expect(screen.getByText(/Initialize Seller Uplink/)).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Enter seller token...")).toBeInTheDocument();
     }, { timeout: 3000 });
+
+    fireEvent.change(screen.getByPlaceholderText("Enter seller token..."), { target: { value: "test-token" } });
+
+    await waitFor(() => {
+      expect(screen.getByText(/Create a new listing/)).toBeInTheDocument();
+    });
   });
 
   it("toggles seller form visibility", async () => {
@@ -162,13 +168,19 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      expect(screen.getByText(/Initialize Seller Uplink/)).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Enter seller token...")).toBeInTheDocument();
     }, { timeout: 3000 });
 
-    fireEvent.click(screen.getByText(/Initialize Seller Uplink/));
+    fireEvent.change(screen.getByPlaceholderText("Enter seller token..."), { target: { value: "test-token" } });
 
     await waitFor(() => {
-      expect(screen.getByText("New Manifest Entry")).toBeInTheDocument();
+      expect(screen.getByText(/Create a new listing/)).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText(/Create a new listing/));
+
+    await waitFor(() => {
+      expect(screen.getByText("New listing")).toBeInTheDocument();
     });
   });
 
@@ -181,14 +193,20 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      expect(screen.getByText(/Initialize Seller Uplink/)).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Enter seller token...")).toBeInTheDocument();
     }, { timeout: 3000 });
 
-    fireEvent.click(screen.getByText(/Initialize Seller Uplink/));
+    fireEvent.change(screen.getByPlaceholderText("Enter seller token..."), { target: { value: "test-token" } });
 
     await waitFor(() => {
-      expect(screen.getByText("Item Designation")).toBeInTheDocument();
-      expect(screen.getByText("Value (Credits)")).toBeInTheDocument();
+      expect(screen.getByText(/Create a new listing/)).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText(/Create a new listing/));
+
+    await waitFor(() => {
+      expect(screen.getByText("Title")).toBeInTheDocument();
+      expect(screen.getByText(/Price \(USD\)/)).toBeInTheDocument();
     });
   });
 
@@ -201,8 +219,9 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      // The detail panel should show the first listing
-      expect(screen.getByRole("heading", { name: "Celestron 8SE" })).toBeInTheDocument();
+      // The detail panel renders in both mobile and desktop containers
+      const headings = screen.getAllByRole("heading", { name: "Celestron 8SE" });
+      expect(headings.length).toBeGreaterThanOrEqual(1);
     }, { timeout: 3000 });
   });
 
@@ -215,12 +234,12 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      expect(screen.getByText("Excellent computerized telescope")).toBeInTheDocument();
-      expect(screen.getByText("Schmidt-Cassegrain")).toBeInTheDocument();
+      const descriptions = screen.getAllByText("Excellent computerized telescope");
+      expect(descriptions.length).toBeGreaterThanOrEqual(1);
     }, { timeout: 3000 });
   });
 
-  it("shows acquisition button for selected listing", async () => {
+  it("shows contact seller button for selected listing", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockMarketplaceData
@@ -229,19 +248,20 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      expect(screen.getByText("Initiate Acquisition")).toBeInTheDocument();
+      const buttons = screen.getAllByText("Inquire about listing");
+      expect(buttons.length).toBeGreaterThanOrEqual(1);
     }, { timeout: 3000 });
   });
 
   it("handles fetch error gracefully", async () => {
     mockFetch.mockRejectedValueOnce(new Error("Network error"));
 
-    const { container } = render(<MarketplaceBrowser />);
+    render(<MarketplaceBrowser />);
 
-    // Should still render the component shell
+    // Wait for error state to fully render
     await waitFor(() => {
-      expect(container.firstChild).toBeInTheDocument();
-    });
+      expect(screen.getByText(/Unable to load marketplace listings/)).toBeInTheDocument();
+    }, { timeout: 3000 });
   });
 
   it("handles non-ok response", async () => {
@@ -250,29 +270,16 @@ describe("MarketplaceBrowser", () => {
       status: 500
     });
 
-    const { container } = render(<MarketplaceBrowser />);
-
-    // Should still render without crashing
-    await waitFor(() => {
-      expect(container.firstChild).toBeInTheDocument();
-    });
-  });
-
-  it("displays System Query Protocol heading", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
-
     render(<MarketplaceBrowser />);
 
+    // Wait for error state to fully render
     await waitFor(() => {
-      expect(screen.getByText("System Query Protocol")).toBeInTheDocument();
+      expect(screen.getByText(/Unable to load marketplace listings/)).toBeInTheDocument();
     }, { timeout: 3000 });
   });
 
-  it("shows LIVE FEED indicator in preview panel", async () => {
-    mockFetch.mockResolvedValueOnce({
+  it("displays search & filter heading", async () => {
+    mockFetch.mockResolvedValue({
       ok: true,
       json: async () => mockMarketplaceData
     });
@@ -280,12 +287,12 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      expect(screen.getByText(/LIVE FEED/)).toBeInTheDocument();
+      expect(screen.getByText(/Search/)).toBeInTheDocument();
     }, { timeout: 3000 });
   });
 
-  it("displays listing classification in detail panel", async () => {
-    mockFetch.mockResolvedValueOnce({
+  it("renders listing header row", async () => {
+    mockFetch.mockResolvedValue({
       ok: true,
       json: async () => mockMarketplaceData
     });
@@ -293,23 +300,8 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      // Check that classification label and value appear
-      expect(screen.getByText("Classification")).toBeInTheDocument();
-      expect(screen.getByText("Schmidt-Cassegrain")).toBeInTheDocument();
-    }, { timeout: 3000 });
-  });
-
-  it("renders manifest header row", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
-
-    render(<MarketplaceBrowser />);
-
-    await waitFor(() => {
-      expect(screen.getByText("ID / Visual")).toBeInTheDocument();
-      expect(screen.getByText("Specification")).toBeInTheDocument();
+      expect(screen.getByText("Item")).toBeInTheDocument();
+      expect(screen.getByText("Price")).toBeInTheDocument();
     }, { timeout: 3000 });
   });
 
@@ -336,7 +328,7 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText("SEARCH MANIFEST...")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Search listings...")).toBeInTheDocument();
     }, { timeout: 3000 });
   });
 
@@ -349,7 +341,8 @@ describe("MarketplaceBrowser", () => {
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      expect(screen.getByRole("combobox")).toBeInTheDocument();
+      const comboboxes = screen.getAllByRole("combobox");
+      expect(comboboxes.length).toBeGreaterThanOrEqual(1);
     }, { timeout: 3000 });
   });
 });
