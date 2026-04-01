@@ -1,4 +1,7 @@
+const { withSentryConfig } = require("@sentry/nextjs");
+require("./src/env.js");
 /** @type {import('next').NextConfig} */
+const { withAxiom } = require('next-axiom');
 const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
@@ -60,4 +63,12 @@ const nextConfig = {
   }
 };
 
-module.exports = nextConfig;
+module.exports = withSentryConfig(withAxiom(nextConfig), {
+    org: process.env.SENTRY_ORG,
+    project: process.env.SENTRY_PROJECT,
+    silent: !process.env.CI,
+    widenClientFileUpload: true,
+    hideSourceMaps: true,
+    disableLogger: true,
+    automaticVercelMonitors: true,
+  });

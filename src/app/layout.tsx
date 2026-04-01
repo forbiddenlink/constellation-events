@@ -5,6 +5,7 @@ import Link from "next/link";
 import { clsx } from "clsx";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import ClientErrorBoundary from "@/components/ClientErrorBoundary";
 import NavBar from "@/components/NavBar";
 import { logConfigStatus } from "@/lib/config";
@@ -112,24 +113,26 @@ export default function RootLayout({
           <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay" />
         </div>
         
-        <div className="relative z-10 flex min-h-screen flex-col">
-          <NavBar />
+        <NuqsAdapter>
+          <div className="relative z-10 flex min-h-screen flex-col">
+            <NavBar />
 
-          <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-12 md:py-20">
-            <ClientErrorBoundary>{children}</ClientErrorBoundary>
-          </main>
+            <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-12 md:py-20">
+              <ClientErrorBoundary>{children}</ClientErrorBoundary>
+            </main>
 
-          <footer className="border-t border-white/5 bg-black/20 py-12 text-center text-xs text-starlight/30 backdrop-blur-sm">
-            <div className="mb-4 flex justify-center gap-6">
-                 <Link href="/about" className="hover:text-aurora">About</Link>
-                 <Link href="/contact" className="hover:text-aurora">Contact</Link>
-                 <Link href="/privacy" className="hover:text-aurora">Privacy</Link>
-            </div>
-            Constellation © 2026 — Free to use.
-          </footer>
-        </div>
-        <Analytics />
-        <SpeedInsights />
+            <footer className="border-t border-white/5 bg-black/20 py-12 text-center text-xs text-starlight/30 backdrop-blur-sm">
+              <div className="mb-4 flex justify-center gap-6">
+                   <Link href="/about" className="hover:text-aurora">About</Link>
+                   <Link href="/contact" className="hover:text-aurora">Contact</Link>
+                   <Link href="/privacy" className="hover:text-aurora">Privacy</Link>
+              </div>
+              Constellation © 2026 — Free to use.
+            </footer>
+          </div>
+          <Analytics />
+          <SpeedInsights />
+        </NuqsAdapter>
       </body>
     </html>
   );

@@ -1,25 +1,28 @@
 import { NextResponse } from "next/server";
 import type {
   MarketplaceCategory,
-  MarketplaceCondition
+  MarketplaceCondition,
 } from "@/lib/marketplace";
 import {
   MARKETPLACE_CATEGORIES,
   MARKETPLACE_CONDITIONS,
   getMarketplaceListings,
-  parseMarketplaceFilters
+  parseMarketplaceFilters,
 } from "@/lib/marketplace";
 import {
   getMarketplaceWriteAuth,
   getMarketplaceWriteTokenHeaderName,
   isMarketplaceWriteProtected,
-  validateOrigin
+  validateOrigin,
 } from "@/lib/marketplace-auth";
-import { isAllowedMarketplaceImageUrl, isValidHttpUrl } from "@/lib/marketplace-images";
+import {
+  isAllowedMarketplaceImageUrl,
+  isValidHttpUrl,
+} from "@/lib/marketplace-images";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import {
   createMarketplaceListing,
-  listMarketplaceListings
+  listMarketplaceListings,
 } from "@/lib/marketplace-store";
 
 export async function GET(request: Request) {
@@ -29,9 +32,11 @@ export async function GET(request: Request) {
   const filters = {
     ...parsedFilters,
     visibility:
-      parsedFilters.visibility === "all" && writeAuth.allowed && writeAuth.writeProtected
+      parsedFilters.visibility === "all" &&
+      writeAuth.allowed &&
+      writeAuth.writeProtected
         ? "all"
-        : "public"
+        : "public",
   } as const;
   const source = await listMarketplaceListings();
   const listings = getMarketplaceListings(filters, source);
@@ -42,9 +47,9 @@ export async function GET(request: Request) {
     filters,
     auth: {
       writeProtected: isMarketplaceWriteProtected(),
-      tokenHeader: getMarketplaceWriteTokenHeaderName()
+      tokenHeader: getMarketplaceWriteTokenHeaderName(),
     },
-    generatedAt: new Date().toISOString()
+    generatedAt: new Date().toISOString(),
   });
 }
 
@@ -54,9 +59,9 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error: "Write access denied",
-        details: `Provide ${getMarketplaceWriteTokenHeaderName()} header`
+        details: `Provide ${getMarketplaceWriteTokenHeaderName()} header`,
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -64,29 +69,32 @@ export async function POST(request: Request) {
   if (!originCheck.valid) {
     return NextResponse.json(
       { error: "Invalid origin", origin: originCheck.origin },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
-  const rateLimit = checkRateLimit(
-    `marketplace:post:${getClientIp(request)}`,
-    {
-      limit: Number.parseInt(process.env.MARKETPLACE_WRITE_RATE_LIMIT_MAX || "10", 10),
-      windowMs: Number.parseInt(process.env.MARKETPLACE_WRITE_RATE_LIMIT_WINDOW_MS || "60000", 10)
-    }
-  );
+  const rateLimit = checkRateLimit(`marketplace:post:${getClientIp(request)}`, {
+    limit: Number.parseInt(
+      process.env.MARKETPLACE_WRITE_RATE_LIMIT_MAX || "10",
+      10,
+    ),
+    windowMs: Number.parseInt(
+      process.env.MARKETPLACE_WRITE_RATE_LIMIT_WINDOW_MS || "60000",
+      10,
+    ),
+  });
   if (!rateLimit.allowed) {
     return NextResponse.json(
       {
         error: "Rate limit exceeded",
-        retryAfterSeconds: rateLimit.retryAfterSeconds
+        retryAfterSeconds: rateLimit.retryAfterSeconds,
       },
       {
         status: 429,
         headers: {
-          "Retry-After": String(rateLimit.retryAfterSeconds)
-        }
-      }
+          "Retry-After": String(rateLimit.retryAfterSeconds),
+        },
+      },
     );
   }
 
@@ -98,8 +106,11 @@ export async function POST(request: Request) {
   const condition = payload?.condition as MarketplaceCondition | undefined;
   const city = typeof payload?.city === "string" ? payload.city.trim() : "";
   const description =
-    typeof payload?.description === "string" ? payload.description.trim() : undefined;
-  const imageUrl = typeof payload?.imageUrl === "string" ? payload.imageUrl.trim() : undefined;
+    typeof payload?.description === "string"
+      ? payload.description.trim()
+      : undefined;
+  const imageUrl =
+    typeof payload?.imageUrl === "string" ? payload.imageUrl.trim() : undefined;
   const shipping = Boolean(payload?.shipping);
   const priceUsd =
     typeof payload?.priceUsd === "number"
@@ -112,15 +123,25 @@ export async function POST(request: Request) {
   if (!isCategory(category)) errors.push("invalid category");
   if (!isCondition(condition)) errors.push("invalid condition");
   if (!city) errors.push("city is required");
-  if (!Number.isFinite(priceUsd) || priceUsd <= 0) errors.push("priceUsd must be a positive number");
-  if (description && description.length > 320) errors.push("description is too long (max 320)");
-  if (imageUrl && !isValidHttpUrl(imageUrl)) errors.push("imageUrl must be a valid http/https URL");
-  if (imageUrl && isValidHttpUrl(imageUrl) && !isAllowedMarketplaceImageUrl(imageUrl)) {
+  if (!Number.isFinite(priceUsd) || priceUsd <= 0)
+    errors.push("priceUsd must be a positive number");
+  if (description && description.length > 320)
+    errors.push("description is too long (max 320)");
+  if (imageUrl && !isValidHttpUrl(imageUrl))
+    errors.push("imageUrl must be a valid http/https URL");
+  if (
+    imageUrl &&
+    isValidHttpUrl(imageUrl) &&
+    !isAllowedMarketplaceImageUrl(imageUrl)
+  ) {
     errors.push("imageUrl must be from an allowed domain");
   }
 
   if (errors.length > 0) {
-    return NextResponse.json({ error: "Invalid payload", errors }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid payload", errors },
+      { status: 400 },
+    );
   }
 
   const validatedCategory = category as MarketplaceCategory;
@@ -136,15 +157,21 @@ export async function POST(request: Request) {
     priceUsd,
     status: auth.writeProtected ? "pending" : "approved",
     description,
-    imageUrl
+    imageUrl,
   });
+
+  // Trigger event ingestion background job
+  const { ingestAstronomyEvents } = await import("@/trigger/ingest-events");
+  ingestAstronomyEvents
+    .trigger({ listingId: listing.id })
+    .catch((err) => console.error("Trigger job error:", err));
 
   return NextResponse.json(
     {
       listing,
-      message: "Listing created"
+      message: "Listing created",
     },
-    { status: 201 }
+    { status: 201 },
   );
 }
 
