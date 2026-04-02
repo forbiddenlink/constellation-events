@@ -425,7 +425,7 @@ describe("TonightPlannerPanel", () => {
     render(<TonightPlannerPanel />);
 
     await waitFor(() => {
-      expect(screen.getByText("Weather quality n/a")).toBeInTheDocument();
+      expect(screen.getByText(/Weather quality n\/a/)).toBeInTheDocument();
     });
   });
 });
