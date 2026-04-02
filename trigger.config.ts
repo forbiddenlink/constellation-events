@@ -3,6 +3,7 @@ import { defineConfig } from '@trigger.dev/sdk/v3';
 export default defineConfig({
   project: process.env.TRIGGER_PROJECT_REF || 'proj_REPLACE_WITH_YOUR_PROJECT_ID',
   runtime: 'node',
+  maxDuration: 300,
   logLevel: 'log',
   retries: {
     enabledInDev: true,

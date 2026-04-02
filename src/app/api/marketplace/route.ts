@@ -161,8 +161,8 @@ export async function POST(request: Request) {
   });
 
   // Trigger event ingestion background job
-  const { ingestAstronomyEvents } = await import("@/trigger/ingest-events");
-  ingestAstronomyEvents
+  const { ingestEventsForListing } = await import("@/trigger/ingest-events");
+  ingestEventsForListing
     .trigger({ listingId: listing.id })
     .catch((err) => console.error("Trigger job error:", err));
 

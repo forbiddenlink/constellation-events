@@ -8,3 +8,11 @@ export const ingestAstronomyEvents = schedules.task({
     // TODO: Fetch from astronomy APIs and upsert to DB
   },
 });
+
+export const ingestEventsForListing = task({
+  id: "ingest-events-for-listing",
+  run: async (payload: { listingId: string }) => {
+    console.log("Ingesting events for listing", payload.listingId);
+    // TODO: Fetch events related to this listing
+  },
+});
