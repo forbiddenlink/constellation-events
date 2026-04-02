@@ -1,10 +1,11 @@
-import { defineConfig } from '@trigger.dev/sdk/v3';
+import { defineConfig } from "@trigger.dev/sdk/v3";
 
 export default defineConfig({
-  project: process.env.TRIGGER_PROJECT_REF || 'proj_REPLACE_WITH_YOUR_PROJECT_ID',
-  runtime: 'node',
+  project:
+    process.env.TRIGGER_PROJECT_REF || "proj_REPLACE_WITH_YOUR_PROJECT_ID",
+  runtime: "node",
   maxDuration: 300,
-  logLevel: 'log',
+  logLevel: "log",
   retries: {
     enabledInDev: true,
     default: {
@@ -14,5 +15,5 @@ export default defineConfig({
       factor: 2,
     },
   },
-  dirs: ['./src/trigger'],
+  dirs: ["./src/trigger"],
 });
