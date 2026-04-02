@@ -1,5 +1,4 @@
 const { withSentryConfig } = require("@sentry/nextjs");
-require("./src/env.js");
 /** @type {import('next').NextConfig} */
 const { withAxiom } = require('next-axiom');
 const nextConfig = {
