@@ -433,7 +433,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("handles n/a weather quality", async () => {
-    mockFetch.mockResolvedValueOnce({
+    mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({ ...mockPlannerData, weather: null }),
     });
