@@ -170,6 +170,9 @@ importers:
       jsdom:
         specifier: ^28.1.0
         version: 28.1.0(@noble/hashes@2.0.1)
+      minimatch:
+        specifier: '5'
+        version: 5.1.9
       msw:
         specifier: ^2.12.14
         version: 2.12.14(@types/node@20.19.37)(typescript@5.9.3)
@@ -4048,6 +4051,10 @@ packages:
 
   minimatch@3.1.5:
     resolution: {integrity: sha512-VgjWUsnnT6n+NUk6eZq77zeFdpW2LWDzP6zFGrCbHXiYNul5Dzqk2HHQ5uFH2DNW5Xbp8+jVzaeNt94ssEEl4w==}
+
+  minimatch@5.1.9:
+    resolution: {integrity: sha512-7o1wEA2RyMP7Iu7GNba9vc0RWWGACJOCZBJX2GJWip0ikV+wcOsgVuY9uE8CPiyQhkGFSlhuSkZPavN7u1c2Fw==}
+    engines: {node: '>=10'}
 
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
@@ -9722,6 +9729,10 @@ snapshots:
       brace-expansion: 5.0.5
 
   minimatch@3.1.5:
+    dependencies:
+      brace-expansion: 5.0.5
+
+  minimatch@5.1.9:
     dependencies:
       brace-expansion: 5.0.5
 
