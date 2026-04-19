@@ -14,6 +14,17 @@ vi.mock("next/image", () => ({
   )
 }));
 
+function mockJsonResponse(data: unknown) {
+  return Promise.resolve(new Response(JSON.stringify(data), {
+    status: 200,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
+function mockErrorResponse(status = 500) {
+  return Promise.resolve(new Response(null, { status }));
+}
+
 describe("APODCard", () => {
   const mockAPODData = {
     date: "2026-03-07",
@@ -45,10 +56,7 @@ describe("APODCard", () => {
   });
 
   it("fetches and displays APOD data", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockAPODData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockAPODData));
 
     render(<APODCard />);
 
@@ -56,14 +64,14 @@ describe("APODCard", () => {
       expect(screen.getByText("The Orion Nebula in Dust, Gas, and Stars")).toBeInTheDocument();
     });
 
-    expect(mockFetch).toHaveBeenCalledWith("/api/apod");
+    expect(mockFetch).toHaveBeenCalled();
+    const call = mockFetch.mock.calls[0][0];
+    const url = typeof call === "string" ? call : (call as Request).url;
+    expect(url).toContain("/api/apod");
   });
 
   it("displays NASA APOD badge", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockAPODData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockAPODData));
 
     render(<APODCard />);
 
@@ -73,10 +81,7 @@ describe("APODCard", () => {
   });
 
   it("displays date", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockAPODData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockAPODData));
 
     render(<APODCard />);
 
@@ -86,10 +91,7 @@ describe("APODCard", () => {
   });
 
   it("displays copyright when available", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockAPODData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockAPODData));
 
     render(<APODCard />);
 
@@ -99,10 +101,7 @@ describe("APODCard", () => {
   });
 
   it("truncates long explanation and shows Read more button", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockAPODData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockAPODData));
 
     render(<APODCard />);
 
@@ -116,10 +115,7 @@ describe("APODCard", () => {
   });
 
   it("expands explanation when Read more is clicked", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockAPODData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockAPODData));
 
     render(<APODCard />);
 
@@ -135,10 +131,7 @@ describe("APODCard", () => {
   });
 
   it("collapses explanation when Show less is clicked", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockAPODData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockAPODData));
 
     render(<APODCard />);
 
@@ -154,10 +147,7 @@ describe("APODCard", () => {
 
   it("does not show Read more button for short explanations", async () => {
     const shortExplanation = { ...mockAPODData, explanation: "A short explanation." };
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => shortExplanation
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(shortExplanation));
 
     render(<APODCard />);
 
@@ -169,10 +159,7 @@ describe("APODCard", () => {
   });
 
   it("displays HD image link when available", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockAPODData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockAPODData));
 
     render(<APODCard />);
 
@@ -186,10 +173,7 @@ describe("APODCard", () => {
 
   it("does not display HD link when not available", async () => {
     const noHdData = { ...mockAPODData, hdImageUrl: undefined };
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => noHdData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(noHdData));
 
     render(<APODCard />);
 
@@ -206,10 +190,7 @@ describe("APODCard", () => {
       mediaType: "video" as const,
       imageUrl: "https://www.youtube.com/embed/xyz123"
     };
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => videoData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(videoData));
 
     render(<APODCard />);
 
@@ -222,10 +203,7 @@ describe("APODCard", () => {
   });
 
   it("renders image for image media type", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockAPODData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockAPODData));
 
     render(<APODCard />);
 
@@ -237,10 +215,7 @@ describe("APODCard", () => {
   });
 
   it("shows fallback card when fetch fails", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      status: 500
-    });
+    mockFetch.mockImplementation(() => mockErrorResponse(500));
 
     render(<APODCard />);
 
@@ -265,10 +240,7 @@ describe("APODCard", () => {
 
   it("does not display copyright when not available", async () => {
     const noCopyrightData = { ...mockAPODData, copyright: undefined };
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => noCopyrightData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(noCopyrightData));
 
     render(<APODCard />);
 
@@ -280,10 +252,7 @@ describe("APODCard", () => {
   });
 
   it("applies glass styling to container", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockAPODData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockAPODData));
 
     const { container } = render(<APODCard />);
 

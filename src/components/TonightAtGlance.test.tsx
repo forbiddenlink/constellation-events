@@ -15,6 +15,20 @@ import useGeolocation from "@/hooks/useGeolocation";
 
 const mockUseGeolocation = vi.mocked(useGeolocation);
 
+function mockJsonResponse(data: unknown) {
+  return Promise.resolve(new Response(JSON.stringify(data), {
+    status: 200,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
+function mockErrorResponse(status = 500) {
+  return Promise.resolve(new Response(JSON.stringify({ error: "Error" }), {
+    status,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
 describe("TonightAtGlance", () => {
   const mockTonightData = {
     highlights: [
@@ -56,10 +70,7 @@ describe("TonightAtGlance", () => {
   });
 
   it("renders the component title", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockTonightData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockTonightData));
 
     render(<TonightAtGlance />);
 
@@ -75,10 +86,7 @@ describe("TonightAtGlance", () => {
   });
 
   it("fetches and displays tonight highlights", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockTonightData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockTonightData));
 
     render(<TonightAtGlance />);
 
@@ -89,10 +97,7 @@ describe("TonightAtGlance", () => {
   });
 
   it("displays object types", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockTonightData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockTonightData));
 
     render(<TonightAtGlance />);
 
@@ -103,10 +108,7 @@ describe("TonightAtGlance", () => {
   });
 
   it("displays best viewing times", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockTonightData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockTonightData));
 
     render(<TonightAtGlance />);
 
@@ -117,10 +119,7 @@ describe("TonightAtGlance", () => {
   });
 
   it("displays magnitude values", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockTonightData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockTonightData));
 
     render(<TonightAtGlance />);
 
@@ -131,10 +130,7 @@ describe("TonightAtGlance", () => {
   });
 
   it("displays metric labels", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockTonightData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockTonightData));
 
     render(<TonightAtGlance />);
 
@@ -145,10 +141,7 @@ describe("TonightAtGlance", () => {
   });
 
   it("shows error state when fetch fails", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      status: 500
-    });
+    mockFetch.mockImplementation(() => mockErrorResponse(500));
 
     render(<TonightAtGlance />);
 
@@ -168,10 +161,7 @@ describe("TonightAtGlance", () => {
   });
 
   it("displays source when available", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockTonightData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockTonightData));
 
     render(<TonightAtGlance />);
 
@@ -182,10 +172,7 @@ describe("TonightAtGlance", () => {
 
   it("does not display source when not available", async () => {
     const noSourceData = { ...mockTonightData, source: undefined };
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => noSourceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(noSourceData));
 
     render(<TonightAtGlance />);
 
@@ -197,10 +184,7 @@ describe("TonightAtGlance", () => {
   });
 
   it("displays formatted timestamp", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockTonightData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockTonightData));
 
     render(<TonightAtGlance />);
 
@@ -211,10 +195,7 @@ describe("TonightAtGlance", () => {
 
   it("shows Live feed when no timestamp", async () => {
     const noTimestampData = { ...mockTonightData, generatedAt: "" };
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => noTimestampData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(noTimestampData));
 
     render(<TonightAtGlance />);
 
@@ -230,20 +211,16 @@ describe("TonightAtGlance", () => {
       error: null
     });
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockTonightData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockTonightData));
 
     render(<TonightAtGlance />);
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("lat=36.1147")
-      );
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("lng=-115.1728")
-      );
+      expect(mockFetch).toHaveBeenCalled();
+      const call = mockFetch.mock.calls[0][0];
+      const url = typeof call === "string" ? call : (call as Request).url;
+      expect(url).toContain("lat=36.1147");
+      expect(url).toContain("lng=-115.1728");
     });
   });
 
@@ -255,17 +232,16 @@ describe("TonightAtGlance", () => {
       error: null
     });
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockTonightData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockTonightData));
 
     render(<TonightAtGlance />);
 
     await waitFor(() => {
-      const fetchUrl = mockFetch.mock.calls[0][0] as string;
-      expect(fetchUrl).not.toContain("lat=");
-      expect(fetchUrl).not.toContain("lng=");
+      expect(mockFetch).toHaveBeenCalled();
+      const call = mockFetch.mock.calls[0][0];
+      const url = typeof call === "string" ? call : (call as Request).url;
+      expect(url).not.toContain("lat=");
+      expect(url).not.toContain("lng=");
     });
   });
 
@@ -294,10 +270,7 @@ describe("TonightAtGlance", () => {
       ]
     };
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => dataWithoutMetricLabel
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(dataWithoutMetricLabel));
 
     render(<TonightAtGlance />);
 
@@ -308,10 +281,7 @@ describe("TonightAtGlance", () => {
 
   it("handles empty highlights array", async () => {
     const emptyData = { ...mockTonightData, highlights: [] };
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => emptyData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(emptyData));
 
     const { container } = render(<TonightAtGlance />);
 
@@ -322,12 +292,9 @@ describe("TonightAtGlance", () => {
   });
 
   it("refetches when geolocation changes", async () => {
-    const { rerender } = render(<TonightAtGlance />);
+    mockFetch.mockImplementation(() => mockJsonResponse(mockTonightData));
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockTonightData
-    });
+    const { rerender } = render(<TonightAtGlance />);
 
     // Update geolocation
     mockUseGeolocation.mockReturnValue({

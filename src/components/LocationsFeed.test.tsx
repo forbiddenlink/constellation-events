@@ -22,6 +22,20 @@ import useGeolocation from "@/hooks/useGeolocation";
 
 const mockUseGeolocation = vi.mocked(useGeolocation);
 
+function mockJsonResponse(data: unknown) {
+  return Promise.resolve(new Response(JSON.stringify(data), {
+    status: 200,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
+function mockErrorResponse(status = 500) {
+  return Promise.resolve(new Response(JSON.stringify({ error: "Error" }), {
+    status,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
 describe("LocationsFeed", () => {
   const mockLocationsData = {
     locations: [
@@ -89,10 +103,7 @@ describe("LocationsFeed", () => {
   });
 
   it("fetches and displays locations", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationsData));
 
     render(<LocationsFeed />);
 
@@ -103,10 +114,7 @@ describe("LocationsFeed", () => {
   });
 
   it("displays user dark sky score", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationsData));
 
     render(<LocationsFeed />);
 
@@ -116,10 +124,7 @@ describe("LocationsFeed", () => {
   });
 
   it("displays moon illumination", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationsData));
 
     render(<LocationsFeed />);
 
@@ -129,10 +134,7 @@ describe("LocationsFeed", () => {
   });
 
   it("displays cloud cover", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationsData));
 
     render(<LocationsFeed />);
 
@@ -142,10 +144,7 @@ describe("LocationsFeed", () => {
   });
 
   it("displays weather source", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationsData));
 
     render(<LocationsFeed />);
 
@@ -155,10 +154,7 @@ describe("LocationsFeed", () => {
   });
 
   it("shows error state when fetch fails", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      status: 500
-    });
+    mockFetch.mockImplementation(() => mockErrorResponse(500));
 
     render(<LocationsFeed />);
 
@@ -178,10 +174,7 @@ describe("LocationsFeed", () => {
   });
 
   it("shows empty state when no locations", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ ...mockLocationsData, locations: [] })
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse({ ...mockLocationsData, locations: [] }));
 
     render(<LocationsFeed />);
 
@@ -198,22 +191,16 @@ describe("LocationsFeed", () => {
       error: null
     });
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationsData));
 
     render(<LocationsFeed />);
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("lat=36.1147"),
-        expect.any(Object)
-      );
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("lng=-115.1728"),
-        expect.any(Object)
-      );
+      expect(mockFetch).toHaveBeenCalled();
+      const call = mockFetch.mock.calls[0][0];
+      const url = typeof call === "string" ? call : (call as Request).url;
+      expect(url).toContain("lat=36.1147");
+      expect(url).toContain("lng=-115.1728");
     });
   });
 
@@ -225,25 +212,21 @@ describe("LocationsFeed", () => {
       error: null
     });
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationsData));
 
     render(<LocationsFeed />);
 
     await waitFor(() => {
-      const fetchUrl = mockFetch.mock.calls[0][0] as string;
-      expect(fetchUrl).not.toContain("lat=");
-      expect(fetchUrl).not.toContain("lng=");
+      expect(mockFetch).toHaveBeenCalled();
+      const call = mockFetch.mock.calls[0][0];
+      const url = typeof call === "string" ? call : (call as Request).url;
+      expect(url).not.toContain("lat=");
+      expect(url).not.toContain("lng=");
     });
   });
 
   it("renders location cards", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationsData));
 
     render(<LocationsFeed />);
 
@@ -261,10 +244,7 @@ describe("LocationsFeed", () => {
       conditions: undefined
     };
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => dataWithoutConditions
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(dataWithoutConditions));
 
     render(<LocationsFeed />);
 
@@ -275,10 +255,7 @@ describe("LocationsFeed", () => {
   });
 
   it("applies correct container styling", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationsData));
 
     const { container } = render(<LocationsFeed />);
 
@@ -291,10 +268,7 @@ describe("LocationsFeed", () => {
   });
 
   it("applies glass styling to conditions panel", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationsData));
 
     const { container } = render(<LocationsFeed />);
 
@@ -305,10 +279,7 @@ describe("LocationsFeed", () => {
   });
 
   it("refetches when geolocation changes", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => mockLocationsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationsData));
 
     const { rerender } = render(<LocationsFeed />);
 

@@ -31,6 +31,23 @@ vi.mock("@/components/ListingCard", () => ({
   )
 }));
 
+function mockJsonResponse(data: unknown) {
+  return Promise.resolve(new Response(JSON.stringify(data), {
+    status: 200,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
+function mockErrorResponse(status = 500) {
+  return Promise.resolve(new Response(JSON.stringify({ error: "Error" }), {
+    status,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
+// Timeout for all async tests — component has 150ms debounce
+const TIMEOUT = 3000;
+
 describe("MarketplaceBrowser", () => {
   const mockMarketplaceData = {
     listings: [
@@ -87,134 +104,110 @@ describe("MarketplaceBrowser", () => {
   });
 
   it("fetches and displays listings", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       expect(screen.getByText("Celestron 8SE")).toBeInTheDocument();
       expect(screen.getByText("ZWO ASI294MC Pro")).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 
   it("displays search input", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       const searchInput = screen.getByPlaceholderText("Search listings...");
       expect(searchInput).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 
   it("displays category filter", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       expect(screen.getByText("All categories")).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 
   it("shows empty state when no results", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ ...mockMarketplaceData, listings: [] })
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse({ ...mockMarketplaceData, listings: [] }));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       expect(screen.getByText(/No results found/)).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 
   it("shows seller form toggle button after entering token", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       expect(screen.getByPlaceholderText("Enter seller token...")).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
 
     fireEvent.change(screen.getByPlaceholderText("Enter seller token..."), { target: { value: "test-token" } });
 
     await waitFor(() => {
       expect(screen.getByText(/Create a new listing/)).toBeInTheDocument();
-    });
+    }, { timeout: TIMEOUT });
   });
 
   it("toggles seller form visibility", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       expect(screen.getByPlaceholderText("Enter seller token...")).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
 
     fireEvent.change(screen.getByPlaceholderText("Enter seller token..."), { target: { value: "test-token" } });
 
     await waitFor(() => {
       expect(screen.getByText(/Create a new listing/)).toBeInTheDocument();
-    });
+    }, { timeout: TIMEOUT });
 
     fireEvent.click(screen.getByText(/Create a new listing/));
 
     await waitFor(() => {
       expect(screen.getByText("New listing")).toBeInTheDocument();
-    });
+    }, { timeout: TIMEOUT });
   });
 
   it("displays seller form fields when expanded", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       expect(screen.getByPlaceholderText("Enter seller token...")).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
 
     fireEvent.change(screen.getByPlaceholderText("Enter seller token..."), { target: { value: "test-token" } });
 
     await waitFor(() => {
       expect(screen.getByText(/Create a new listing/)).toBeInTheDocument();
-    });
+    }, { timeout: TIMEOUT });
 
     fireEvent.click(screen.getByText(/Create a new listing/));
 
     await waitFor(() => {
       expect(screen.getByText("Title")).toBeInTheDocument();
       expect(screen.getByText(/Price \(USD\)/)).toBeInTheDocument();
-    });
+    }, { timeout: TIMEOUT });
   });
 
   it("selects first listing by default", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
@@ -222,35 +215,29 @@ describe("MarketplaceBrowser", () => {
       // The detail panel renders in both mobile and desktop containers
       const headings = screen.getAllByRole("heading", { name: "Celestron 8SE" });
       expect(headings.length).toBeGreaterThanOrEqual(1);
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 
   it("displays selected listing details", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       const descriptions = screen.getAllByText("Excellent computerized telescope");
       expect(descriptions.length).toBeGreaterThanOrEqual(1);
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 
   it("shows contact seller button for selected listing", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       const buttons = screen.getAllByText("Inquire about listing");
       expect(buttons.length).toBeGreaterThanOrEqual(1);
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 
   it("handles fetch error gracefully", async () => {
@@ -261,88 +248,70 @@ describe("MarketplaceBrowser", () => {
     // Wait for error state to fully render
     await waitFor(() => {
       expect(screen.getByText(/Unable to load marketplace listings/)).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 
   it("handles non-ok response", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      status: 500
-    });
+    mockFetch.mockImplementation(() => mockErrorResponse(500));
 
     render(<MarketplaceBrowser />);
 
     // Wait for error state to fully render
     await waitFor(() => {
       expect(screen.getByText(/Unable to load marketplace listings/)).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 
   it("displays search & filter heading", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       expect(screen.getByText(/Search/)).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 
   it("renders listing header row", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       expect(screen.getByText("Item")).toBeInTheDocument();
       expect(screen.getByText("Price")).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 
   it("renders listing cards", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       const cards = screen.getAllByTestId("listing-card");
       expect(cards.length).toBeGreaterThanOrEqual(1);
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 
   it("has search input with correct placeholder", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       expect(screen.getByPlaceholderText("Search listings...")).toBeInTheDocument();
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 
   it("has category select dropdown", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => mockMarketplaceData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
       const comboboxes = screen.getAllByRole("combobox");
       expect(comboboxes.length).toBeGreaterThanOrEqual(1);
-    }, { timeout: 3000 });
+    }, { timeout: TIMEOUT });
   });
 });

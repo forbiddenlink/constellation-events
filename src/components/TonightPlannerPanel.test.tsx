@@ -22,6 +22,20 @@ import useGeolocation from "@/hooks/useGeolocation";
 
 const mockUseGeolocation = vi.mocked(useGeolocation);
 
+function mockJsonResponse(data: unknown) {
+  return Promise.resolve(new Response(JSON.stringify(data), {
+    status: 200,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
+function mockErrorResponse(status = 500) {
+  return Promise.resolve(new Response(JSON.stringify({ error: "Error" }), {
+    status,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
 describe("TonightPlannerPanel", () => {
   const mockPlannerData = {
     overallQuality: {
@@ -90,10 +104,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("fetches and displays planner data", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -103,10 +114,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("displays overall quality score", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -117,10 +125,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("displays quality description", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -132,10 +137,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("displays optimal window times", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -146,10 +148,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("displays local dark sky score", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -160,10 +159,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("displays weather quality", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -173,10 +169,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("displays weather source", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -186,10 +179,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("displays visible planets", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -201,10 +191,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("displays planet best times", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -215,10 +202,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("displays planet altitudes", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -229,10 +213,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("displays recommendations", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -243,10 +224,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("shows error state when fetch fails", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      status: 500,
-    });
+    mockFetch.mockImplementation(() => mockErrorResponse(500));
 
     render(<TonightPlannerPanel />);
 
@@ -258,10 +236,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("shows retry button on error", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      status: 500,
-    });
+    mockFetch.mockImplementation(() => mockErrorResponse(500));
 
     render(<TonightPlannerPanel />);
 
@@ -272,8 +247,8 @@ describe("TonightPlannerPanel", () => {
 
   it("retries fetch when retry button is clicked", async () => {
     mockFetch
-      .mockResolvedValueOnce({ ok: false, status: 500 })
-      .mockResolvedValueOnce({ ok: true, json: async () => mockPlannerData });
+      .mockImplementationOnce(() => mockErrorResponse(500))
+      .mockImplementationOnce(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -289,10 +264,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("shows refresh button when data is loaded", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -302,10 +274,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("shows refreshing state when refresh is clicked", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -335,10 +304,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("shows refresh button with correct text", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -355,10 +321,7 @@ describe("TonightPlannerPanel", () => {
       error: "Geolocation unavailable",
     });
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -375,26 +338,20 @@ describe("TonightPlannerPanel", () => {
       error: null,
     });
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("lat=36.1147"),
-        expect.any(Object),
-      );
+      expect(mockFetch).toHaveBeenCalled();
+      const call = mockFetch.mock.calls[0][0];
+      const url = typeof call === "string" ? call : (call as Request).url;
+      expect(url).toContain("lat=36.1147");
     });
   });
 
   it("shows no planets message when array is empty", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ ...mockPlannerData, visiblePlanets: [] }),
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse({ ...mockPlannerData, visiblePlanets: [] }));
 
     render(<TonightPlannerPanel />);
 
@@ -406,10 +363,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("displays generated timestamp", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     render(<TonightPlannerPanel />);
 
@@ -419,10 +373,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("applies glass styling to container", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockPlannerData,
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     const { container } = render(<TonightPlannerPanel />);
 
@@ -433,10 +384,7 @@ describe("TonightPlannerPanel", () => {
   });
 
   it("handles n/a weather quality", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({ ...mockPlannerData, weather: null }),
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse({ ...mockPlannerData, weather: null }));
 
     render(<TonightPlannerPanel />);
 

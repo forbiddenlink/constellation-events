@@ -15,6 +15,17 @@ import useGeolocation from "@/hooks/useGeolocation";
 
 const mockUseGeolocation = vi.mocked(useGeolocation);
 
+function mockJsonResponse(data: unknown, ok = true) {
+  return Promise.resolve(new Response(JSON.stringify(data), {
+    status: ok ? 200 : 500,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
+function mockErrorResponse() {
+  return Promise.resolve(new Response(null, { status: 500 }));
+}
+
 describe("LiveSkyStatus", () => {
   const mockSkyQualityData = {
     cloudCover: 15,
@@ -94,10 +105,7 @@ describe("LiveSkyStatus", () => {
       error: null
     });
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockSkyQualityData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockSkyQualityData));
 
     render(<LiveSkyStatus />);
 
@@ -114,18 +122,16 @@ describe("LiveSkyStatus", () => {
       error: "Geolocation unavailable"
     });
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockSkyQualityData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockSkyQualityData));
 
     render(<LiveSkyStatus />);
 
     await waitFor(() => {
-      // Should have called fetch with default Las Vegas coordinates
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("lat=36.1147")
-      );
+      // Should have called fetch — verify via Request.url or call count
+      expect(mockFetch).toHaveBeenCalled();
+      const call = mockFetch.mock.calls[0][0];
+      const url = typeof call === "string" ? call : (call as Request).url;
+      expect(url).toContain("lat=36.1147");
     }, { timeout: 2000 });
   });
 
@@ -154,10 +160,7 @@ describe("LiveSkyStatus", () => {
       error: null
     });
 
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      status: 500
-    });
+    mockFetch.mockImplementation(() => mockErrorResponse());
 
     render(<LiveSkyStatus />);
 

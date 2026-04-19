@@ -31,6 +31,20 @@ import useGeolocation from "@/hooks/useGeolocation";
 
 const mockUseGeolocation = vi.mocked(useGeolocation);
 
+function mockJsonResponse(data: unknown) {
+  return Promise.resolve(new Response(JSON.stringify(data), {
+    status: 200,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
+function mockErrorResponse(status = 500) {
+  return Promise.resolve(new Response(JSON.stringify({ error: "Error" }), {
+    status,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
 describe("EventsFeed", () => {
   const mockEventsData = {
     events: [
@@ -93,10 +107,7 @@ describe("EventsFeed", () => {
   });
 
   it("fetches and displays events", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockEventsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockEventsData));
 
     render(<EventsFeed />);
 
@@ -108,10 +119,7 @@ describe("EventsFeed", () => {
   });
 
   it("displays event count", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockEventsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockEventsData));
 
     render(<EventsFeed />);
 
@@ -121,10 +129,7 @@ describe("EventsFeed", () => {
   });
 
   it("displays location indicator when location is available", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockEventsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockEventsData));
 
     render(<EventsFeed />);
 
@@ -135,10 +140,7 @@ describe("EventsFeed", () => {
 
   it("does not show location indicator when location is null", async () => {
     const noLocationData = { ...mockEventsData, location: null };
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => noLocationData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(noLocationData));
 
     render(<EventsFeed />);
 
@@ -149,10 +151,7 @@ describe("EventsFeed", () => {
   });
 
   it("shows error state when fetch fails", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      status: 500
-    });
+    mockFetch.mockImplementation(() => mockErrorResponse(500));
 
     render(<EventsFeed />);
 
@@ -173,10 +172,7 @@ describe("EventsFeed", () => {
   });
 
   it("shows empty state when no events", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ ...mockEventsData, events: [] })
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse({ ...mockEventsData, events: [] }));
 
     render(<EventsFeed />);
 
@@ -193,20 +189,16 @@ describe("EventsFeed", () => {
       error: null
     });
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockEventsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockEventsData));
 
     render(<EventsFeed />);
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("lat=36.1147")
-      );
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("lng=-115.1728")
-      );
+      expect(mockFetch).toHaveBeenCalled();
+      const call = mockFetch.mock.calls[0][0];
+      const url = typeof call === "string" ? call : (call as Request).url;
+      expect(url).toContain("lat=36.1147");
+      expect(url).toContain("lng=-115.1728");
     });
   });
 
@@ -218,25 +210,21 @@ describe("EventsFeed", () => {
       error: null
     });
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockEventsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockEventsData));
 
     render(<EventsFeed />);
 
     await waitFor(() => {
-      const fetchUrl = mockFetch.mock.calls[0][0] as string;
-      expect(fetchUrl).not.toContain("lat=");
-      expect(fetchUrl).not.toContain("lng=");
+      expect(mockFetch).toHaveBeenCalled();
+      const call = mockFetch.mock.calls[0][0];
+      const url = typeof call === "string" ? call : (call as Request).url;
+      expect(url).not.toContain("lat=");
+      expect(url).not.toContain("lng=");
     });
   });
 
   it("renders event cards in grid layout", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockEventsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockEventsData));
 
     const { container } = render(<EventsFeed />);
 
@@ -248,10 +236,7 @@ describe("EventsFeed", () => {
   });
 
   it("renders correct number of event cards", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockEventsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockEventsData));
 
     render(<EventsFeed />);
 
@@ -262,10 +247,7 @@ describe("EventsFeed", () => {
   });
 
   it("applies glass styling to error state", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      status: 500
-    });
+    mockFetch.mockImplementation(() => mockErrorResponse(500));
 
     const { container } = render(<EventsFeed />);
 
@@ -276,10 +258,7 @@ describe("EventsFeed", () => {
   });
 
   it("applies glass styling to empty state", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ ...mockEventsData, events: [] })
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse({ ...mockEventsData, events: [] }));
 
     const { container } = render(<EventsFeed />);
 
@@ -290,10 +269,7 @@ describe("EventsFeed", () => {
   });
 
   it("shows ember color for error text", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      status: 500
-    });
+    mockFetch.mockImplementation(() => mockErrorResponse(500));
 
     const { container } = render(<EventsFeed />);
 
@@ -304,10 +280,7 @@ describe("EventsFeed", () => {
   });
 
   it("centers empty and error state text", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ ...mockEventsData, events: [] })
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse({ ...mockEventsData, events: [] }));
 
     const { container } = render(<EventsFeed />);
 
@@ -318,10 +291,7 @@ describe("EventsFeed", () => {
   });
 
   it("refetches when geolocation changes", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => mockEventsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockEventsData));
 
     const { rerender } = render(<EventsFeed />);
 
@@ -342,10 +312,7 @@ describe("EventsFeed", () => {
   });
 
   it("shows muted text for event count", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockEventsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockEventsData));
 
     const { container } = render(<EventsFeed />);
 
@@ -356,10 +323,7 @@ describe("EventsFeed", () => {
   });
 
   it("applies margin below count text", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockEventsData
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockEventsData));
 
     const { container } = render(<EventsFeed />);
 

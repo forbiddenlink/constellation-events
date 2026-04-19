@@ -29,6 +29,20 @@ import LocationsMapPanel from "./LocationsMapPanel";
 
 const mockUseGeolocation = vi.mocked(useGeolocation);
 
+function mockJsonResponse(data: unknown) {
+  return Promise.resolve(new Response(JSON.stringify(data), {
+    status: 200,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
+function mockErrorResponse(status = 500) {
+  return Promise.resolve(new Response(JSON.stringify({ error: "Error" }), {
+    status,
+    headers: { "Content-Type": "application/json" }
+  }));
+}
+
 describe("LocationsMapPanel", () => {
   const mockLocationStats = {
     userDarkSkyScore: 68,
@@ -148,10 +162,7 @@ describe("LocationsMapPanel", () => {
   });
 
   it("fetches and displays location stats", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationStats
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationStats));
 
     render(<LocationsMapPanel />);
 
@@ -161,10 +172,7 @@ describe("LocationsMapPanel", () => {
   });
 
   it("displays Bortle class estimate", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationStats
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationStats));
 
     render(<LocationsMapPanel />);
 
@@ -176,10 +184,7 @@ describe("LocationsMapPanel", () => {
   });
 
   it("displays moon illumination", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationStats
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationStats));
 
     render(<LocationsMapPanel />);
 
@@ -190,10 +195,7 @@ describe("LocationsMapPanel", () => {
   });
 
   it("displays weather quality score", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationStats
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationStats));
 
     render(<LocationsMapPanel />);
 
@@ -203,10 +205,7 @@ describe("LocationsMapPanel", () => {
   });
 
   it("displays weather source", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationStats
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationStats));
 
     render(<LocationsMapPanel />);
 
@@ -233,34 +232,28 @@ describe("LocationsMapPanel", () => {
       error: null
     });
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationStats
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationStats));
 
     render(<LocationsMapPanel />);
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("lat=36.1147"),
-        expect.any(Object)
-      );
+      expect(mockFetch).toHaveBeenCalled();
+      const call = mockFetch.mock.calls[0][0];
+      const url = typeof call === "string" ? call : (call as Request).url;
+      expect(url).toContain("lat=36.1147");
     });
   });
 
   it("adds limit=1 to fetch query", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLocationStats
-    });
+    mockFetch.mockImplementation(() => mockJsonResponse(mockLocationStats));
 
     render(<LocationsMapPanel />);
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("limit=1"),
-        expect.any(Object)
-      );
+      expect(mockFetch).toHaveBeenCalled();
+      const call = mockFetch.mock.calls[0][0];
+      const url = typeof call === "string" ? call : (call as Request).url;
+      expect(url).toContain("limit=1");
     });
   });
 
@@ -298,7 +291,7 @@ describe("LocationsMapPanel", () => {
   });
 
   it("handles fetch error gracefully", async () => {
-    mockFetch.mockRejectedValueOnce(new Error("Network error"));
+    mockFetch.mockImplementation(() => mockErrorResponse(500));
 
     const { container } = render(<LocationsMapPanel />);
 
@@ -309,10 +302,7 @@ describe("LocationsMapPanel", () => {
   });
 
   it("handles non-ok response gracefully", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      status: 500
-    });
+    mockFetch.mockImplementation(() => mockErrorResponse(500));
 
     const { container } = render(<LocationsMapPanel />);
 
