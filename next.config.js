@@ -64,11 +64,11 @@ const nextConfig = {
   }
 };
 
-module.exports = withBundleAnalyzer(withSentryConfig(withAxiom(nextConfig), {);
+module.exports = withBundleAnalyzer(withSentryConfig(withAxiom(nextConfig), {
     org: process.env.SENTRY_ORG,
     project: process.env.SENTRY_PROJECT,
     silent: !process.env.CI,
     widenClientFileUpload: true,
     disableLogger: true,
     automaticVercelMonitors: true,
-  });
+  }));
