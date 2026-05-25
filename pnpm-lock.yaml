@@ -6,14 +6,16 @@ settings:
 
 overrides:
   undici: '>=7.24.0'
-  next: '>=16.2.3'
+  next: '>=16.2.6'
   flatted: '>=3.4.2'
   fast-xml-parser: '>=5.5.7'
   picomatch: '>=4.0.4'
   cookie: '>=0.7.0'
-  systeminformation: '>=5.31.0'
+  systeminformation: '>=5.31.6'
   vite: '>=8.0.5'
   protobufjs: ^7.6.1
+  fast-uri: '>=3.1.2'
+  uuid: '>=11.1.1'
 
 importers:
 
@@ -71,7 +73,7 @@ importers:
         specifier: ^3.5.2
         version: 3.20.0
       next:
-        specifier: '>=16.2.3'
+        specifier: '>=16.2.6'
         version: 16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       next-axiom:
         specifier: ^1.5.0
@@ -253,7 +255,7 @@ packages:
     resolution: {integrity: sha512-QUaE/cDvtBIc7EcKatN2L/EdQ+7K+swjMH0D6BiEQrXzycg2RWNxsdDVJYKOSqXlxNn4QUvY7lT+h6EQHLnjGQ==}
     engines: {node: '>=20'}
     peerDependencies:
-      next: '>=16.2.3'
+      next: '>=16.2.6'
 
   '@arcjet/protocol@1.3.1':
     resolution: {integrity: sha512-aoKbuLNXsNvLg844Tlc8mij6Z1bl5iDX+gfBZyG2fL4ZKiHf6C/MQQIUx8TknKfednSHWCVD3L3ASnqPe9EJGg==}
@@ -1886,7 +1888,7 @@ packages:
     resolution: {integrity: sha512-E3a+MaKoM7YbtYMVP5wK7vOCa5kP+1q+khWP5igluGwiYfB86832U5TUpJdZtVlF4ECliJrZhzwso6Mt/lzxPA==}
     engines: {node: '>=18'}
     peerDependencies:
-      next: '>=16.2.3'
+      next: '>=16.2.6'
 
   '@sentry/node-core@10.47.0':
     resolution: {integrity: sha512-qv6LsqHbkQmd0aQEUox/svRSz26J+l4gGjFOUNEay2armZu9XLD+Ct89jpFgZD5oIPNAj2jraodTRqydXiwS5w==}
@@ -2521,7 +2523,7 @@ packages:
     peerDependencies:
       '@remix-run/react': ^2
       '@sveltejs/kit': ^1 || ^2
-      next: '>=16.2.3'
+      next: '>=16.2.6'
       react: ^18 || ^19 || ^19.0.0-rc
       svelte: '>= 4'
       vue: ^3
@@ -2559,7 +2561,7 @@ packages:
     resolution: {integrity: sha512-PbEr7FrMkUrGYvlcLHGkXdCkxnylCWePx7lPxxq36DNdfo9mcUjLOmqOyPDHAOgnfqgGGdmE3XI9L/4+5fr+vQ==}
     peerDependencies:
       '@sveltejs/kit': ^1 || ^2
-      next: '>=16.2.3'
+      next: '>=16.2.6'
       react: ^18 || ^19 || ^19.0.0-rc
       svelte: '>= 4'
       vue: ^3
@@ -2862,7 +2864,7 @@ packages:
       drizzle-orm: '>=0.41.0'
       mongodb: ^6.0.0 || ^7.0.0
       mysql2: ^3.0.0
-      next: '>=16.2.3'
+      next: '>=16.2.6'
       pg: ^8.0.0
       prisma: ^5.0.0 || ^6.0.0 || ^7.0.0
       react: ^18.0.0 || ^19.0.0
@@ -4283,14 +4285,14 @@ packages:
     resolution: {integrity: sha512-PpwmfOqoa2xWKcGmYb3d5t3R4+/J8C2D00IhJsI3Qk0xxv9tNvGzS/hKKOPNOuUwqM4b/etqu6iGW7tkKvltgA==}
     engines: {node: '>=18'}
     peerDependencies:
-      next: '>=16.2.3'
+      next: '>=16.2.6'
       react: '>=18.0.0'
 
   next-safe-action@8.3.0:
     resolution: {integrity: sha512-TKSZnJWRbmpAcAlyKZkPm7LXHheSmG8bpx1ZSCr/8FQpac88fEMaN4mMdmiT5r17trCq/m2nOgxvtSLa1RTqxg==}
     engines: {node: '>=18.17'}
     peerDependencies:
-      next: '>=16.2.3'
+      next: '>=16.2.6'
       react: '>= 18.2.0'
       react-dom: '>= 18.2.0'
 
@@ -4299,7 +4301,7 @@ packages:
     engines: {node: '>=14.18'}
     hasBin: true
     peerDependencies:
-      next: '>=16.2.3'
+      next: '>=16.2.6'
 
   next@16.2.6:
     resolution: {integrity: sha512-qOVgKJg1+At15NpeUP+eJgCHvTCgXsogweq87Ri/Ix7PkqQHg4sdaXmSFqKlgaIXE4kW0g25LE68W87UANlHtw==}
@@ -4358,7 +4360,7 @@ packages:
     peerDependencies:
       '@remix-run/react': '>=2'
       '@tanstack/react-router': ^1
-      next: '>=16.2.3'
+      next: '>=16.2.6'
       react: '>=18.2.0 || ^19.0.0-0'
       react-router: ^5 || ^6 || ^7
       react-router-dom: ^5 || ^6 || ^7
@@ -5086,8 +5088,8 @@ packages:
   symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
 
-  systeminformation@5.31.5:
-    resolution: {integrity: sha512-5SyLdip4/3alxD4Kh+63bUQTJmu7YMfYQTC+koZy7X73HgNqZSD2P4wOZQWtUncvPvcEmnfIjCoygN4MRoEejQ==}
+  systeminformation@5.31.6:
+    resolution: {integrity: sha512-Uv2b2uGGM6ns+26czgW2cYRabYdnswM0ddSOOlryHOaelzsmDSet1iM/NT7VOYxW8x/BW+HkY+b1Ve2pLTSGSA==}
     engines: {node: '>=8.0.0'}
     os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
     hasBin: true
@@ -5330,14 +5332,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  uuid@10.0.0:
-    resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
-    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
-    hasBin: true
-
-  uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
-    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+  uuid@14.0.0:
+    resolution: {integrity: sha512-Qo+uWgilfSmAhXCMav1uYFynlQO7fMFiMVZsQqZRMIXp0O7rR7qjkj+cPvBHLgBqi960QCoo/PH2/6ZtVqKvrg==}
     hasBin: true
 
   vary@1.1.2:
@@ -6853,7 +6849,7 @@ snapshots:
   '@opentelemetry/host-metrics@0.37.0(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      systeminformation: 5.31.5
+      systeminformation: 5.31.6
 
   '@opentelemetry/instrumentation-amqplib@0.61.0(@opentelemetry/api@1.9.1)':
     dependencies:
@@ -7601,7 +7597,7 @@ snapshots:
   '@sentry/webpack-plugin@5.1.1(webpack@5.105.4(postcss@8.5.14))':
     dependencies:
       '@sentry/bundler-plugin-core': 5.1.1
-      uuid: 9.0.1
+      uuid: 14.0.0
       webpack: 5.105.4(postcss@8.5.14)
     transitivePeerDependencies:
       - encoding
@@ -8058,7 +8054,7 @@ snapshots:
       slug: 6.1.0
       ulid: 2.4.0
       uncrypto: 0.1.3
-      uuid: 9.0.1
+      uuid: 14.0.0
       ws: 8.20.0
       zod: 4.3.6
     transitivePeerDependencies:
@@ -11106,7 +11102,7 @@ snapshots:
 
   symbol-tree@3.2.4: {}
 
-  systeminformation@5.31.5: {}
+  systeminformation@5.31.6: {}
 
   tagged-tag@1.0.0: {}
 
@@ -11296,7 +11292,7 @@ snapshots:
 
   typeid-js@1.2.0:
     dependencies:
-      uuid: 10.0.0
+      uuid: 14.0.0
 
   typescript-eslint@8.57.0(eslint@9.39.4(jiti@1.21.7))(typescript@5.9.3):
     dependencies:
@@ -11375,9 +11371,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  uuid@10.0.0: {}
-
-  uuid@9.0.1: {}
+  uuid@14.0.0: {}
 
   vary@1.1.2: {}
 
