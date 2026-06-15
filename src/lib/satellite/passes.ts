@@ -56,7 +56,7 @@ export function calculatePasses(
   while (currentTime < endTime && passes.length < count * 2) {
     const positionAndVelocity = satellite.propagate(satrec, currentTime);
 
-    if (typeof positionAndVelocity.position !== "boolean") {
+    if (positionAndVelocity && typeof positionAndVelocity.position !== "boolean") {
       const positionEci = positionAndVelocity.position;
       const gmst = satellite.gstime(currentTime);
       const positionEcf = satellite.eciToEcf(positionEci, gmst);

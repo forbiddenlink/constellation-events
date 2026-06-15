@@ -25,6 +25,7 @@ export function propagatePosition(
     const positionAndVelocity = satellite.propagate(satrec, time);
 
     if (
+      !positionAndVelocity ||
       typeof positionAndVelocity.position === "boolean" ||
       typeof positionAndVelocity.velocity === "boolean"
     ) {
@@ -81,6 +82,7 @@ export function propagatePositionForObserver(
     const positionAndVelocity = satellite.propagate(satrec, time);
 
     if (
+      !positionAndVelocity ||
       typeof positionAndVelocity.position === "boolean" ||
       typeof positionAndVelocity.velocity === "boolean"
     ) {
