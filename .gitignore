@@ -57,6 +57,9 @@ next-env.d.ts
 .codacy/
 .env*
 
+# npm lockfile (project uses pnpm)
+package-lock.json
+
 # next-sitemap (postbuild generated)
 /public/robots.txt
 /public/sitemap*.xml
