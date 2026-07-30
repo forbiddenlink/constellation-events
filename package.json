@@ -94,7 +94,7 @@
   "pnpm": {
     "overrides": {
       "@better-auth/kysely-adapter": "1.6.17",
-      "undici": ">=7.24.0",
+      "undici": ">=7.28.0 <8",
       "next": ">=16.2.6",
       "flatted": ">=3.4.2",
       "fast-xml-parser": ">=5.5.7",

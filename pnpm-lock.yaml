@@ -6,7 +6,7 @@ settings:
 
 overrides:
   '@better-auth/kysely-adapter': 1.6.17
-  undici: '>=7.24.0'
+  undici: '>=7.28.0 <8'
   next: '>=16.2.6'
   flatted: '>=3.4.2'
   fast-xml-parser: '>=5.5.7'
@@ -4968,8 +4968,8 @@ packages:
   undici-types@8.3.0:
     resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
 
-  undici@7.24.3:
-    resolution: {integrity: sha512-eJdUmK/Wrx2d+mnWWmwwLRyA7OQCkLap60sk3dOK4ViZR7DKwwptwuIvFBg2HaiP9ESaEdhtpSymQPvytpmkCA==}
+  undici@7.29.0:
+    resolution: {integrity: sha512-IDxfleLmmbSskfWSUATiN1nfn2rDuvnMOqb5CWR92iIfojA0Ud+ulOAAEQ57LPr9rWmsreUyf5lwyao+7GNNVw==}
     engines: {node: '>=20.18.1'}
 
   unrs-resolver@1.12.2:
@@ -8756,7 +8756,7 @@ snapshots:
       saxes: 6.0.0
       symbol-tree: 3.2.4
       tough-cookie: 6.0.1
-      undici: 7.24.3
+      undici: 7.29.0
       w3c-xmlserializer: 5.0.0
       webidl-conversions: 8.0.1
       whatwg-mimetype: 5.0.0
@@ -10057,7 +10057,7 @@ snapshots:
 
   undici-types@8.3.0: {}
 
-  undici@7.24.3: {}
+  undici@7.29.0: {}
 
   unrs-resolver@1.12.2:
     dependencies:
