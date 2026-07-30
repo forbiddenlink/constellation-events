@@ -104,7 +104,11 @@
       "vite": ">=8.1.5",
       "protobufjs": "^7.6.1",
       "fast-uri": ">=3.1.2",
-      "uuid": ">=11.1.1"
+      "uuid": ">=11.1.1",
+      "postcss": "8.5.25",
+      "engine.io>ws": "8.21.1",
+      "engine.io-client>ws": "8.21.1",
+      "socket.io-adapter>ws": "8.21.1"
     }
   }
 }
