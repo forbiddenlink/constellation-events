@@ -48,11 +48,16 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value:
               "default-src 'self'; " +
-              "script-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com; " +
+              // 'unsafe-inline' is required for App Router hydration: Next.js
+              // emits inline bootstrap/hydration scripts, and a per-request
+              // nonce cannot be used here because the pages are statically
+              // prerendered (build-time HTML has no runtime nonce). Without
+              // this, the site stays stuck on "Loading...".
+              "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://vitals.vercel-insights.com; " +
               "style-src 'self' 'unsafe-inline'; " +
-              "img-src 'self' data: blob: https://images.unsplash.com https://upload.wikimedia.org https://grainy-gradients.vercel.app; " +
+              "img-src 'self' data: blob: https://images.unsplash.com https://upload.wikimedia.org https://grainy-gradients.vercel.app https://apod.nasa.gov; " +
               "font-src 'self' https://fonts.gstatic.com; " +
-              "connect-src 'self' https://api.open-meteo.com https://api.n2yo.com https://api.nasa.gov https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com; " +
+              "connect-src 'self' https://api.open-meteo.com https://api.n2yo.com https://api.nasa.gov https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io; " +
               "frame-src 'self' https://www.youtube.com https://youtube.com https://player.vimeo.com; " +
               "frame-ancestors 'none'; " +
               "base-uri 'self'; " +
