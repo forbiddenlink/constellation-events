@@ -34,13 +34,20 @@ export default function ListingCard({ listing }: { readonly listing: ListingMode
 
   return (
     <div className="group relative flex items-center justify-between border-b border-white/10 py-4 px-4 transition-all hover:bg-white/5">
-        {/* Leading Data Block */}
+        {/* Leading Data Block — photo-forward */}
         <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-aurora/30">
+            <div className="relative flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-aurora/40">
                 {imageUrl ? (
-                    <div className="h-full w-full bg-cover bg-center" style={{ backgroundImage: `url(${imageUrl})` }} />
+                    <div
+                        className="h-full w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                        style={{ backgroundImage: `url(${imageUrl})` }}
+                    />
                 ) : (
-                    <div className="h-2 w-2 rounded-full bg-white/20" />
+                    <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(circle_at_30%_25%,rgba(56,189,248,0.28),transparent_60%),radial-gradient(circle_at_75%_80%,rgba(129,140,248,0.24),transparent_55%)]">
+                        <svg className="h-6 w-6 text-starlight/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3l2.09 6.26L20.5 9.5l-5 3.64L17.5 20 12 16.27 6.5 20l1.99-6.86-5-3.64 6.41-.24L12 3z" />
+                        </svg>
+                    </div>
                 )}
             </div>
 

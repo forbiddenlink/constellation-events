@@ -1,6 +1,7 @@
 import Link from "next/link";
 import SectionHeading from "@/components/SectionHeading";
 import ConstellationViz from "@/components/ConstellationViz";
+import { generateUpcomingEvents } from "@/lib/events";
 import TonightAtGlance from "@/components/TonightAtGlance";
 import LiveSkyStatus from "@/components/LiveSkyStatus";
 import APODCard from "@/components/APODCard";
@@ -12,6 +13,9 @@ import HomepageListings from "@/components/HomepageListings";
 import LocationOnboarding from "@/components/LocationOnboarding";
 
 export default function HomePage() {
+  // Real astronomy events power the constellation star map (server-computed).
+  const skyEvents = generateUpcomingEvents(undefined, new Date(), 60);
+
   return (
     <div className="space-y-16">
       <LocationOnboarding />
@@ -35,7 +39,7 @@ export default function HomePage() {
           <HeroStats />
         </div>
         <div className="space-y-6">
-          <ConstellationViz />
+          <ConstellationViz events={skyEvents} />
           <TonightAtGlance />
         </div>
       </section>
