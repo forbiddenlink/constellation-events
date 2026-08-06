@@ -1,109 +1,115 @@
 import { describe, it, expect } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import ConstellationViz from "./ConstellationViz";
-import type { AstronomyEvent } from "@/lib/events";
-
-const mockEvents: AstronomyEvent[] = [
-  {
-    id: "meteor-perseids-2026",
-    title: "Perseids Meteor Shower",
-    date: "2026-08-12T00:00:00.000Z",
-    dateDisplay: "Aug 12",
-    window: "10:00 PM – 4:00 AM",
-    visibility: "excellent",
-    visibilityScore: 90,
-    summary: "Peak rate: 100 meteors/hour.",
-    type: "meteor",
-  },
-  {
-    id: "moon-2026-08-20",
-    title: "New Moon",
-    date: "2026-08-20T00:00:00.000Z",
-    dateDisplay: "Aug 20",
-    window: "All night",
-    visibility: "excellent",
-    visibilityScore: 95,
-    summary: "Ideal for deep-sky observation.",
-    type: "moon",
-  },
-  {
-    id: "planet-2026-09-22",
-    title: "Jupiter at Opposition",
-    date: "2026-09-22T00:00:00.000Z",
-    dateDisplay: "Sep 22",
-    window: "Dusk – Dawn",
-    visibility: "excellent",
-    visibilityScore: 40,
-    summary: "Jupiter at closest approach.",
-    type: "planet",
-  },
-];
 
 describe("ConstellationViz", () => {
   it("renders the visualization container", () => {
-    const { container } = render(<ConstellationViz events={mockEvents} />);
+    const { container } = render(<ConstellationViz />);
+
     const vizContainer = container.firstChild as HTMLElement;
     expect(vizContainer).toHaveClass("glass", "rounded-3xl", "p-6", "h-72");
   });
 
-  it("renders the SVG element with correct viewBox", () => {
-    render(<ConstellationViz events={mockEvents} />);
+  it("renders the SVG element", () => {
+    render(<ConstellationViz />);
+
     const svg = document.querySelector("svg");
     expect(svg).toBeInTheDocument();
     expect(svg).toHaveAttribute("viewBox", "0 0 600 300");
   });
 
-  it("has a descriptive accessible label reflecting event count", () => {
-    render(<ConstellationViz events={mockEvents} />);
+  it("has proper accessibility attributes on SVG", () => {
+    render(<ConstellationViz />);
+
     const svg = document.querySelector("svg");
     expect(svg).toHaveAttribute("role", "img");
-    expect(svg?.getAttribute("aria-label")).toContain("3 upcoming celestial events");
+    expect(svg).toHaveAttribute("aria-label", "Decorative star pattern illustration");
   });
 
-  it("plots one star node group per event", () => {
-    render(<ConstellationViz events={mockEvents} />);
-    // Each event renders a <g> with a core circle carrying a <title>.
-    const titles = document.querySelectorAll("circle > title");
-    expect(titles).toHaveLength(mockEvents.length);
+  it("renders constellation line path", () => {
+    render(<ConstellationViz />);
+
+    const pathElement = document.querySelector("path");
+    expect(pathElement).toBeInTheDocument();
+    expect(pathElement).toHaveAttribute("d", "M80 240 L140 170 L220 190 L280 130 L360 150 L430 110 L520 140");
   });
 
-  it("connects events with a timeline polyline", () => {
-    render(<ConstellationViz events={mockEvents} />);
-    const polyline = document.querySelector("polyline");
-    expect(polyline).toBeInTheDocument();
-    // 3 points => 3 coordinate pairs
-    expect(polyline?.getAttribute("points")?.trim().split(" ")).toHaveLength(3);
+  it("renders main constellation stars (7 circles)", () => {
+    render(<ConstellationViz />);
+
+    // Main constellation stars with fill="#E8F1FF"
+    const starGroup = document.querySelector('g[fill="#E8F1FF"]');
+    expect(starGroup).toBeInTheDocument();
+
+    const mainStars = starGroup?.querySelectorAll("circle");
+    expect(mainStars).toHaveLength(7);
   });
 
-  it("sizes stars by visibility score (higher score => larger radius)", () => {
-    render(<ConstellationViz events={mockEvents} />);
-    // Core circles (those with a <title> child).
-    const cores = Array.from(document.querySelectorAll("circle")).filter((c) =>
-      c.querySelector("title"),
-    );
-    const radii = cores.map((c) => Number(c.getAttribute("r")));
-    // New Moon (95) should be larger than Jupiter (40).
-    expect(Math.max(...radii)).toBeGreaterThan(Math.min(...radii));
+  it("renders background stars (3 smaller circles)", () => {
+    render(<ConstellationViz />);
+
+    // Background stars with green tint
+    const backgroundGroup = document.querySelector('g[fill="rgba(94,242,193,0.6)"]');
+    expect(backgroundGroup).toBeInTheDocument();
+
+    const backgroundStars = backgroundGroup?.querySelectorAll("circle");
+    expect(backgroundStars).toHaveLength(3);
   });
 
-  it("shows the event title on hover", () => {
-    render(<ConstellationViz events={mockEvents} />);
-    const firstGroup = document.querySelector("svg g");
-    expect(firstGroup).toBeInTheDocument();
-    fireEvent.mouseEnter(firstGroup as Element);
-    expect(screen.getAllByText("Perseids Meteor Shower").length).toBeGreaterThan(0);
+  it("stars have varying sizes", () => {
+    render(<ConstellationViz />);
+
+    const allCircles = document.querySelectorAll("circle");
+    const radii = Array.from(allCircles).map(c => c.getAttribute("r"));
+
+    // Check that we have various star sizes
+    expect(radii).toContain("3");
+    expect(radii).toContain("4");
+    expect(radii).toContain("5");
+    expect(radii).toContain("6");
+    expect(radii).toContain("2");
   });
 
-  it("gates twinkle animation for reduced motion", () => {
-    render(<ConstellationViz events={mockEvents} />);
-    const halo = document.querySelector("circle.animate-pulseSoft");
-    expect(halo).toBeInTheDocument();
-    expect(halo?.getAttribute("class")).toContain("motion-reduce:animate-none");
+  it("displays description text", () => {
+    render(<ConstellationViz />);
+
+    expect(screen.getByText(/Star pattern illustration/)).toBeInTheDocument();
   });
 
-  it("renders an empty state when no events are provided", () => {
-    render(<ConstellationViz events={[]} />);
-    expect(screen.getByText(/No upcoming events plotted/)).toBeInTheDocument();
-    expect(document.querySelector("polyline")).not.toBeInTheDocument();
+  it("applies gradient background styling", () => {
+    const { container } = render(<ConstellationViz />);
+
+    const backgroundDiv = container.querySelector(".absolute.inset-0");
+    expect(backgroundDiv).toBeInTheDocument();
+    expect(backgroundDiv?.className).toContain("bg-[radial-gradient");
+  });
+
+  it("has overflow hidden to clip content", () => {
+    const { container } = render(<ConstellationViz />);
+
+    const vizContainer = container.firstChild as HTMLElement;
+    expect(vizContainer).toHaveClass("overflow-hidden");
+  });
+
+  it("positions SVG relatively", () => {
+    render(<ConstellationViz />);
+
+    const svg = document.querySelector("svg");
+    expect(svg).toHaveClass("relative", "h-full", "w-full");
+  });
+
+  it("description text has proper styling", () => {
+    render(<ConstellationViz />);
+
+    const description = screen.getByText(/Star pattern illustration/).closest("div");
+    expect(description).toHaveClass("relative", "mt-4", "text-xs", "text-starlight/40");
+  });
+
+  it("constellation line has proper stroke styling", () => {
+    render(<ConstellationViz />);
+
+    const strokeGroup = document.querySelector('g[stroke="rgba(232,241,255,0.45)"]');
+    expect(strokeGroup).toBeInTheDocument();
+    expect(strokeGroup).toHaveAttribute("stroke-width", "1.5");
   });
 });
