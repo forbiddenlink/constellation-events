@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import SectionHeading from "@/components/SectionHeading";
 import EventsFeedWithFilters from "@/components/EventsFeedWithFilters";
+import EventsRail from "@/components/EventsRail";
 
 export const metadata: Metadata = {
   title: "Celestial Events",
@@ -21,6 +22,7 @@ export default function EventsPage() {
         subtitle="Plan for meteor showers, planetary alignments, and rare lunar features with visibility scored by location."
         as="h1"
       />
+      <EventsRail />
       <EventsFeedWithFilters />
     </div>
   );
