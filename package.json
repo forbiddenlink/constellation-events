@@ -108,7 +108,12 @@
       "postcss": "8.5.26",
       "engine.io>ws": "8.21.1",
       "engine.io-client>ws": "8.21.1",
-      "socket.io-adapter>ws": "8.21.1"
+      "socket.io-adapter>ws": "8.21.1",
+      "@opentelemetry/core": ">=2.8.0 <3",
+      "engine.io": ">=6.6.7 <7",
+      "js-yaml": ">=4.3.1 <5",
+      "nanoid": ">=5.1.6 <6",
+      "sharp": ">=0.35.0 <1"
     }
   }
 }
