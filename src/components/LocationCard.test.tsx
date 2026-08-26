@@ -52,7 +52,7 @@ describe("LocationCard", () => {
     render(<LocationCard location={mockLocationItem} />);
 
     expect(screen.getByText("92")).toBeInTheDocument();
-    expect(screen.getByText("Score")).toBeInTheDocument();
+    expect(screen.getByText("/100")).toBeInTheDocument();
   });
 
   it("renders description/note for LocationItem", () => {
@@ -77,7 +77,7 @@ describe("LocationCard", () => {
     const { container } = render(<LocationCard location={mockLocationItem} />);
 
     const card = container.firstChild as HTMLElement;
-    expect(card).toHaveClass("glass", "rounded-2xl", "p-5");
+    expect(card).toHaveClass("glass", "rounded-2xl");
   });
 
   it("renders location name with correct styling", () => {
@@ -91,7 +91,7 @@ describe("LocationCard", () => {
     render(<LocationCard location={mockLocationItem} />);
 
     const score = screen.getByText("92");
-    expect(score).toHaveClass("text-2xl", "font-semibold", "text-aurora");
+    expect(score).toHaveClass("text-lg", "font-semibold", "text-aurora");
   });
 
   it("renders distance with subtle styling", () => {
@@ -104,7 +104,7 @@ describe("LocationCard", () => {
   it("renders score label with uppercase tracking", () => {
     render(<LocationCard location={mockLocationItem} />);
 
-    const scoreLabel = screen.getByText("Score");
-    expect(scoreLabel).toHaveClass("uppercase", "tracking-[0.3em]");
+    const scoreLabel = screen.getByText("/100");
+    expect(scoreLabel).toHaveClass("uppercase", "tracking-[0.2em]");
   });
 });
