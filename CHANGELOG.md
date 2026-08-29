@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/forbiddenlink/constellation-events/compare/v1.0.0...v1.0.1) (2026-08-29)
+
+
+### Bug Fixes
+
+* harden workflow supply chain ([7de4e8b](https://github.com/forbiddenlink/constellation-events/commit/7de4e8bfd146dcc978e643c95dd8bbeedce99758))
+
 ## 1.0.0 (2026-08-16)
 
 
