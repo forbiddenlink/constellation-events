@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/forbiddenlink/constellation-events/compare/v1.0.1...v1.0.2) (2026-08-29)
+
+
+### Bug Fixes
+
+* **deps:** bump next to 16.3.3 for AVIF image RCE ([#51](https://github.com/forbiddenlink/constellation-events/issues/51)) ([fd75d14](https://github.com/forbiddenlink/constellation-events/commit/fd75d1421e970b4fc720e7dc9560dbd8dd20d42e))
+
 ## [1.0.1](https://github.com/forbiddenlink/constellation-events/compare/v1.0.0...v1.0.1) (2026-08-29)
 
 
