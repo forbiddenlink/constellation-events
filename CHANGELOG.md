@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.3](https://github.com/forbiddenlink/constellation-events/compare/v1.0.2...v1.0.3) (2026-09-02)
+
+
+### Bug Fixes
+
+* **ci:** let pnpm/action-setup read the version from packageManager ([124e187](https://github.com/forbiddenlink/constellation-events/commit/124e187b6ca757a4d1b307e8704f9200944cd8fc))
+* **deps:** give every resolution override an upper bound ([493897c](https://github.com/forbiddenlink/constellation-events/commit/493897c7ef1f51fe2f3dc16b599d372580810fe4))
+
 ## [1.0.2](https://github.com/forbiddenlink/constellation-events/compare/v1.0.1...v1.0.2) (2026-08-29)
 
 
