@@ -55,7 +55,7 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.12",
+    "@biomejs/biome": "2.5.12",
     "@eslint/eslintrc": "^3.3.7",
     "@next/bundle-analyzer": "^16.3.4",
     "@next/eslint-plugin-next": "^16.3.4",
