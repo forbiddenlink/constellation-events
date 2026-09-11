@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.4](https://github.com/forbiddenlink/constellation-events/compare/v1.0.3...v1.0.4) (2026-09-11)
+
+
+### Bug Fixes
+
+* **deps:** bump @arcjet/next to 1.12.0 to stop idle GOAWAY crashes ([#72](https://github.com/forbiddenlink/constellation-events/issues/72)) ([a09f402](https://github.com/forbiddenlink/constellation-events/commit/a09f402f868776625bac304f9d26f04ee4a284eb))
+* **sentry:** ship the client SDK under Turbopack and load instrumentation ([#69](https://github.com/forbiddenlink/constellation-events/issues/69)) ([5e18ef2](https://github.com/forbiddenlink/constellation-events/commit/5e18ef2d932f886f1743eea7ac18b1f3a438e97e))
+* **seo:** stop falling back to constellation.app, a different product's domain ([#71](https://github.com/forbiddenlink/constellation-events/issues/71)) ([00a9180](https://github.com/forbiddenlink/constellation-events/commit/00a918016efd3fd07d9977617c28a9548f25cdcf))
+
 ## [1.0.3](https://github.com/forbiddenlink/constellation-events/compare/v1.0.2...v1.0.3) (2026-09-02)
 
 
