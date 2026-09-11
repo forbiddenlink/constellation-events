@@ -1,22 +1,8 @@
 import type { MetadataRoute } from "next";
-
-function getBaseUrl(): string {
-  // Explicit site URL takes priority (production)
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL;
-  }
-
-  // Vercel preview deployments
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-
-  // Local development
-  return "http://localhost:3000";
-}
+import { getSiteUrl } from "@/lib/site-url";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = getBaseUrl();
+  const baseUrl = getSiteUrl();
 
   return [
     {

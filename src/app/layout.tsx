@@ -9,6 +9,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import ClientErrorBoundary from "@/components/ClientErrorBoundary";
 import NavBar from "@/components/NavBar";
 import { logConfigStatus } from "@/lib/config";
+import { getSiteUrl } from "@/lib/site-url";
 
 // Log configuration status on server startup
 logConfigStatus();
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
   keywords: ["astronomy", "stargazing", "celestial events", "dark sky", "meteor shower", "moon phases", "night sky", "telescope", "star map"],
   authors: [{ name: "Constellation Team" }],
   creator: "Constellation",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://constellation.app"),
+  metadataBase: new URL(getSiteUrl()),
   openGraph: {
     type: "website",
     locale: "en_US",
