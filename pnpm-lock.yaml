@@ -177,8 +177,8 @@ importers:
         specifier: 6.1.1
         version: 6.1.1(vite@8.2.2(@types/node@26.4.0)(jiti@2.7.0)(terser@5.51.2))
       autoprefixer:
-        specifier: 10.5.4
-        version: 10.5.4(postcss@8.5.28)
+        specifier: 10.5.6
+        version: 10.5.6(postcss@8.5.28)
       eslint:
         specifier: 10.9.1
         version: 10.9.1(jiti@2.7.0)
@@ -2525,8 +2525,8 @@ packages:
     resolution: {integrity: sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==}
     engines: {node: '>=8.0.0'}
 
-  autoprefixer@10.5.4:
-    resolution: {integrity: sha512-MaU0U/za7N3r6brxD4YB/l4NSrFzLPlANv6wEuQVaIPlD3L4W9rFcQPbL/EilY9BHhHvhfcz3gInDLrEtWT4EA==}
+  autoprefixer@10.5.6:
+    resolution: {integrity: sha512-HiH4oYNc5+DQEx/b8FPfMj+WHH/WWUBmbN5r1Uf/ixtfyFkk+wGIlfJT/RD5eAyzlwkeYRtZUCI8qrEi26pl2g==}
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
@@ -7118,7 +7118,7 @@ snapshots:
 
   atomic-sleep@1.0.0: {}
 
-  autoprefixer@10.5.4(postcss@8.5.28):
+  autoprefixer@10.5.6(postcss@8.5.28):
     dependencies:
       browserslist: 4.28.9
       caniuse-lite: 1.0.30001810
