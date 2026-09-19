@@ -6,12 +6,15 @@ Complete API reference for the Constellation astronomy event tracker.
 
 ```
 Development: http://localhost:3000/api
-Production: https://constellation.app/api
+Production: https://constellation-events.vercel.app/api
 ```
 
 ## Authentication
 
-Currently, all endpoints are publicly accessible. Authentication will be added in a future version for personalized features.
+Read endpoints are public. `/api/auth/[...all]` (better-auth) handles session-based
+authentication. Marketplace write routes additionally require an `x-marketplace-write-token`
+header, checked with a timing-safe comparison plus CSRF origin validation
+(`src/lib/marketplace-auth.ts`).
 
 ---
 
@@ -340,13 +343,44 @@ Returns curated astronomy gear and equipment listings.
 }
 ```
 
+### 7. Astronomy Picture of the Day
+
+**GET** `/api/apod` - NASA's Astronomy Picture of the Day.
+
+### 8. Aurora Forecast
+
+**GET** `/api/aurora?lat=` - Current aurora forecast and Kp index from NOAA SWPC.
+
+### 9. ISS Tracking
+
+**GET** `/api/iss` and **GET** `/api/satellites/iss` - Current ISS position and upcoming
+visible passes (satellite.js TLE propagation).
+
+### 10. Satellite Passes
+
+**GET** `/api/satellites/passes` - Upcoming passes for any satellite in the CelesTrak catalog.
+
+### 11. Marketplace listing detail
+
+**GET/PATCH/DELETE** `/api/marketplace/[id]` - a single listing; write operations require the
+marketplace write token.
+
+### 12. Marketplace image upload
+
+**POST** `/api/marketplace/upload-url` - presigned R2 upload URL for a listing image
+(browser-side resize/WebP before upload).
+
+### 13. Auth
+
+**GET/POST** `/api/auth/[...all]` - better-auth session endpoints.
+
 ---
 
 ## Rate Limiting
 
-Currently no rate limiting is enforced. In production:
-- Free tier: 1000 requests/day
-- Authenticated: 10,000 requests/day
+In-memory sliding-window rate limiting (`src/lib/rate-limit.ts`):
+- External-API-backed routes: 60 requests/min per client
+- Write routes (marketplace): 10 requests/min per client
 
 ## Error Responses
 
@@ -452,9 +486,7 @@ def get_dark_sky_locations(lat, lng, max_distance=200):
 
 ## Support
 
-For API questions or issues:
-- GitHub Issues: [github.com/forbiddenlink/constellation-events/issues](https://github.com/forbiddenlink/constellation-events/issues)
-- Email: support@constellation.app (Coming soon)
+For API questions or issues, open a [GitHub issue](https://github.com/forbiddenlink/constellation-events/issues).
 
 ---
 
