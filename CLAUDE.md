@@ -11,7 +11,7 @@ R2-backed image uploads.
 - Next.js ^16.3.4 (App Router), TypeScript, Tailwind CSS 4
 - pnpm (`packageManager: pnpm@10.34.5`)
 - better-auth, pg + better-sqlite3, Cloudflare R2 (`@aws-sdk/client-s3`)
-- Trigger.dev, Sentry, Axiom, PostHog, Arcjet
+- Trigger.dev, Sentry, Axiom, Arcjet
 - Vitest (unit) + Playwright (e2e, Chromium only)
 - ESLint (`next/core-web-vitals`) and Biome are both configured; `pnpm lint`
   runs ESLint only
@@ -28,7 +28,8 @@ R2-backed image uploads.
 - `pnpm test:e2e` / `pnpm test:e2e:ui` - Playwright (starts a dev server if
   one isn't already running)
 - `pnpm biome:check` / `pnpm biome:fix` / `pnpm biome:format`
-- CI (`.github/workflows/ci.yml`): lint -> test -> build -> typecheck -> e2e
+- CI (`.github/workflows/ci.yml`): lint, test, typecheck run in parallel,
+  then build, then e2e
 
 ## Architecture
 
