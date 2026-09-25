@@ -108,9 +108,10 @@ export default function ConstellationViz({ events = [], limit = 9 }: Constellati
               />
               {/* Core star */}
               <circle cx={star.x} cy={star.y} r={star.r} fill={star.color}>
-                <title>
-                  {star.event.title} — {star.event.dateDisplay} (visibility {Math.round(star.event.visibilityScore)})
-                </title>
+                {/* One expression, not six children: React 19 refuses a <title> whose
+                    children are an array, and the resulting error aborts the Suspense
+                    boundary this tree sits in, so the page never leaves loading.tsx. */}
+                <title>{`${star.event.title} — ${star.event.dateDisplay} (visibility ${Math.round(star.event.visibilityScore)})`}</title>
               </circle>
               {isActive && (
                 <text
