@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/forbiddenlink/constellation-events/compare/v1.0.4...v1.0.5) (2026-09-25)
+
+
+### Bug Fixes
+
+* **viz:** give &lt;title&gt; a single expression child ([8328991](https://github.com/forbiddenlink/constellation-events/commit/8328991376aa495d908cf8952984842fdaa41f4c))
+
 ## [1.0.4](https://github.com/forbiddenlink/constellation-events/compare/v1.0.3...v1.0.4) (2026-09-19)
 
 
