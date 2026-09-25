@@ -98,7 +98,7 @@ export default function EventsRail() {
               <div
                 key={event.id}
                 role="listitem"
-                className="group w-56 flex-shrink-0 snap-center rounded-2xl border border-white/10 bg-white/5 p-4 transition-all hover:-translate-y-1 hover:border-aurora/30"
+                className="group w-56 flex-shrink-0 snap-center rounded-2xl border border-white/10 bg-white/5 p-4 transition-[transform,border-color] hover:-translate-y-1 hover:border-aurora/30"
               >
                 <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-starlight/50">
                   <span

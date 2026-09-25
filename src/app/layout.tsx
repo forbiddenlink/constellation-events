@@ -115,7 +115,7 @@ export default function RootLayout({
         </div>
         
         <NuqsAdapter>
-          <div className="relative z-10 flex min-h-screen flex-col">
+          <div className="relative z-10 flex min-h-dvh flex-col">
             <NavBar />
 
             <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-12 md:py-20">

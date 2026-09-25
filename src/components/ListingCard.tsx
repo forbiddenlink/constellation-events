@@ -33,7 +33,7 @@ export default function ListingCard({ listing }: { readonly listing: ListingMode
   else if (moderationStatus === "pending") statusTone = "text-caution border-caution/40";
 
   return (
-    <div className="group relative flex items-center justify-between border-b border-white/10 py-4 px-4 transition-all hover:bg-white/5">
+    <div className="group relative flex items-center justify-between border-b border-white/10 py-4 px-4 transition-colors hover:bg-white/5">
         {/* Leading Data Block — photo-forward */}
         <div className="flex items-center gap-4">
             <div className="relative flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-aurora/40">

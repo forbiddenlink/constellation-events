@@ -733,7 +733,7 @@ export default function MarketplaceBrowser() {
                       {uploadStatus === "requesting" && <span className="text-starlight/50">Requesting upload slot...</span>}
                       {uploadStatus === "uploading" && (
                         <div className="flex items-center gap-2">
-                          <div className="h-1 flex-1 rounded-full bg-white/10"><div className="h-full rounded-full bg-aurora transition-all" style={{ width: `${uploadPercent}%` }} /></div>
+                          <div className="h-1 flex-1 rounded-full bg-white/10"><div className="h-full rounded-full bg-aurora transition-[width]" style={{ width: `${uploadPercent}%` }} /></div>
                           <span className="text-aurora">{uploadPercent}%</span>
                         </div>
                       )}

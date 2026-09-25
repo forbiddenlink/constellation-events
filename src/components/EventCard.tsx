@@ -72,7 +72,7 @@ export default function EventCard({ event }: EventCardProps) {
           type="button"
           onClick={handleAddToCalendar}
           aria-label={added ? `${event.title} added to calendar` : `Add ${event.title} to calendar`}
-          className={`relative mt-4 inline-flex items-center gap-2 overflow-hidden rounded-full border px-4 py-1.5 text-xs font-medium transition-all ${
+          className={`relative mt-4 inline-flex items-center gap-2 overflow-hidden rounded-full border px-4 py-1.5 text-xs font-medium transition-[background-color,border-color,color] ${
             added
               ? "border-aurora/60 text-aurora"
               : "border-white/10 text-starlight/70 hover:border-aurora/40 hover:text-aurora"

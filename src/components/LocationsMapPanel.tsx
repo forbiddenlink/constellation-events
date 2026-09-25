@@ -91,7 +91,7 @@ export default function LocationsMapPanel() {
         </div>
         <div className="flex items-center gap-2 text-xs">
           <button
-            className={`rounded-full border px-3 py-1 transition-all ${
+            className={`rounded-full border px-3 py-1 transition-[background-color,border-color,color] ${
               showLightPollution ? "border-aurora text-aurora" : "border-white/20 text-starlight/60 hover:border-white/30"
             }`}
             onClick={() => setShowLightPollution((prev) => !prev)}

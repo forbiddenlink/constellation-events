@@ -157,7 +157,7 @@ export default function AuroraForecast() {
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => (
                   <div
                     key={level}
-                    className={`flex-1 transition-all ${
+                    className={`flex-1 transition-colors ${
                       level <= Math.ceil(data.current.kp)
                         ? getKpBarColor(level)
                         : "bg-white/10"
@@ -230,7 +230,7 @@ export default function AuroraForecast() {
                       <div className="flex items-center gap-2">
                         <div className="h-2 w-16 rounded-full bg-white/10 overflow-hidden">
                           <div
-                            className={`h-full transition-all ${getKpBarColor(period.kp)}`}
+                            className={`h-full transition-[width,background-color] ${getKpBarColor(period.kp)}`}
                             style={{ width: `${(period.kp / 9) * 100}%` }}
                           />
                         </div>

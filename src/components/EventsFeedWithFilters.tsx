@@ -81,7 +81,7 @@ export default function EventsFeedWithFilters() {
                 <button
                   key={filter.value}
                   onClick={() => setActiveFilter(filter.value)}
-                  className={`rounded-full border px-4 py-2 text-xs transition-all ${
+                  className={`rounded-full border px-4 py-2 text-xs transition-[background-color,border-color,color] ${
                     activeFilter === filter.value
                       ? "border-aurora text-aurora bg-aurora/10"
                       : "border-white/10 text-starlight/70 hover:border-white/20 hover:text-starlight"
