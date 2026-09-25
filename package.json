@@ -93,7 +93,6 @@
   "description": "Astronomy-themed event discovery and mapping platform",
   "pnpm": {
     "overrides": {
-      "@better-auth/kysely-adapter": "1.6.17",
       "undici": ">=7.28.0 <8",
       "next": ">=16.2.6 <17",
       "flatted": ">=3.4.2 <4",
