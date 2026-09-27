@@ -2,20 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { AstronomyEvent } from "@/lib/events";
+import LocalTime from "@/components/LocalTime";
 
 type EventsResponse = {
   events: AstronomyEvent[];
   generatedAt: string;
 };
 
-// event.dateDisplay is precomputed on the server, in the server's own
-// timezone — wrong for a viewer elsewhere. Recompute it client-side, in the
-// viewer's local timezone, from the event's real ISO date instead.
-function formatEventDate(event: AstronomyEvent): string {
-  const date = new Date(event.date);
-  if (Number.isNaN(date.getTime())) return event.dateDisplay;
-  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-}
+const formatEventDate = (date: Date) => date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 
 // Star tint per event type — mirrors the constellation map palette.
 const TYPE_COLORS: Record<AstronomyEvent["type"], string> = {
@@ -116,7 +110,7 @@ export default function EventsRail() {
                     className="inline-block h-2 w-2 rounded-full animate-pulseSoft motion-reduce:animate-none"
                     style={{ backgroundColor: color, boxShadow: `0 0 ${6 + glow * 10}px ${color}` }}
                   />
-                  {formatEventDate(event)}
+                  <LocalTime iso={event.date} format={formatEventDate} />
                 </div>
                 <h3 className="mt-3 line-clamp-2 text-sm font-semibold text-starlight">{event.title}</h3>
                 <p className="mt-2 line-clamp-2 text-xs text-starlight/60">{event.summary}</p>
