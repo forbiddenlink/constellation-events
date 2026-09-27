@@ -150,8 +150,14 @@ select option {
   color: var(--nv-text-primary) !important;
 }
 
-.night-vision .bg-aurora,
-.night-vision [class*="bg-aurora"] {
+/*
+ * Only remap the solid `bg-aurora` utility (status dots, progress bars).
+ * The old `[class*="bg-aurora"]` wildcard also caught opacity variants like
+ * `bg-aurora/10`, forcing them to the same fully-saturated red as the
+ * `.text-aurora` remap below — e.g. an active filter chip's translucent
+ * teal background became solid red text-on-red, failing color contrast.
+ */
+.night-vision .bg-aurora {
   background-color: var(--nv-accent) !important;
 }
 

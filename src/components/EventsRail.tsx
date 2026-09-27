@@ -8,6 +8,15 @@ type EventsResponse = {
   generatedAt: string;
 };
 
+// event.dateDisplay is precomputed on the server, in the server's own
+// timezone — wrong for a viewer elsewhere. Recompute it client-side, in the
+// viewer's local timezone, from the event's real ISO date instead.
+function formatEventDate(event: AstronomyEvent): string {
+  const date = new Date(event.date);
+  if (Number.isNaN(date.getTime())) return event.dateDisplay;
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
 // Star tint per event type — mirrors the constellation map palette.
 const TYPE_COLORS: Record<AstronomyEvent["type"], string> = {
   moon: "#F1F5F9",
@@ -77,9 +86,10 @@ export default function EventsRail() {
 
       <div
         ref={scrollerRef}
-        className="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 [scrollbar-width:thin]"
+        className="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 [scrollbar-width:thin] focus:outline-none focus-visible:ring-1 focus-visible:ring-aurora"
         role="list"
         aria-label="Upcoming celestial events timeline"
+        tabIndex={0}
       >
         {status === "loading" &&
           [0, 1, 2, 3].map((i) => (
@@ -106,7 +116,7 @@ export default function EventsRail() {
                     className="inline-block h-2 w-2 rounded-full animate-pulseSoft motion-reduce:animate-none"
                     style={{ backgroundColor: color, boxShadow: `0 0 ${6 + glow * 10}px ${color}` }}
                   />
-                  {event.dateDisplay}
+                  {formatEventDate(event)}
                 </div>
                 <h3 className="mt-3 line-clamp-2 text-sm font-semibold text-starlight">{event.title}</h3>
                 <p className="mt-2 line-clamp-2 text-xs text-starlight/60">{event.summary}</p>

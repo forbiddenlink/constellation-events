@@ -21,7 +21,9 @@ function buildHighlightsFromHorizons(targets: ReturnType<typeof getDefaultTarget
       id: target.id,
       name: target.name,
       type: target.type,
-      bestTime: `${best.timeLabel} UT`,
+      // ISO UTC instant; the client formats it in the viewer's local
+      // timezone instead of showing a raw JPL "UT" timestamp.
+      bestTime: best.timeISO ?? `${best.timeLabel} UT`,
       magnitude: `${Math.round(best.elevation)}°`,
       metricLabel: "Alt",
       highlight: `Peak elevation ${Math.round(best.elevation)}°`

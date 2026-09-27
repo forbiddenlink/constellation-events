@@ -268,9 +268,20 @@ export function getOptimalObservationWindow(
   else if (moonInfo.illumination < 75) moonInterference = "moderate";
   else moonInterference = "high";
 
+  // `astronomicalDawn` from getSunTimes(date) is THIS calendar day's dawn,
+  // which happens before dusk, not after it — pairing them naively produces
+  // a negative-duration window. Tonight's window ends with the following
+  // day's dawn, so roll forward when dawn doesn't fall after dusk.
+  let end = sunTimes.astronomicalDawn;
+  if (end && sunTimes.astronomicalDusk && end <= sunTimes.astronomicalDusk) {
+    const nextDay = new Date(date);
+    nextDay.setDate(nextDay.getDate() + 1);
+    end = getSunTimes(lat, lon, nextDay).astronomicalDawn;
+  }
+
   return {
     start: sunTimes.astronomicalDusk,
-    end: sunTimes.astronomicalDawn,
+    end,
     quality: Math.round(moonQuality),
     moonInterference
   };

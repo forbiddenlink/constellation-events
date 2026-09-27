@@ -12,9 +12,41 @@ export type HorizonsTarget = {
 
 export type HorizonsPoint = {
   timeLabel: string;
+  /** timeLabel converted to a real UTC instant, or null if it couldn't be parsed. */
+  timeISO: string | null;
   azimuth: number;
   elevation: number;
 };
+
+const HORIZONS_MONTHS: Record<string, string> = {
+  Jan: "01",
+  Feb: "02",
+  Mar: "03",
+  Apr: "04",
+  May: "05",
+  Jun: "06",
+  Jul: "07",
+  Aug: "08",
+  Sep: "09",
+  Oct: "10",
+  Nov: "11",
+  Dec: "12"
+};
+
+/**
+ * JPL Horizons CSV time labels look like "2026-Sep-27 16:57" and are always
+ * UT (TIME_TYPE is fixed to "UT" in buildObserverUrl). `new Date(label)`
+ * parses that shape as LOCAL time in V8, silently shifting it by the host's
+ * UTC offset. Convert explicitly to an unambiguous ISO UTC string instead.
+ */
+export function parseHorizonsTimeLabel(label: string): string | null {
+  const match = label.trim().match(/^(\d{4})-([A-Za-z]{3})-(\d{2})\s+(\d{2}):(\d{2})$/);
+  if (!match) return null;
+  const [, year, monthName, day, hour, minute] = match;
+  const month = HORIZONS_MONTHS[monthName];
+  if (!month) return null;
+  return `${year}-${month}-${day}T${hour}:${minute}:00.000Z`;
+}
 
 export type HorizonsResult = {
   points: HorizonsPoint[];
@@ -82,7 +114,7 @@ function parseObserverCsv(lines: string[]): HorizonsPoint[] {
       if (numeric.length < 2) return null;
       const elevation = numeric[numeric.length - 1];
       const azimuth = numeric[numeric.length - 2];
-      return { timeLabel, azimuth, elevation };
+      return { timeLabel, timeISO: parseHorizonsTimeLabel(timeLabel), azimuth, elevation };
     })
     .filter((point): point is HorizonsPoint => Boolean(point));
 }

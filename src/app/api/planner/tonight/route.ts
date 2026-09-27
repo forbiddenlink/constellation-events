@@ -331,7 +331,9 @@ async function fetchVisiblePlanets(coords: Coordinates): Promise<VisiblePlanet[]
           name: target.name,
           type: target.type,
           bestAltitude: Math.round(best.elevation),
-          bestTime: best.timeLabel,
+          // ISO UTC instant, not JPL's raw "2026-Sep-27 16:57" UT label — the
+          // client formats it in the viewer's own local timezone.
+          bestTime: best.timeISO ?? best.timeLabel,
           visible: true
         };
       } catch {

@@ -141,7 +141,7 @@ export default function TonightPlannerPanel() {
             <div key={planet.name} className="flex items-center justify-between rounded-xl border border-white/10 p-3">
               <div>
                 <div>{planet.name}</div>
-                <div className="text-[11px] text-starlight/50">{planet.bestTime}</div>
+                <div className="text-[11px] text-starlight/50">{formatTime(planet.bestTime)}</div>
               </div>
               <span className="text-xs text-starlight/60">{planet.bestAltitude} deg</span>
             </div>

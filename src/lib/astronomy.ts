@@ -192,9 +192,17 @@ export function calculateOptimalWindow(
   // Fallback for polar regions or calculation failures
   if (!window.start || !window.end) {
     const times = calculateSunMoonTimes(lat, lng, date);
+    // Same-calendar-day dawn happens before dusk, not after it — roll to the
+    // next day's dawn so the window doesn't come out with a negative duration.
+    let end = times.astronomicalDawn;
+    if (end <= times.astronomicalDusk) {
+      const nextDay = new Date(date);
+      nextDay.setDate(nextDay.getDate() + 1);
+      end = calculateSunMoonTimes(lat, lng, nextDay).astronomicalDawn;
+    }
     return {
       start: times.astronomicalDusk,
-      end: times.astronomicalDawn,
+      end,
       quality: window.quality,
     };
   }
