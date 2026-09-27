@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { EventItem } from "@/lib/mock";
 import type { AstronomyEvent } from "@/lib/events";
 import { generateEventICS, downloadICS } from "@/lib/ical";
+import LocalTime from "@/components/LocalTime";
 
 type EventCardProps = {
   event: EventItem | AstronomyEvent;
@@ -14,19 +15,10 @@ function isAstronomyEvent(event: EventItem | AstronomyEvent): event is Astronomy
   return 'dateDisplay' in event;
 }
 
-// AstronomyEvent.dateDisplay is precomputed on the server, in the server's
-// own timezone — wrong for a viewer elsewhere. Recompute it client-side, in
-// the viewer's local timezone, from the event's real ISO date instead.
-function formatEventDate(event: EventItem | AstronomyEvent): string {
-  if (!isAstronomyEvent(event)) return event.date;
-  const date = new Date(event.date);
-  if (Number.isNaN(date.getTime())) return event.dateDisplay;
-  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-}
+const formatEventDate = (date: Date) => date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 
 export default function EventCard({ event }: EventCardProps) {
   const [added, setAdded] = useState(false);
-  const displayDate = formatEventDate(event);
   const visibilityBadge = event.visibility;
 
   // Get badge color based on visibility
@@ -63,7 +55,11 @@ export default function EventCard({ event }: EventCardProps) {
   return (
     <div className="glass rounded-2xl p-5 transition hover:-translate-y-1 hover:shadow-comet">
       <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-starlight/50">
-        <span>{displayDate}</span>
+        {isAstronomyEvent(event) ? (
+          <LocalTime iso={event.date} format={formatEventDate} />
+        ) : (
+          <span>{event.date}</span>
+        )}
         <span className={`rounded-full border px-3 py-1 text-[10px] ${getBadgeColor(visibilityBadge)}`}>
           {visibilityBadge}
         </span>

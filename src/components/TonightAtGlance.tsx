@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { TonightObject } from "@/lib/mock";
 import useGeolocation from "@/hooks/useGeolocation";
+import LocalTime from "@/components/LocalTime";
 
 type TonightResponse = {
   highlights: TonightObject[];
@@ -10,23 +11,15 @@ type TonightResponse = {
   source?: string;
 };
 
-function formatTimestamp(iso: string) {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return "";
-  return date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
-}
+const formatTimestamp = (date: Date) => date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 
 const ISO_INSTANT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
 
 // bestTime is polymorphic: an ISO UTC instant from JPL Horizons, or plain
 // text ("Now visible", "Alt: 42°") from the astronomy-engine/mock fallback.
-// Only reformat the former — into the viewer's own local time — and leave
-// the latter untouched.
-function formatBestTime(value: string) {
-  if (!ISO_INSTANT.test(value)) return value;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+// Only the former needs viewer-local formatting via LocalTime.
+function isIsoInstant(value: string) {
+  return ISO_INSTANT.test(value);
 }
 
 export default function TonightAtGlance() {
@@ -67,7 +60,13 @@ export default function TonightAtGlance() {
       <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-starlight/50">
         <span>Tonight at a glance</span>
         <span className="text-[10px] tracking-[0.3em] text-starlight/40">
-          {data?.generatedAt ? `Updated ${formatTimestamp(data.generatedAt)}` : "Live feed"}
+          {data?.generatedAt ? (
+            <>
+              Updated <LocalTime iso={data.generatedAt} format={formatTimestamp} />
+            </>
+          ) : (
+            "Live feed"
+          )}
         </span>
       </div>
       <div className="mt-4 space-y-4">
@@ -82,7 +81,14 @@ export default function TonightAtGlance() {
             <div>
               <div className="text-sm text-starlight/80">{item.type}</div>
               <div className="text-lg font-semibold text-starlight">{item.name}</div>
-              <div className="text-xs text-starlight/60">Best window: {formatBestTime(item.bestTime)}</div>
+              <div className="text-xs text-starlight/60">
+                Best window:{" "}
+                {isIsoInstant(item.bestTime) ? (
+                  <LocalTime iso={item.bestTime} format={formatTimestamp} />
+                ) : (
+                  item.bestTime
+                )}
+              </div>
             </div>
             <div className="text-right">
               <div className="text-sm font-semibold text-aurora">{item.magnitude}</div>

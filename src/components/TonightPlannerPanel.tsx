@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useGeolocation from "@/hooks/useGeolocation";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import LocalTime from "@/components/LocalTime";
 
 type PlannerResponse = {
   overallQuality: {
@@ -28,11 +29,7 @@ type PlannerResponse = {
   recommendations: { priority: string; title: string; description: string; timing: string }[];
 };
 
-function formatTime(value: string) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
-}
+const formatTime = (date: Date) => date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 
 export default function TonightPlannerPanel() {
   const geo = useGeolocation();
@@ -117,7 +114,8 @@ export default function TonightPlannerPanel() {
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
           <div className="text-xs text-starlight/50">Optimal window</div>
           <div className="mt-2 text-sm text-starlight/90">
-            {formatTime(data.optimalWindow.start)} to {formatTime(data.optimalWindow.end)}
+            <LocalTime iso={data.optimalWindow.start} format={formatTime} /> to{" "}
+            <LocalTime iso={data.optimalWindow.end} format={formatTime} />
           </div>
           <div className="mt-1 text-xs text-starlight/60">{data.optimalWindow.duration}h duration</div>
         </div>
@@ -141,7 +139,9 @@ export default function TonightPlannerPanel() {
             <div key={planet.name} className="flex items-center justify-between rounded-xl border border-white/10 p-3">
               <div>
                 <div>{planet.name}</div>
-                <div className="text-[11px] text-starlight/50">{formatTime(planet.bestTime)}</div>
+                <div className="text-[11px] text-starlight/50">
+                  <LocalTime iso={planet.bestTime} format={formatTime} />
+                </div>
               </div>
               <span className="text-xs text-starlight/60">{planet.bestAltitude} deg</span>
             </div>
@@ -171,7 +171,7 @@ export default function TonightPlannerPanel() {
       </button>
       {data.generatedAt ? (
         <p className="mt-3 text-center text-[11px] text-starlight/50">
-          Updated {new Date(data.generatedAt).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
+          Updated <LocalTime iso={data.generatedAt} format={formatTime} />
         </p>
       ) : null}
     </div>
