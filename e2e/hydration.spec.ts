@@ -10,6 +10,12 @@ import { test, expect } from "@playwright/test";
 // render body will disagree between server and client here and make React
 // throw a hydration error.
 test.describe("hydration: viewer-local time rendering", () => {
+  // Self-contained so this suite gets Auckland/de-DE regardless of which
+  // playwright config runs it (the repo's default config, run in CI via
+  // `pnpm test:e2e`, or playwright.hydration.config.ts for a manual
+  // production-build run).
+  test.use({ timezoneId: "Pacific/Auckland", locale: "de-DE" });
+
   test("homepage has zero hydration errors in Auckland/de-DE", async ({ page }) => {
     const consoleErrors: string[] = [];
     page.on("console", (msg) => {
