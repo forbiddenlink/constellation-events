@@ -14,9 +14,19 @@ function isAstronomyEvent(event: EventItem | AstronomyEvent): event is Astronomy
   return 'dateDisplay' in event;
 }
 
+// AstronomyEvent.dateDisplay is precomputed on the server, in the server's
+// own timezone — wrong for a viewer elsewhere. Recompute it client-side, in
+// the viewer's local timezone, from the event's real ISO date instead.
+function formatEventDate(event: EventItem | AstronomyEvent): string {
+  if (!isAstronomyEvent(event)) return event.date;
+  const date = new Date(event.date);
+  if (Number.isNaN(date.getTime())) return event.dateDisplay;
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
 export default function EventCard({ event }: EventCardProps) {
   const [added, setAdded] = useState(false);
-  const displayDate = isAstronomyEvent(event) ? event.dateDisplay : event.date;
+  const displayDate = formatEventDate(event);
   const visibilityBadge = event.visibility;
 
   // Get badge color based on visibility

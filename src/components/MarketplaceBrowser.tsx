@@ -503,6 +503,7 @@ export default function MarketplaceBrowser() {
               <select
                 value={category}
                 onChange={(event) => setCategory(event.target.value)}
+                aria-label="Filter by category"
                 className="rounded-xl bg-white/5 border border-white/10 p-3 text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora"
               >
                 <option value="all">All categories</option>
@@ -515,6 +516,7 @@ export default function MarketplaceBrowser() {
               <select
                 value={condition}
                 onChange={(event) => setCondition(event.target.value)}
+                aria-label="Filter by condition"
                 className="rounded-xl bg-white/5 border border-white/10 p-3 text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora"
               >
                 <option value="all">All conditions</option>
@@ -541,6 +543,7 @@ export default function MarketplaceBrowser() {
               <select
                 value={sort}
                 onChange={(event) => setSort(event.target.value as MarketplaceSort)}
+                aria-label="Sort listings"
                 className="rounded-xl bg-white/5 border border-white/10 p-3 text-sm text-starlight focus:outline-none focus:ring-1 focus:ring-aurora"
               >
                 <option value="featured">Sort: Featured</option>

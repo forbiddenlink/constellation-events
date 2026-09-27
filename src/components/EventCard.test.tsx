@@ -8,7 +8,11 @@ describe("EventCard", () => {
     id: "quadrantids-2026",
     title: "Quadrantids Meteor Shower",
     date: "2026-01-03",
-    dateDisplay: "Jan 3-4",
+    // EventCard recomputes the displayed date client-side, in the viewer's
+    // own timezone, from `date` — dateDisplay (server-timezone-bound) is
+    // only a fallback if `date` can't be parsed. Keep them intentionally
+    // different here so the test proves that recomputation actually happens.
+    dateDisplay: "SERVER-TIMEZONE-FALLBACK-UNUSED",
     summary: "First major meteor shower of the year with up to 120 meteors per hour",
     visibility: "excellent",
     visibilityScore: 90,
@@ -24,10 +28,15 @@ describe("EventCard", () => {
     expect(screen.getByText(/First major meteor shower/)).toBeInTheDocument();
   });
 
-  it("displays date and visibility badge", () => {
+  it("displays the date computed from the viewer's own timezone, not the server-side dateDisplay", () => {
     render(<EventCard event={mockEvent} />);
 
-    expect(screen.getByText("Jan 3-4")).toBeInTheDocument();
+    const expectedDate = new Date(mockEvent.date).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric"
+    });
+    expect(screen.getByText(expectedDate)).toBeInTheDocument();
+    expect(screen.queryByText(mockEvent.dateDisplay)).not.toBeInTheDocument();
     expect(screen.getByText("excellent")).toBeInTheDocument();
   });
 

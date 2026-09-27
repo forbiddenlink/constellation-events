@@ -16,6 +16,19 @@ function formatTimestamp(iso: string) {
   return date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 }
 
+const ISO_INSTANT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
+
+// bestTime is polymorphic: an ISO UTC instant from JPL Horizons, or plain
+// text ("Now visible", "Alt: 42°") from the astronomy-engine/mock fallback.
+// Only reformat the former — into the viewer's own local time — and leave
+// the latter untouched.
+function formatBestTime(value: string) {
+  if (!ISO_INSTANT.test(value)) return value;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+}
+
 export default function TonightAtGlance() {
   const [data, setData] = useState<TonightResponse | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
@@ -69,7 +82,7 @@ export default function TonightAtGlance() {
             <div>
               <div className="text-sm text-starlight/80">{item.type}</div>
               <div className="text-lg font-semibold text-starlight">{item.name}</div>
-              <div className="text-xs text-starlight/60">Best window: {item.bestTime}</div>
+              <div className="text-xs text-starlight/60">Best window: {formatBestTime(item.bestTime)}</div>
             </div>
             <div className="text-right">
               <div className="text-sm font-semibold text-aurora">{item.magnitude}</div>
