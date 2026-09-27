@@ -42,37 +42,47 @@ const METEOR_SHOWERS_2026 = [
  */
 function generateMoonEvents(fromDate: Date, toDate: Date): AstronomyEvent[] {
   const events: AstronomyEvent[] = [];
+  // Distance from the exact phase moment for the event currently at the end
+  // of `events` (0 = New, 0.25 = First Quarter, 0.5 = Full, 0.75 = Last
+  // Quarter). Tracked alongside `events` so a later, closer day in the same
+  // cluster can replace an earlier, worse-fit one (see below).
+  let lastPhaseDistance = Infinity;
   const current = new Date(fromDate);
-  
+
   // Check each day for significant moon phases
   while (current <= toDate) {
     const phase = calculateMoonPhase(current);
-    
+
     // Only include major phases (New, First Quarter, Full, Last Quarter)
     let includeEvent = false;
     let title = "";
     let summary = "";
-    
+    let phaseDistance = 0;
+
     if (phase.phase < 0.02 || phase.phase > 0.98) {
       includeEvent = true;
       title = "New Moon";
       summary = "Ideal for deep-sky observation. No moonlight interference.";
+      phaseDistance = Math.min(phase.phase, 1 - phase.phase);
     } else if (Math.abs(phase.phase - 0.25) < 0.02) {
       includeEvent = true;
       title = "First Quarter Moon";
       summary = "Half-illuminated moon visible in evening sky.";
+      phaseDistance = Math.abs(phase.phase - 0.25);
     } else if (Math.abs(phase.phase - 0.5) < 0.02) {
       includeEvent = true;
       title = "Full Moon";
       summary = "Bright moonlight affects deep-sky viewing. Great for lunar observation.";
+      phaseDistance = Math.abs(phase.phase - 0.5);
     } else if (Math.abs(phase.phase - 0.75) < 0.02) {
       includeEvent = true;
       title = "Last Quarter Moon";
       summary = "Half-illuminated moon visible in morning sky.";
+      phaseDistance = Math.abs(phase.phase - 0.75);
     }
-    
+
     if (includeEvent) {
-      events.push({
+      const newEvent: AstronomyEvent = {
         id: `moon-${current.toISOString().split('T')[0]}`,
         title,
         date: current.toISOString(),
@@ -82,12 +92,34 @@ function generateMoonEvents(fromDate: Date, toDate: Date): AstronomyEvent[] {
         visibilityScore: 100 - phase.illumination,
         summary,
         type: "moon"
-      });
+      };
+
+      // The synodic month advances the phase by ~0.034/day, so a
+      // 0.04-wide window can span two consecutive calendar days near the
+      // exact moment, producing back-to-back duplicates (e.g. two "New
+      // Moon" entries a day apart, which never happens in reality). Keep
+      // only the single day closest to the exact phase per cluster.
+      const previous = events[events.length - 1];
+      const daysSincePrevious = previous
+        ? (current.getTime() - new Date(previous.date).getTime()) / 86400000
+        : Infinity;
+      const inSameCluster = previous?.title === title && daysSincePrevious <= 3;
+
+      if (inSameCluster) {
+        if (phaseDistance < lastPhaseDistance) {
+          events[events.length - 1] = newEvent;
+          lastPhaseDistance = phaseDistance;
+        }
+        // else: the previously kept day is the closer fit; drop this one.
+      } else {
+        events.push(newEvent);
+        lastPhaseDistance = phaseDistance;
+      }
     }
-    
+
     current.setDate(current.getDate() + 1);
   }
-  
+
   return events;
 }
 

@@ -41,7 +41,7 @@ test.describe("Smoke Tests", () => {
   test("marketplace page loads", async ({ page }) => {
     await page.goto("/marketplace");
 
-    await expect(page.getByText("Curated telescope marketplace")).toBeVisible();
+    await expect(page.getByText("Telescope marketplace")).toBeVisible();
   });
 
   test("navigation works correctly", async ({ page }) => {

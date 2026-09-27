@@ -36,7 +36,7 @@ export default function LocationPrompt() {
       <button
         onClick={requestGeolocation}
         className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-starlight/50 transition hover:bg-white/10 hover:text-starlight"
-        title="Location unavailable — click to retry"
+        title="Location unavailable, click to retry"
       >
         <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
           <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />

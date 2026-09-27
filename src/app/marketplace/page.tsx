@@ -4,10 +4,10 @@ import MarketplaceBrowser from "@/components/MarketplaceBrowser";
 
 export const metadata: Metadata = {
   title: "Telescope Marketplace",
-  description: "Buy and sell quality astronomy equipment. Curated listings for telescopes, mounts, cameras, eyepieces, and accessories with verified seller ratings.",
+  description: "Browse and list astronomy equipment: telescopes, mounts, cameras, eyepieces, and accessories.",
   openGraph: {
     title: "Telescope Marketplace | Constellation",
-    description: "Buy and sell quality astronomy equipment. Curated telescope, mount, and accessory listings.",
+    description: "Browse and list astronomy equipment: telescopes, mounts, cameras, eyepieces, and accessories.",
     images: ["/opengraph-image"]
   }
 };
@@ -17,8 +17,8 @@ export default function MarketplacePage() {
     <div className="space-y-10">
       <SectionHeading
         eyebrow="Marketplace"
-        title="Curated telescope marketplace"
-        subtitle="Trusted listings reviewed by our team. Filters focus on optics quality, condition, and price."
+        title="Telescope marketplace"
+        subtitle="Browse gear by category, condition, and price. Some listings below are sample data showing how the marketplace works; look for the Sample listing tag."
         as="h1"
       />
       <MarketplaceBrowser />

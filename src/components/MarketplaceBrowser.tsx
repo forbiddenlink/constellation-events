@@ -10,7 +10,7 @@ import type {
   MarketplaceListing,
   MarketplaceSort
 } from "@/lib/marketplace";
-import { MARKETPLACE_CATEGORIES, MARKETPLACE_CONDITIONS } from "@/lib/marketplace";
+import { MARKETPLACE_CATEGORIES, MARKETPLACE_CONDITIONS, isSeedListing } from "@/lib/marketplace";
 
 type MarketplaceResponse = {
   listings: MarketplaceListing[];
@@ -432,6 +432,7 @@ export default function MarketplaceBrowser() {
 
   // Shared detail panel content (used on both desktop and mobile)
   function renderDetailPanel(listing: MarketplaceListing) {
+    const isSample = isSeedListing(listing);
     return (
       <>
         {listing.imageUrl ? (
@@ -444,6 +445,11 @@ export default function MarketplaceBrowser() {
           </div>
         )}
         <div className="p-5">
+          {isSample && (
+            <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-caution/40 bg-caution/10 px-3 py-1 text-[10px] uppercase tracking-wider text-caution">
+              Sample listing, not a real seller
+            </div>
+          )}
           <h2 className="font-display text-xl lg:text-2xl font-bold text-starlight">{listing.title}</h2>
           <div className="mt-4 grid grid-cols-2 gap-4 border-y border-white/10 py-4">
             <div>
@@ -458,17 +464,25 @@ export default function MarketplaceBrowser() {
           <p className="mt-4 text-sm leading-relaxed text-starlight/70">
             {listing.description}
           </p>
+          {isSample ? (
+            <p className="mt-6 rounded-xl border border-white/10 bg-white/5 p-3 text-center text-xs text-starlight/50">
+              This is placeholder data showing how a listing looks. There is no real seller to contact.
+            </p>
+          ) : (
           <button
             onClick={() => handleContactSeller(listing)}
             className="button-primary mt-6 w-full"
           >
             {contactSent ? "Email opened ✓" : "Inquire about listing"}
           </button>
+          )}
+          {!isSample && (
           <p className="mt-2 text-center text-[11px] text-starlight/40">
             {contactSent
               ? "If your email app didn\u0027t open, email marketplace@constellation.app directly."
               : "Opens your email app with a pre-filled inquiry."}
           </p>
+          )}
         </div>
       </>
     );
