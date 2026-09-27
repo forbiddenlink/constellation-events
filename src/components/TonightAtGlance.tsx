@@ -22,6 +22,21 @@ function isIsoInstant(value: string) {
   return ISO_INSTANT.test(value);
 }
 
+// metricLabel varies by object (Alt/Illum/Mag; see src/app/api/sky/tonight/route.ts
+// and src/lib/mock.ts), so the tooltip explaining the number next to it has
+// to match. Without this, every row showed the magnitude explanation even
+// when the number was an altitude or illumination percentage, which is
+// confusing rather than clarifying when planning tonight's targets.
+const METRIC_LABEL_TOOLTIPS: Record<string, string> = {
+  Mag: "Astronomical magnitude: lower numbers are brighter",
+  Alt: "Altitude above the horizon at the best viewing time",
+  Illum: "Percent of the visible disc that is illuminated"
+};
+
+function metricTooltip(label: string) {
+  return METRIC_LABEL_TOOLTIPS[label] ?? "Best-time observing metric";
+}
+
 export default function TonightAtGlance() {
   const [data, setData] = useState<TonightResponse | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
@@ -92,7 +107,7 @@ export default function TonightAtGlance() {
             </div>
             <div className="text-right">
               <div className="text-sm font-semibold text-aurora">{item.magnitude}</div>
-              <div className="text-[10px] uppercase tracking-[0.3em] text-starlight/40" title="Astronomical magnitude: lower numbers are brighter">
+              <div className="text-[10px] uppercase tracking-[0.3em] text-starlight/40" title={metricTooltip(item.metricLabel ?? "Mag")}>
                 {item.metricLabel ?? "Mag"}
               </div>
             </div>

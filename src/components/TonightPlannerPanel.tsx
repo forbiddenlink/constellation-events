@@ -143,7 +143,12 @@ export default function TonightPlannerPanel() {
                   <LocalTime iso={planet.bestTime} format={formatTime} />
                 </div>
               </div>
-              <span className="text-xs text-starlight/60">{planet.bestAltitude} deg</span>
+              <span
+                className="text-xs text-starlight/60"
+                title="Altitude above the horizon at the best viewing time"
+              >
+                {planet.bestAltitude}&deg; alt
+              </span>
             </div>
           ))}
           {data.visiblePlanets.length === 0 ? <div className="text-xs text-starlight/50">No bright planets in prime position.</div> : null}

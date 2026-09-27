@@ -207,8 +207,8 @@ describe("TonightPlannerPanel", () => {
     render(<TonightPlannerPanel />);
 
     await waitFor(() => {
-      expect(screen.getByText("45 deg")).toBeInTheDocument();
-      expect(screen.getByText("35 deg")).toBeInTheDocument();
+      expect(screen.getByText("45° alt")).toBeInTheDocument();
+      expect(screen.getByText("35° alt")).toBeInTheDocument();
     });
   });
 
