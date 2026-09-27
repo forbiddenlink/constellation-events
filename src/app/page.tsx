@@ -11,6 +11,8 @@ import HomepageEvents from "@/components/HomepageEvents";
 import HomepageLocations from "@/components/HomepageLocations";
 import HomepageListings from "@/components/HomepageListings";
 import LocationOnboarding from "@/components/LocationOnboarding";
+import ISSTracker from "@/components/ISSTracker";
+import AuroraForecast from "@/components/AuroraForecast";
 
 export default function HomePage() {
   // Real astronomy events power the constellation star map (server-computed).
@@ -78,6 +80,18 @@ export default function HomePage() {
             </div>
           </div>
           <HomepageLocations />
+        </div>
+      </section>
+
+      <section>
+        <SectionHeading
+          eyebrow="Overhead Tonight"
+          title="Satellites and space weather"
+          subtitle="Live ISS position and visible pass predictions, plus an aurora forecast for high-latitude observers."
+        />
+        <div className="grid gap-6 lg:grid-cols-2">
+          <ISSTracker />
+          <AuroraForecast />
         </div>
       </section>
 
