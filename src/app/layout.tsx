@@ -41,7 +41,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Constellation — Astronomy Event Tracker",
+    default: "Constellation - Astronomy Event Tracker",
     template: "%s | Constellation"
   },
   description: "Track celestial events, find dark skies, and gear up for stargazing. Real-time sky conditions, meteor showers, and dark-sky finder.",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Constellation",
-    title: "Constellation — Astronomy Event Tracker",
+    title: "Constellation - Astronomy Event Tracker",
     description: "Your nightly mission control for the sky above. Track celestial events, find dark skies, and plan your stargazing adventures.",
     images: [
       {
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Constellation — Astronomy Event Tracker",
+    title: "Constellation - Astronomy Event Tracker",
     description: "Your nightly mission control for the sky above. Track celestial events, find dark skies, and plan your stargazing adventures.",
     images: ["/opengraph-image"]
   },
@@ -128,7 +128,7 @@ export default function RootLayout({
                    <Link href="/contact" className="hover:text-aurora">Contact</Link>
                    <Link href="/privacy" className="hover:text-aurora">Privacy</Link>
               </div>
-              Constellation © 2026 — Free to use.
+              Constellation © 2026. Free to use.
             </footer>
           </div>
           <Analytics />

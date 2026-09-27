@@ -38,7 +38,7 @@ export default function AboutPage() {
             <p className="mt-4 text-sm text-starlight/70 leading-relaxed">
               Light pollution affects over 80% of the world&apos;s population. Finding truly dark skies
               requires planning, timing, and local knowledge. Constellation brings all that intelligence
-              into one platform—so you can spend less time researching and more time under the stars.
+              into one platform, so you can spend less time researching and more time under the stars.
             </p>
             <p className="mt-4 text-sm text-starlight/70 leading-relaxed">
               Whether you&apos;re photographing the Milky Way, tracking a meteor shower, or simply
@@ -56,7 +56,7 @@ export default function AboutPage() {
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <div className="text-xs text-starlight/50 uppercase tracking-wider">Event Forecasting</div>
               <p className="mt-2 text-sm text-starlight/70">
-                Meteor showers, planetary alignments, eclipses, and lunar events—all with
+                Meteor showers, planetary alignments, eclipses, and lunar events, all with
                 visibility scores tailored to your location.
               </p>
             </div>
@@ -124,7 +124,7 @@ export default function AboutPage() {
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
             <div className="text-2xl font-semibold text-aurora">Precise Positioning</div>
             <p className="mt-2 text-sm text-starlight/70">
-              Planet and moon positions calculated for your exact location and time — accurate to the arc-second
+              Planet and moon positions calculated for your exact location and time, accurate to the arc-second
             </p>
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
@@ -145,7 +145,7 @@ export default function AboutPage() {
         <p className="mt-4 max-w-2xl mx-auto text-sm text-starlight/70 leading-relaxed">
           Constellation was born from countless nights spent searching for dark skies,
           checking weather apps, and wishing there was one place that brought it all together.
-          We built the tool we always wanted—and now we&apos;re sharing it with the community.
+          We built the tool we always wanted, and now we&apos;re sharing it with the community.
         </p>
       </section>
 

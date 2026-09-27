@@ -48,7 +48,7 @@ export default function HomePage() {
         <SectionHeading
           eyebrow="Today's Feature"
           title="Astronomy Picture of the Day"
-          subtitle="NASA's daily showcase of our cosmos — from distant galaxies to breathtaking nebulae."
+          subtitle="NASA's daily showcase of our cosmos, from distant galaxies to breathtaking nebulae."
         />
         <div className="grid gap-6 lg:grid-cols-2">
           <APODCard />
@@ -105,10 +105,10 @@ export default function HomePage() {
           <div className="glass rounded-2xl p-5">
             <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Example itinerary</div>
             <div className="mt-4 space-y-3 text-sm text-starlight/70">
-              <div>8:30 PM — Depart, 42 miles to Sierra Vista Overlook</div>
-              <div>9:05 PM — Set up telescope and polar align</div>
-              <div>9:20 PM — Jupiter and its moons</div>
-              <div>10:15 PM — Orion Nebula imaging session</div>
+              <div>8:30 PM: Depart, 42 miles to Sierra Vista Overlook</div>
+              <div>9:05 PM: Set up telescope and polar align</div>
+              <div>9:20 PM: Jupiter and its moons</div>
+              <div>10:15 PM: Orion Nebula imaging session</div>
             </div>
           </div>
         </div>

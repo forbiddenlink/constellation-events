@@ -1,4 +1,4 @@
-import type { MarketplaceListing } from "@/lib/marketplace";
+import { isSeedListing, type MarketplaceListing } from "@/lib/marketplace";
 import type { ListingItem } from "@/lib/mock";
 
 type ListingModel = MarketplaceListing | ListingItem;
@@ -27,7 +27,8 @@ export default function ListingCard({ listing }: { readonly listing: ListingMode
   const price = isMarketplaceListing(listing) ? formatPrice(listing.priceUsd) : listing.price;
   const imageUrl = isMarketplaceListing(listing) ? listing.imageUrl : null;
   const moderationStatus = isMarketplaceListing(listing) ? listing.status : null;
-  
+  const isSample = isMarketplaceListing(listing) && isSeedListing(listing);
+
   let statusTone = "text-success border-success/40";
   if (moderationStatus === "hidden") statusTone = "text-ember border-ember/40";
   else if (moderationStatus === "pending") statusTone = "text-caution border-caution/40";
@@ -59,6 +60,12 @@ export default function ListingCard({ listing }: { readonly listing: ListingMode
                     <span>{listing.tag}</span>
                     <span className="h-3 w-px bg-white/10" />
                     <span>{formatCondition(listing.condition)}</span>
+                    {isSample && (
+                        <>
+                            <span className="h-3 w-px bg-white/10" />
+                            <span className="text-caution/80">Sample listing</span>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

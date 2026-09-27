@@ -169,6 +169,17 @@ export const DEFAULT_MARKETPLACE_LISTINGS: MarketplaceListing[] = [
   }
 ];
 
+// Seed listings ship as "mkp-<n>" (see DEFAULT_MARKETPLACE_LISTINGS above);
+// listings created through the marketplace form get "mkp-<timestamp>-<random>"
+// from buildListingId() in marketplace-store.ts. This tells them apart so the
+// UI can label the fabricated demo sellers/ratings instead of presenting them
+// as real inventory.
+const SEED_LISTING_ID = /^mkp-\d+$/;
+
+export function isSeedListing(listing: Pick<MarketplaceListing, "id">): boolean {
+  return SEED_LISTING_ID.test(listing.id);
+}
+
 export function parseMarketplaceFilters(searchParams: URLSearchParams): MarketplaceFilters {
   const category = searchParams.get("category");
   const condition = searchParams.get("condition");

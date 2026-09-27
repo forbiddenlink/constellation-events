@@ -64,6 +64,25 @@ describe("generateUpcomingEvents", () => {
     // May or may not have events — just verify it doesn't throw
     expect(Array.isArray(events)).toBe(true);
   });
+
+  it("never reports the same moon phase on two nearby nights", () => {
+    // Regression test: the phase-detection window (±0.02) can span more
+    // than one calendar day near the exact moment, which previously
+    // produced back-to-back duplicates like two "New Moon" events a day
+    // apart — astronomically impossible (the synodic month is ~29.5
+    // days). Each major phase should appear at most once per ~25-day
+    // stretch across a full year of coverage.
+    const events = generateUpcomingEvents(undefined, new Date("2026-01-01"), 365);
+    const moonEvents = events.filter((e) => e.type === "moon");
+    for (let i = 1; i < moonEvents.length; i++) {
+      const prev = moonEvents[i - 1];
+      const curr = moonEvents[i];
+      if (prev.title !== curr.title) continue;
+      const daysApart =
+        (new Date(curr.date).getTime() - new Date(prev.date).getTime()) / 86400000;
+      expect(daysApart).toBeGreaterThan(20);
+    }
+  });
 });
 
 describe("getTonightEvents", () => {
