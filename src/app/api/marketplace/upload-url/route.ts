@@ -4,8 +4,7 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NextResponse } from "next/server";
 import {
-  getMarketplaceWriteAuth,
-  getMarketplaceWriteTokenHeaderName,
+  getMarketplaceWriteAuthResponse,
   validateOrigin
 } from "@/lib/marketplace-auth";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
@@ -28,16 +27,8 @@ const EXTENSION_BY_TYPE: Record<string, string> = {
 };
 
 export async function POST(request: Request) {
-  const auth = getMarketplaceWriteAuth(request);
-  if (!auth.allowed) {
-    return NextResponse.json(
-      {
-        error: "Write access denied",
-        details: `Provide ${getMarketplaceWriteTokenHeaderName()} header`
-      },
-      { status: 401 }
-    );
-  }
+  const authResponse = getMarketplaceWriteAuthResponse(request);
+  if (authResponse) return authResponse;
 
   const originCheck = validateOrigin(request);
   if (!originCheck.valid) {

@@ -6,8 +6,7 @@ import type {
 } from "@/lib/marketplace";
 import { MARKETPLACE_CATEGORIES, MARKETPLACE_CONDITIONS } from "@/lib/marketplace";
 import {
-  getMarketplaceWriteAuth,
-  getMarketplaceWriteTokenHeaderName,
+  getMarketplaceWriteAuthResponse,
   validateOrigin
 } from "@/lib/marketplace-auth";
 import { isAllowedMarketplaceImageUrl, isValidHttpUrl } from "@/lib/marketplace-images";
@@ -20,16 +19,8 @@ type RouteContext = {
 
 export async function PATCH(request: Request, context: RouteContext) {
   const { id } = await context.params;
-  const auth = getMarketplaceWriteAuth(request);
-  if (!auth.allowed) {
-    return NextResponse.json(
-      {
-        error: "Write access denied",
-        details: `Provide ${getMarketplaceWriteTokenHeaderName()} header`
-      },
-      { status: 401 }
-    );
-  }
+  const authResponse = getMarketplaceWriteAuthResponse(request);
+  if (authResponse) return authResponse;
 
   const originCheck = validateOrigin(request);
   if (!originCheck.valid) {

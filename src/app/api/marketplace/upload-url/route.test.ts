@@ -93,8 +93,35 @@ describe("marketplace upload-url route", () => {
     expect(response.status).toBe(401);
   });
 
+  it("fails closed (503) when write token is not configured at all", async () => {
+    // Regression: writes previously fail-opened (200) when
+    // MARKETPLACE_WRITE_TOKEN was unset.
+    const { POST } = await loadRoute({
+      bucket: "constellation-tiles",
+      endpoint: "https://example.r2.cloudflarestorage.com",
+      accessKeyId: "abc",
+      secretAccessKey: "def",
+      publicBase: "https://pub.example.r2.dev"
+    });
+
+    const response = await POST(
+      new Request("http://localhost/api/marketplace/upload-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          filename: "listing.png",
+          contentType: "image/png",
+          size: 1200
+        })
+      })
+    );
+
+    expect(response.status).toBe(503);
+  });
+
   it("validates content type and file size", async () => {
     const { POST } = await loadRoute({
+      writeToken: "secret",
       bucket: "constellation-tiles",
       endpoint: "https://example.r2.cloudflarestorage.com",
       accessKeyId: "abc",
@@ -108,6 +135,7 @@ describe("marketplace upload-url route", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-marketplace-write-token": "secret",
           Origin: "http://localhost:3000"
         },
         body: JSON.stringify({
