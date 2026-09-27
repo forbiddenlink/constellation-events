@@ -32,6 +32,11 @@ function allowExternalMarketplaceImageUrls() {
 export function isAllowedMarketplaceImageUrl(imageUrl: string) {
   if (allowExternalMarketplaceImageUrls()) return true;
   const publicBase = getMarketplaceImagePublicBase();
-  if (!publicBase) return true;
+  // Deny by default when no public base is configured. Previously this
+  // fail-opened (allowed ANY http/https URL) whenever image storage wasn't
+  // set up, silently disabling the domain allowlist instead of denying —
+  // the opt-in escape hatch is MARKETPLACE_IMAGE_ALLOW_EXTERNAL, not an
+  // unconfigured public base.
+  if (!publicBase) return false;
   return imageUrl.startsWith(`${publicBase}/`);
 }
