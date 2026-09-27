@@ -2,6 +2,7 @@ const { withSentryConfig } = require("@sentry/nextjs");
 /** @type {import('next').NextConfig} */
 const { withAxiom } = require('next-axiom');
 const withBundleAnalyzer = require("@next/bundle-analyzer")({ enabled: process.env.ANALYZE === "true" });
+const { getMarketplaceImageCspHost } = require("./next.config.marketplace-csp.js");
 
 const nextConfig = {
   poweredByHeader: false,
@@ -79,22 +80,9 @@ const nextConfig = {
   }
 };
 
-// Marketplace listing images can be served from the configured R2/CDN public
-// base (see src/lib/marketplace-images.ts). Without this, uploaded listing
-// images render broken in the browser because the CSP img-src directive
-// silently blocks them — the domain allowlist for uploads and the CSP
-// allowlist for rendering must agree.
-function getMarketplaceImageCspHost() {
-  const base = process.env.MARKETPLACE_IMAGE_PUBLIC_BASE || process.env.R2_PUBLIC_BASE;
-  if (!base) return "";
-  try {
-    return ` https://${new URL(base).hostname}`;
-  } catch {
-    return "";
-  }
-}
-
-const marketplaceImageCspHost = getMarketplaceImageCspHost();
+const marketplaceImageCspHost = getMarketplaceImageCspHost(
+  process.env.MARKETPLACE_IMAGE_PUBLIC_BASE || process.env.R2_PUBLIC_BASE
+);
 
 module.exports = withBundleAnalyzer(withSentryConfig(withAxiom(nextConfig), {
     org: process.env.SENTRY_ORG,
