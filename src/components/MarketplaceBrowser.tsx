@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import ListingCard from "@/components/ListingCard";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { signIn, signOut, signUp, useSession } from "@/lib/auth-client";
 import type {
   MarketplaceCategory,
   MarketplaceCondition,
@@ -173,7 +174,14 @@ export default function MarketplaceBrowser() {
   const [uploadMessage, setUploadMessage] = useState("");
   const [imageInputKey, setImageInputKey] = useState(0);
   const [editStatus, setEditStatus] = useState<"idle" | "saving" | "error" | "success">("idle");
-  const [writeToken, setWriteToken] = useState("");
+  const session = useSession();
+  const isSignedIn = Boolean(session.data?.user);
+  const [authMode, setAuthMode] = useState<"signIn" | "signUp">("signIn");
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authName, setAuthName] = useState("");
+  const [authStatus, setAuthStatus] = useState<"idle" | "pending" | "error">("idle");
+  const [authError, setAuthError] = useState("");
   const [sellerForm, setSellerForm] = useState({ ...SELLER_FORM_DEFAULTS });
   const [editForm, setEditForm] = useState({
     id: "",
@@ -201,33 +209,17 @@ export default function MarketplaceBrowser() {
     if (condition !== "all") params.set("condition", condition);
     params.set("maxPrice", String(maxPrice));
     params.set("sort", sort);
-    if (writeToken.trim()) params.set("scope", "all");
+    // Harmless when the signed-in user isn't an admin - the server ignores
+    // scope=all and returns the public listings only in that case.
+    if (isSignedIn) params.set("scope", "all");
     return params.toString();
-  }, [query, category, condition, maxPrice, sort, writeToken]);
-
-  useEffect(() => {
-    const saved = window.localStorage.getItem("constellation.marketplace.writeToken");
-    if (saved) setWriteToken(saved);
-  }, []);
-
-  useEffect(() => {
-    if (writeToken.trim()) {
-      window.localStorage.setItem("constellation.marketplace.writeToken", writeToken.trim());
-    } else {
-      window.localStorage.removeItem("constellation.marketplace.writeToken");
-    }
-  }, [writeToken]);
+  }, [query, category, condition, maxPrice, sort, isSignedIn]);
 
   useEffect(() => {
     const controller = new AbortController();
     setStatus("loading");
     const timer = setTimeout(() => {
-      fetch(`/api/marketplace?${queryString}`, {
-        signal: controller.signal,
-        headers: {
-          ...(writeToken.trim() ? { "x-marketplace-write-token": writeToken.trim() } : {})
-        }
-      })
+      fetch(`/api/marketplace?${queryString}`, { signal: controller.signal })
         .then((res) => {
           if (!res.ok) throw new Error(`Marketplace request failed: ${res.status}`);
           return res.json() as Promise<MarketplaceResponse>;
@@ -246,7 +238,7 @@ export default function MarketplaceBrowser() {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [queryString, refreshTick, writeToken]);
+  }, [queryString, refreshTick]);
 
   useEffect(() => {
     if (!data?.listings?.length) return;
@@ -298,8 +290,7 @@ export default function MarketplaceBrowser() {
       const initResponse = await fetch("/api/marketplace/upload-url", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          ...(writeToken.trim() ? { "x-marketplace-write-token": writeToken.trim() } : {})
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           filename: optimizedFile.name,
@@ -344,8 +335,7 @@ export default function MarketplaceBrowser() {
       const response = await fetch("/api/marketplace", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          ...(writeToken.trim() ? { "x-marketplace-write-token": writeToken.trim() } : {})
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(sellerForm)
       });
@@ -382,8 +372,7 @@ export default function MarketplaceBrowser() {
       const response = await fetch(`/api/marketplace/${encodeURIComponent(editForm.id)}`, {
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json",
-          ...(writeToken.trim() ? { "x-marketplace-write-token": writeToken.trim() } : {})
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           priceUsd: editForm.priceUsd,
@@ -400,6 +389,27 @@ export default function MarketplaceBrowser() {
     } catch {
       setEditStatus("error");
     }
+  }
+
+  async function handleAuthSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setAuthStatus("pending");
+    setAuthError("");
+
+    const { error } =
+      authMode === "signIn"
+        ? await signIn.email({ email: authEmail, password: authPassword })
+        : await signUp.email({ email: authEmail, password: authPassword, name: authName });
+
+    if (error) {
+      setAuthStatus("error");
+      setAuthError(error.message ?? "Could not authenticate. Try again.");
+      return;
+    }
+
+    setAuthStatus("idle");
+    setAuthPassword("");
+    setRefreshTick((tick) => tick + 1);
   }
 
   if (status === "loading" && !data) {
@@ -614,25 +624,83 @@ export default function MarketplaceBrowser() {
           {/* Seller access */}
           <div className="glass rounded-2xl p-4">
             <div className="text-xs uppercase tracking-[0.3em] text-starlight/50 mb-3">Seller access</div>
-            <div className="flex items-center gap-3">
-              <input
-                type="password"
-                value={writeToken}
-                onChange={(e) => setWriteToken(e.target.value)}
-                placeholder="Enter seller token..."
-                className="flex-1 rounded-xl bg-white/5 border border-white/10 p-2.5 text-xs text-starlight placeholder:text-starlight/30 focus:outline-none focus:ring-1 focus:ring-aurora"
-              />
-              {writeToken.trim() && (
-                <span className="text-[10px] text-aurora">Authenticated</span>
-              )}
-            </div>
+            {isSignedIn ? (
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs text-starlight/70">
+                  Signed in as {session.data?.user?.email ?? session.data?.user?.name ?? "seller"}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => signOut()}
+                  className="rounded-xl border border-white/10 px-3 py-1.5 text-[11px] text-starlight/70 hover:bg-white/5"
+                >
+                  Sign out
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleAuthSubmit} className="grid gap-3">
+                <div className="flex gap-2 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setAuthMode("signIn")}
+                    className={`rounded-lg px-2.5 py-1 ${authMode === "signIn" ? "bg-aurora/20 text-aurora" : "text-starlight/50"}`}
+                  >
+                    Sign in
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAuthMode("signUp")}
+                    className={`rounded-lg px-2.5 py-1 ${authMode === "signUp" ? "bg-aurora/20 text-aurora" : "text-starlight/50"}`}
+                  >
+                    Create account
+                  </button>
+                </div>
+                {authMode === "signUp" && (
+                  <input
+                    type="text"
+                    value={authName}
+                    onChange={(e) => setAuthName(e.target.value)}
+                    placeholder="Name"
+                    required
+                    className="rounded-xl bg-white/5 border border-white/10 p-2.5 text-xs text-starlight placeholder:text-starlight/30 focus:outline-none focus:ring-1 focus:ring-aurora"
+                  />
+                )}
+                <input
+                  type="email"
+                  value={authEmail}
+                  onChange={(e) => setAuthEmail(e.target.value)}
+                  placeholder="Email"
+                  required
+                  className="rounded-xl bg-white/5 border border-white/10 p-2.5 text-xs text-starlight placeholder:text-starlight/30 focus:outline-none focus:ring-1 focus:ring-aurora"
+                />
+                <input
+                  type="password"
+                  value={authPassword}
+                  onChange={(e) => setAuthPassword(e.target.value)}
+                  placeholder="Password"
+                  required
+                  minLength={8}
+                  className="rounded-xl bg-white/5 border border-white/10 p-2.5 text-xs text-starlight placeholder:text-starlight/30 focus:outline-none focus:ring-1 focus:ring-aurora"
+                />
+                <button
+                  type="submit"
+                  disabled={authStatus === "pending"}
+                  className="rounded-xl bg-aurora/20 px-3 py-2 text-xs text-aurora hover:bg-aurora/30 disabled:opacity-50"
+                >
+                  {authMode === "signIn" ? "Sign in" : "Create account"}
+                </button>
+                {authStatus === "error" && (
+                  <p className="text-[11px] text-red-400">{authError}</p>
+                )}
+              </form>
+            )}
             <p className="mt-2 text-[11px] text-starlight/30">
-              Sellers use tokens to manage their listings. Don&apos;t have one? Email marketplace@constellation.app to apply.
+              Sign in to create and manage your own listings.
             </p>
           </div>
 
-          {/* Seller form (collapsible, only visible with token) */}
-          {writeToken.trim() && (
+          {/* Seller form (collapsible, only visible when signed in) */}
+          {isSignedIn && (
           <div>
             <button
               onClick={() => setShowSellerForm(!showSellerForm)}

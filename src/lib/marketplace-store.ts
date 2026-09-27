@@ -19,6 +19,8 @@ type CreateListingInput = {
   status?: MarketplaceModerationStatus;
   description?: string;
   imageUrl?: string;
+  /** Set once at creation from the authenticated session; never patchable. */
+  sellerId?: string | null;
 };
 
 type UpdateListingInput = Partial<CreateListingInput>;
@@ -84,6 +86,11 @@ export async function listMarketplaceListings() {
   }
 }
 
+export async function getMarketplaceListingById(id: string): Promise<MarketplaceListing | null> {
+  await ensureLoaded();
+  return (cachedListings ?? []).find((listing) => listing.id === id) ?? null;
+}
+
 export async function createMarketplaceListing(
   input: CreateListingInput
 ): Promise<MarketplaceListing> {
@@ -101,7 +108,8 @@ export async function createMarketplaceListing(
     status: input.status ?? "approved",
     postedAt: new Date().toISOString(),
     description: input.description?.trim() || undefined,
-    imageUrl: input.imageUrl?.trim() || undefined
+    imageUrl: input.imageUrl?.trim() || undefined,
+    sellerId: input.sellerId ?? null
   };
 
   cachedListings = [listing, ...(cachedListings ?? [])];
@@ -128,6 +136,7 @@ export async function updateMarketplaceListing(
     ...(patch.priceUsd !== undefined ? { priceUsd: Math.round(patch.priceUsd) } : {}),
     ...(patch.city !== undefined ? { city: patch.city.trim() } : {}),
     ...(patch.shipping !== undefined ? { shipping: Boolean(patch.shipping) } : {}),
+    ...(patch.status !== undefined ? { status: patch.status } : {}),
     ...(patch.description !== undefined ? { description: patch.description.trim() || undefined } : {}),
     ...(patch.imageUrl !== undefined ? { imageUrl: patch.imageUrl.trim() || undefined } : {}),
     updatedAt: new Date().toISOString()
@@ -137,6 +146,18 @@ export async function updateMarketplaceListing(
   cachedListings = listings;
   await flush();
   return updated;
+}
+
+export async function deleteMarketplaceListing(id: string): Promise<boolean> {
+  await ensureLoaded();
+  const listings = cachedListings ?? [];
+  const index = listings.findIndex((listing) => listing.id === id);
+  if (index === -1) return false;
+
+  listings.splice(index, 1);
+  cachedListings = listings;
+  await flush();
+  return true;
 }
 
 function buildListingId() {
@@ -178,7 +199,8 @@ function normalizeMarketplaceListing(
     postedAt: String(listing.postedAt),
     updatedAt: listing.updatedAt ? String(listing.updatedAt) : undefined,
     description: listing.description ? String(listing.description) : undefined,
-    imageUrl: listing.imageUrl ? String(listing.imageUrl) : undefined
+    imageUrl: listing.imageUrl ? String(listing.imageUrl) : undefined,
+    sellerId: listing.sellerId ? String(listing.sellerId) : null
   };
 }
 

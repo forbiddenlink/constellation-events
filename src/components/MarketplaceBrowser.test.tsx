@@ -31,6 +31,17 @@ vi.mock("@/components/ListingCard", () => ({
   )
 }));
 
+// Mock the better-auth client. Defaults to signed-out; tests that need the
+// seller form opt in with mockUseSession.mockReturnValue(...).
+type MockSessionData = { user: { id: string; email: string } } | null;
+const mockUseSession = vi.fn<() => { data: MockSessionData }>(() => ({ data: null }));
+vi.mock("@/lib/auth-client", () => ({
+  useSession: () => mockUseSession(),
+  signIn: { email: vi.fn().mockResolvedValue({ error: null }) },
+  signUp: { email: vi.fn().mockResolvedValue({ error: null }) },
+  signOut: vi.fn()
+}));
+
 function mockJsonResponse(data: unknown) {
   return Promise.resolve(new Response(JSON.stringify(data), {
     status: 200,
@@ -86,6 +97,7 @@ describe("MarketplaceBrowser", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockUseSession.mockReturnValue({ data: null });
     // Clear localStorage data
     Object.keys(localStorageData).forEach(key => delete localStorageData[key]);
   });
@@ -145,32 +157,25 @@ describe("MarketplaceBrowser", () => {
     }, { timeout: TIMEOUT });
   });
 
-  it("shows seller form toggle button after entering token", async () => {
+  it("shows a sign-in form when signed out, not a token input", async () => {
     mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText("Enter seller token...")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
     }, { timeout: TIMEOUT });
 
-    fireEvent.change(screen.getByPlaceholderText("Enter seller token..."), { target: { value: "test-token" } });
-
-    await waitFor(() => {
-      expect(screen.getByText(/Create a new listing/)).toBeInTheDocument();
-    }, { timeout: TIMEOUT });
+    expect(screen.queryByPlaceholderText("Enter seller token...")).not.toBeInTheDocument();
+    expect(screen.queryByText(/Create a new listing/)).not.toBeInTheDocument();
   });
 
-  it("toggles seller form visibility", async () => {
+  it("toggles seller form visibility once signed in", async () => {
+    mockUseSession.mockReturnValue({ data: { user: { id: "user-1", email: "seller@example.com" } } });
     mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
-
-    await waitFor(() => {
-      expect(screen.getByPlaceholderText("Enter seller token...")).toBeInTheDocument();
-    }, { timeout: TIMEOUT });
-
-    fireEvent.change(screen.getByPlaceholderText("Enter seller token..."), { target: { value: "test-token" } });
 
     await waitFor(() => {
       expect(screen.getByText(/Create a new listing/)).toBeInTheDocument();
@@ -183,16 +188,11 @@ describe("MarketplaceBrowser", () => {
     }, { timeout: TIMEOUT });
   });
 
-  it("displays seller form fields when expanded", async () => {
+  it("displays seller form fields when expanded and signed in", async () => {
+    mockUseSession.mockReturnValue({ data: { user: { id: "user-1", email: "seller@example.com" } } });
     mockFetch.mockImplementation(() => mockJsonResponse(mockMarketplaceData));
 
     render(<MarketplaceBrowser />);
-
-    await waitFor(() => {
-      expect(screen.getByPlaceholderText("Enter seller token...")).toBeInTheDocument();
-    }, { timeout: TIMEOUT });
-
-    fireEvent.change(screen.getByPlaceholderText("Enter seller token..."), { target: { value: "test-token" } });
 
     await waitFor(() => {
       expect(screen.getByText(/Create a new listing/)).toBeInTheDocument();

@@ -5,13 +5,19 @@ import type {
   MarketplaceModerationStatus
 } from "@/lib/marketplace";
 import { MARKETPLACE_CATEGORIES, MARKETPLACE_CONDITIONS } from "@/lib/marketplace";
+import { validateOrigin } from "@/lib/marketplace-auth";
 import {
-  getMarketplaceWriteAuthResponse,
-  validateOrigin
-} from "@/lib/marketplace-auth";
+  canModifyListing,
+  getMarketplaceSessionUser,
+  isMarketplaceAdmin
+} from "@/lib/marketplace-authz";
 import { isAllowedMarketplaceImageUrl, isValidHttpUrl } from "@/lib/marketplace-images";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
-import { updateMarketplaceListing } from "@/lib/marketplace-store";
+import {
+  deleteMarketplaceListing,
+  getMarketplaceListingById,
+  updateMarketplaceListing
+} from "@/lib/marketplace-store";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -19,8 +25,10 @@ type RouteContext = {
 
 export async function PATCH(request: Request, context: RouteContext) {
   const { id } = await context.params;
-  const authResponse = getMarketplaceWriteAuthResponse(request);
-  if (authResponse) return authResponse;
+  const sessionUser = await getMarketplaceSessionUser(request);
+  if (!sessionUser) {
+    return NextResponse.json({ error: "Sign in required" }, { status: 401 });
+  }
 
   const originCheck = validateOrigin(request);
   if (!originCheck.valid) {
@@ -161,6 +169,31 @@ export async function PATCH(request: Request, context: RouteContext) {
     return NextResponse.json({ error: "Invalid payload", errors }, { status: 400 });
   }
 
+  const existing = await getMarketplaceListingById(id);
+  if (!existing) {
+    return NextResponse.json({ error: "Listing not found" }, { status: 404 });
+  }
+
+  const isAdmin = isMarketplaceAdmin(sessionUser.id);
+
+  // Only treat this as a moderation action when status is actually
+  // CHANGING - the seller edit form always echoes the current status back
+  // in its PATCH body, so gating on mere presence would lock owners out of
+  // editing their own price/condition/etc.
+  if (patch.status !== undefined && patch.status !== existing.status && !isAdmin) {
+    return NextResponse.json(
+      { error: "Only an admin can change moderation status" },
+      { status: 403 }
+    );
+  }
+
+  if (!canModifyListing(existing, sessionUser.id, isAdmin)) {
+    return NextResponse.json(
+      { error: "You do not have permission to edit this listing" },
+      { status: 403 }
+    );
+  }
+
   const updated = await updateMarketplaceListing(id, patch);
   if (!updated) {
     return NextResponse.json({ error: "Listing not found" }, { status: 404 });
@@ -170,6 +203,60 @@ export async function PATCH(request: Request, context: RouteContext) {
     listing: updated,
     message: "Listing updated"
   });
+}
+
+export async function DELETE(request: Request, context: RouteContext) {
+  const { id } = await context.params;
+  const sessionUser = await getMarketplaceSessionUser(request);
+  if (!sessionUser) {
+    return NextResponse.json({ error: "Sign in required" }, { status: 401 });
+  }
+
+  const originCheck = validateOrigin(request);
+  if (!originCheck.valid) {
+    return NextResponse.json(
+      { error: "Invalid origin", origin: originCheck.origin },
+      { status: 403 }
+    );
+  }
+
+  const rateLimit = checkRateLimit(
+    `marketplace:delete:${getClientIp(request)}`,
+    {
+      limit: Number.parseInt(process.env.MARKETPLACE_WRITE_RATE_LIMIT_MAX || "10", 10),
+      windowMs: Number.parseInt(process.env.MARKETPLACE_WRITE_RATE_LIMIT_WINDOW_MS || "60000", 10)
+    }
+  );
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      {
+        error: "Rate limit exceeded",
+        retryAfterSeconds: rateLimit.retryAfterSeconds
+      },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(rateLimit.retryAfterSeconds)
+        }
+      }
+    );
+  }
+
+  const existing = await getMarketplaceListingById(id);
+  if (!existing) {
+    return NextResponse.json({ error: "Listing not found" }, { status: 404 });
+  }
+
+  const isAdmin = isMarketplaceAdmin(sessionUser.id);
+  if (!canModifyListing(existing, sessionUser.id, isAdmin)) {
+    return NextResponse.json(
+      { error: "You do not have permission to delete this listing" },
+      { status: 403 }
+    );
+  }
+
+  await deleteMarketplaceListing(id);
+  return NextResponse.json({ message: "Listing deleted" });
 }
 
 function isCategory(value: unknown): value is MarketplaceCategory {

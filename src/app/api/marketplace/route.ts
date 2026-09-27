@@ -11,11 +11,11 @@ import {
 } from "@/lib/marketplace";
 import {
   getMarketplaceWriteAuth,
-  getMarketplaceWriteAuthResponse,
   getMarketplaceWriteTokenHeaderName,
   isMarketplaceWriteProtected,
   validateOrigin,
 } from "@/lib/marketplace-auth";
+import { getMarketplaceSessionUser, isMarketplaceAdmin } from "@/lib/marketplace-authz";
 import {
   isAllowedMarketplaceImageUrl,
   isValidHttpUrl,
@@ -30,12 +30,16 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const parsedFilters = parseMarketplaceFilters(searchParams);
   const writeAuth = getMarketplaceWriteAuth(request);
+  // scope=all (moderation view) is also reachable by a signed-in admin
+  // session, not only the legacy write token - the token stays as a
+  // fallback for any existing caller that used it.
+  const sessionUser = await getMarketplaceSessionUser(request);
+  const isSessionAdmin = sessionUser ? isMarketplaceAdmin(sessionUser.id) : false;
   const filters = {
     ...parsedFilters,
     visibility:
       parsedFilters.visibility === "all" &&
-      writeAuth.allowed &&
-      writeAuth.writeProtected
+      ((writeAuth.allowed && writeAuth.writeProtected) || isSessionAdmin)
         ? "all"
         : "public",
   } as const;
@@ -55,9 +59,13 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const authResponse = getMarketplaceWriteAuthResponse(request);
-  if (authResponse) return authResponse;
-  const auth = getMarketplaceWriteAuth(request);
+  const sessionUser = await getMarketplaceSessionUser(request);
+  if (!sessionUser) {
+    return NextResponse.json(
+      { error: "Sign in required to create a listing" },
+      { status: 401 },
+    );
+  }
 
   const originCheck = validateOrigin(request);
   if (!originCheck.valid) {
@@ -140,6 +148,7 @@ export async function POST(request: Request) {
 
   const validatedCategory = category as MarketplaceCategory;
   const validatedCondition = condition as MarketplaceCondition;
+  const isAdmin = isMarketplaceAdmin(sessionUser.id);
 
   const listing = await createMarketplaceListing({
     title,
@@ -149,9 +158,10 @@ export async function POST(request: Request) {
     city,
     shipping,
     priceUsd,
-    status: auth.writeProtected ? "pending" : "approved",
+    status: isAdmin ? "approved" : "pending",
     description,
     imageUrl,
+    sellerId: sessionUser.id,
   });
 
   // Trigger event ingestion background job
