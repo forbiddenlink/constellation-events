@@ -11,6 +11,7 @@ import {
 } from "@/lib/marketplace";
 import {
   getMarketplaceWriteAuth,
+  getMarketplaceWriteAuthResponse,
   getMarketplaceWriteTokenHeaderName,
   isMarketplaceWriteProtected,
   validateOrigin,
@@ -54,16 +55,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const authResponse = getMarketplaceWriteAuthResponse(request);
+  if (authResponse) return authResponse;
   const auth = getMarketplaceWriteAuth(request);
-  if (!auth.allowed) {
-    return NextResponse.json(
-      {
-        error: "Write access denied",
-        details: `Provide ${getMarketplaceWriteTokenHeaderName()} header`,
-      },
-      { status: 401 },
-    );
-  }
 
   const originCheck = validateOrigin(request);
   if (!originCheck.valid) {

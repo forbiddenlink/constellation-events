@@ -81,6 +81,31 @@ describe("marketplace route", () => {
     expect(response.status).toBe(401);
   });
 
+  it("fails closed (503) on POST when write token is not configured at all", async () => {
+    // Regression: writes previously fail-opened (200) when
+    // MARKETPLACE_WRITE_TOKEN was unset.
+    const dir = await mkdtemp(path.join(tmpdir(), "constellation-mkp-route-"));
+    const { POST } = await loadRoute({ dataDir: dir });
+
+    const response = await POST(
+      new Request("http://localhost/api/marketplace", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: "Example Listing",
+          tag: "Visual",
+          category: "telescope",
+          condition: "good",
+          priceUsd: 600,
+          city: "Las Vegas, NV",
+          shipping: true
+        })
+      })
+    );
+
+    expect(response.status).toBe(503);
+  });
+
   it("creates listing with valid write token", async () => {
     const dir = await mkdtemp(path.join(tmpdir(), "constellation-mkp-route-"));
     const { POST } = await loadRoute({ writeToken: "abc123", dataDir: dir });

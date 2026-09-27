@@ -1,4 +1,5 @@
 import { timingSafeEqual } from "node:crypto";
+import { NextResponse } from "next/server";
 
 const WRITE_TOKEN_HEADER = "x-marketplace-write-token";
 
@@ -32,7 +33,10 @@ function tokensMatch(provided: string, configured: string): boolean {
 export function getMarketplaceWriteAuth(request: Request): WriteAuthResult {
   const configuredToken = getConfiguredToken();
   if (!configuredToken) {
-    return { allowed: true, writeProtected: false };
+    // Fail CLOSED: no token configured means writes are unavailable, not
+    // open to anyone. Callers return 503 when writeProtected is false,
+    // never treat it as "no auth needed".
+    return { allowed: false, writeProtected: false };
   }
 
   const providedToken = request.headers.get(WRITE_TOKEN_HEADER)?.trim() || "";
@@ -40,6 +44,35 @@ export function getMarketplaceWriteAuth(request: Request): WriteAuthResult {
     allowed: tokensMatch(providedToken, configuredToken),
     writeProtected: true
   };
+}
+
+/**
+ * Shared gate for marketplace write/moderation routes. Returns a response
+ * to send back immediately (503 when writes aren't configured at all, 401
+ * when the provided token doesn't match), or null when the request may
+ * proceed. Centralized so every write route fails closed the same way.
+ */
+export function getMarketplaceWriteAuthResponse(request: Request): NextResponse | null {
+  const auth = getMarketplaceWriteAuth(request);
+
+  if (!auth.writeProtected) {
+    return NextResponse.json(
+      { error: "Marketplace writes are not configured" },
+      { status: 503 }
+    );
+  }
+
+  if (!auth.allowed) {
+    return NextResponse.json(
+      {
+        error: "Write access denied",
+        details: `Provide ${WRITE_TOKEN_HEADER} header`
+      },
+      { status: 401 }
+    );
+  }
+
+  return null;
 }
 
 export function isMarketplaceWriteProtected() {

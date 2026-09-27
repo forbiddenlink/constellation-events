@@ -6,11 +6,16 @@ describe("marketplace write auth", () => {
     delete process.env.MARKETPLACE_WRITE_TOKEN;
   });
 
-  it("allows writes when token is not configured", () => {
+  it("denies writes (fails closed) when no token is configured", () => {
+    // Regression: this previously fail-opened (allowed: true) whenever
+    // MARKETPLACE_WRITE_TOKEN was unset, meaning any anonymous client could
+    // write/moderate marketplace listings in an unconfigured environment.
+    // Routes now treat writeProtected: false as "writes unavailable" (503),
+    // not "writes open".
     const request = new Request("http://localhost/api/marketplace", { method: "POST" });
     const auth = getMarketplaceWriteAuth(request);
 
-    expect(auth.allowed).toBe(true);
+    expect(auth.allowed).toBe(false);
     expect(auth.writeProtected).toBe(false);
     expect(isMarketplaceWriteProtected()).toBe(false);
   });

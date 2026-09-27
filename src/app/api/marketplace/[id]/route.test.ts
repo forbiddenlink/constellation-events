@@ -60,6 +60,24 @@ describe("marketplace id route", () => {
     expect(response.status).toBe(401);
   });
 
+  it("fails closed (503) on PATCH when write token is not configured at all", async () => {
+    // Regression: writes previously fail-opened (200) when
+    // MARKETPLACE_WRITE_TOKEN was unset.
+    const dir = await mkdtemp(path.join(tmpdir(), "constellation-mkp-patch-"));
+    const { PATCH } = await loadPatchRoute({ dataDir: dir });
+
+    const response = await PATCH(
+      new Request("http://localhost/api/marketplace/missing", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priceUsd: 450 })
+      }),
+      { params: Promise.resolve({ id: "nonexistent" }) }
+    );
+
+    expect(response.status).toBe(503);
+  });
+
   it("updates an existing listing with valid token", async () => {
     const dir = await mkdtemp(path.join(tmpdir(), "constellation-mkp-patch-"));
     const { PATCH, createMarketplaceListing } = await loadPatchRoute({
