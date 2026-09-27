@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { mockMarketplaceSession } from "@/test/mock-marketplace-session";
 
 const getSignedUrlMock = vi.fn();
 const s3ClientConfigMock = vi.fn();
@@ -33,8 +34,10 @@ async function loadRoute(options?: {
   publicBase?: string;
   imagePrefix?: string;
   maxBytes?: string;
+  sessionUser?: { id: string } | null;
 }) {
   vi.resetModules();
+  mockMarketplaceSession(options?.sessionUser === undefined ? null : options.sessionUser);
   setEnv("MARKETPLACE_WRITE_TOKEN", options?.writeToken);
   setEnv("R2_BUCKET", options?.bucket);
   setEnv("R2_ENDPOINT", options?.endpoint);
@@ -205,5 +208,32 @@ describe("marketplace upload-url route", () => {
     expect(putObjectInput?.Key).toBe(body.key);
     expect(putObjectInput?.ContentType).toBe("image/png");
     expect(getSignedUrlMock).toHaveBeenCalledOnce();
+  });
+
+  it("allows a signed-in session to request an upload URL without a write token", async () => {
+    getSignedUrlMock.mockResolvedValue("https://signed.example/upload");
+    const { POST } = await loadRoute({
+      // No writeToken configured: a session alone must be enough.
+      bucket: "constellation-tiles",
+      endpoint: "https://example.r2.cloudflarestorage.com",
+      accessKeyId: "abc",
+      secretAccessKey: "def",
+      publicBase: "https://pub.example.r2.dev",
+      sessionUser: { id: "user-1" }
+    });
+
+    const response = await POST(
+      new Request("http://localhost/api/marketplace/upload-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Origin: "http://localhost:3000" },
+        body: JSON.stringify({
+          filename: "listing.png",
+          contentType: "image/png",
+          size: 1024
+        })
+      })
+    );
+
+    expect(response.status).toBe(200);
   });
 });

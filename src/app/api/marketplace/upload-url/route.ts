@@ -7,6 +7,7 @@ import {
   getMarketplaceWriteAuthResponse,
   validateOrigin
 } from "@/lib/marketplace-auth";
+import { getMarketplaceSessionUser } from "@/lib/marketplace-authz";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const DEFAULT_IMAGE_MAX_BYTES = 5 * 1024 * 1024;
@@ -27,8 +28,15 @@ const EXTENSION_BY_TYPE: Record<string, string> = {
 };
 
 export async function POST(request: Request) {
-  const authResponse = getMarketplaceWriteAuthResponse(request);
-  if (authResponse) return authResponse;
+  // A signed-in session is sufficient to upload an image (the listing it
+  // attaches to isn't created yet, so there's no owner to check against
+  // here). Fall back to the legacy write-token gate only when there's no
+  // session, so any existing token-based caller keeps working.
+  const sessionUser = await getMarketplaceSessionUser(request);
+  if (!sessionUser) {
+    const authResponse = getMarketplaceWriteAuthResponse(request);
+    if (authResponse) return authResponse;
+  }
 
   const originCheck = validateOrigin(request);
   if (!originCheck.valid) {

@@ -51,6 +51,27 @@ describe("marketplace store", () => {
     expect(updated?.condition).toBe("excellent");
   });
 
+  it("applies a status patch (regression: previously silently dropped)", async () => {
+    // updateMarketplaceListing's field whitelist omitted `status`, so a
+    // moderation PATCH validated the value but never actually persisted it.
+    const dir = await mkdtemp(path.join(tmpdir(), "constellation-mkp-"));
+    const store = await loadStore(dir);
+
+    const created = await store.createMarketplaceListing({
+      title: "Moderation Target",
+      tag: "Visual",
+      category: "telescope",
+      condition: "good",
+      priceUsd: 450,
+      city: "Test City, NV",
+      shipping: true
+    });
+    expect(created.status).toBe("approved");
+
+    const updated = await store.updateMarketplaceListing(created.id, { status: "hidden" });
+    expect(updated?.status).toBe("hidden");
+  });
+
   it("normalizes legacy listings without moderation status", async () => {
     const dir = await mkdtemp(path.join(tmpdir(), "constellation-mkp-"));
     const dataDir = path.join(dir, "marketplace");

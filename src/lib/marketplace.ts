@@ -26,6 +26,12 @@ export type MarketplaceListing = {
   updatedAt?: string;
   description?: string;
   imageUrl?: string;
+  /**
+   * The better-auth user id that owns this listing. Absent on seed listings
+   * and on anything created before per-user ownership existed — those are
+   * "legacy" and editable only by an admin (see marketplace-authz.ts).
+   */
+  sellerId?: string | null;
 };
 
 export type MarketplaceFilters = {
