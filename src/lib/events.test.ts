@@ -52,10 +52,21 @@ describe("generateUpcomingEvents", () => {
   });
 
   it("includes planetary events when in range", () => {
-    const events = generateUpcomingEvents(undefined, new Date("2026-02-01"), 30);
+    // Venus greatest elongation east verified against Royal Observatory
+    // Greenwich + EarthSky as Aug 15, 2026 (was wrongly Feb 9).
+    const events = generateUpcomingEvents(undefined, new Date("2026-08-01"), 30);
     const venus = events.find((e) => e.title.includes("Venus"));
     expect(venus).toBeDefined();
     expect(venus!.type).toBe("planet");
+  });
+
+  it("labels the Mars-Jupiter conjunction as type conjunction, not planet", () => {
+    // The events feed's "Conjunctions" filter tab matches on `type`, not
+    // title text, so a conjunction mislabeled as "planet" is invisible there.
+    const events = generateUpcomingEvents(undefined, new Date("2026-03-01"), 30);
+    const conjunction = events.find((e) => e.title.includes("Conjunction"));
+    expect(conjunction).toBeDefined();
+    expect(conjunction!.type).toBe("conjunction");
   });
 
   it("returns empty for a date range with no events", () => {

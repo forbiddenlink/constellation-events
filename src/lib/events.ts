@@ -183,7 +183,10 @@ function generatePlanetaryEvents(fromDate: Date, toDate: Date): AstronomyEvent[]
   // In production, calculate these from orbital mechanics or use NASA APIs
   const planetaryEvents = [
     {
-      date: new Date("2026-02-09"),
+      // Verified against Royal Observatory Greenwich + EarthSky ("Venus
+      // greatest distance from the sun August 14-15, 2026"): 6 UTC Aug 15.
+      // Was previously hardcoded to Feb 9, which no source supports.
+      date: new Date("2026-08-15"),
       title: "Venus at Greatest Elongation East",
       summary: "Venus reaches maximum separation from Sun. Best evening viewing.",
       visibility: "excellent" as const,
@@ -194,10 +197,17 @@ function generatePlanetaryEvents(fromDate: Date, toDate: Date): AstronomyEvent[]
       title: "Mars-Jupiter Conjunction",
       summary: "Mars and Jupiter appear very close in the evening sky.",
       visibility: "good" as const,
-      score: 85
+      score: 85,
+      // The events feed's "Conjunctions" filter tab matches on the `type`
+      // field, not the title text, so without this the tab was permanently
+      // empty even though a conjunction event exists in the data.
+      type: "conjunction" as const
     },
     {
-      date: new Date("2026-04-18"),
+      // Verified against Royal Observatory Greenwich ("4 October - See
+      // Saturn at its best... Saturn reaches opposition on 4 October").
+      // Was previously hardcoded to Apr 18, six months off.
+      date: new Date("2026-10-04"),
       title: "Saturn at Opposition",
       summary: "Saturn at its brightest and best positioned for observation.",
       visibility: "excellent" as const,
@@ -211,6 +221,13 @@ function generatePlanetaryEvents(fromDate: Date, toDate: Date): AstronomyEvent[]
       score: 70
     },
     {
+      // UNVERIFIED: Royal Observatory Greenwich places Jupiter's 2026
+      // opposition on Jan 10, not Sep 22 (source: "10 January - Jupiter at
+      // its brightest... Jupiter will be at opposition"). Jupiter's ~399-day
+      // synodic period means the NEXT opposition after Jan 10, 2026 falls in
+      // early-to-mid 2027, not later in 2026. Left as-is pending precise
+      // ephemeris data (see file header comment) rather than guessing a
+      // 2027 date without a source.
       date: new Date("2026-09-22"),
       title: "Jupiter at Opposition",
       summary: "Jupiter at closest approach to Earth. Prime viewing all night.",
@@ -230,7 +247,7 @@ function generatePlanetaryEvents(fromDate: Date, toDate: Date): AstronomyEvent[]
         visibility: event.visibility,
         visibilityScore: event.score,
         summary: event.summary,
-        type: "planet"
+        type: ("type" in event && event.type ? event.type : "planet") as AstronomyEvent["type"]
       });
     }
   }
