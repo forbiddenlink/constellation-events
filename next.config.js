@@ -58,6 +58,12 @@ const nextConfig = {
               // prerendered (build-time HTML has no runtime nonce). Without
               // this, the site stays stuck on "Loading...".
               "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://vitals.vercel-insights.com; " +
+              // Without an explicit worker-src, the browser falls back to
+              // script-src, which has no 'blob:' source — so Mapbox GL JS's
+              // tile-processing Web Worker (loaded from a blob: URL) gets
+              // silently blocked and the dark-sky map renders as an empty
+              // box on every page that embeds it.
+              "worker-src 'self' blob:; " +
               "style-src 'self' 'unsafe-inline'; " +
               `img-src 'self' data: blob: https://images.unsplash.com https://upload.wikimedia.org https://grainy-gradients.vercel.app https://apod.nasa.gov${marketplaceImageCspHost}; ` +
               "font-src 'self' https://fonts.gstatic.com; " +
