@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.1.0](https://github.com/forbiddenlink/constellation-events/compare/v1.0.5...v1.1.0) (2026-09-29)
+
+
+### Features
+
+* **marketplace:** add real per-user listing ownership via session ([#87](https://github.com/forbiddenlink/constellation-events/issues/87)) ([571f8c2](https://github.com/forbiddenlink/constellation-events/commit/571f8c2185cd162712faf0c3ab2b8963110032ff))
+
+
+### Bug Fixes
+
+* **content:** stop overstating the marketplace and fix a moon-phase bug ([#84](https://github.com/forbiddenlink/constellation-events/issues/84)) ([9086e44](https://github.com/forbiddenlink/constellation-events/commit/9086e44ee3a920eefab5f45e9ce7102a3faaf5b9))
+* correctness and a11y issues across the product ([#80](https://github.com/forbiddenlink/constellation-events/issues/80)) ([7ad2a6f](https://github.com/forbiddenlink/constellation-events/commit/7ad2a6f5c8ab3923b97954019df7f148d4b54f0d))
+* **csp:** stop dropping port and stop injecting a literal null origin ([#88](https://github.com/forbiddenlink/constellation-events/issues/88)) ([477183e](https://github.com/forbiddenlink/constellation-events/commit/477183e983244b7c9f1269d4858c241c381d4694))
+* hydration mismatch in viewer-local time rendering ([#82](https://github.com/forbiddenlink/constellation-events/issues/82)) ([0bffab2](https://github.com/forbiddenlink/constellation-events/commit/0bffab2d2fa7e59440cbdb3d6c936ba5ed91202c))
+* **security:** deny marketplace images by default when storage is unconfigured, add HSTS ([#83](https://github.com/forbiddenlink/constellation-events/issues/83)) ([38d5dd6](https://github.com/forbiddenlink/constellation-events/commit/38d5dd64f2917e19cc54435c3fd79063f45497a0))
+* **security:** fail closed on marketplace writes when no write token is configured ([#85](https://github.com/forbiddenlink/constellation-events/issues/85)) ([b32f486](https://github.com/forbiddenlink/constellation-events/commit/b32f486c7986ffb8c42332806f808336af974898))
+
 ## [1.0.5](https://github.com/forbiddenlink/constellation-events/compare/v1.0.4...v1.0.5) (2026-09-25)
 
 
