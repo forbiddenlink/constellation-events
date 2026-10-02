@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/forbiddenlink/constellation-events/compare/v1.1.0...v1.1.1) (2026-10-02)
+
+
+### Bug Fixes
+
+* **deps:** apply override fix plan ([#92](https://github.com/forbiddenlink/constellation-events/issues/92)) ([17769bf](https://github.com/forbiddenlink/constellation-events/commit/17769bfc566f146fb4f215376516c1119797079e))
+* **deps:** apply override fix plan (round 2) ([#94](https://github.com/forbiddenlink/constellation-events/issues/94)) ([5a47222](https://github.com/forbiddenlink/constellation-events/commit/5a47222952228662779c5396cbe9949a1034117e))
+
 ## [1.1.0](https://github.com/forbiddenlink/constellation-events/compare/v1.0.5...v1.1.0) (2026-09-29)
 
 
