@@ -89,7 +89,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=22.0.0"
+    "node": "24.x"
   },
   "description": "Astronomy-themed event discovery and mapping platform",
   "pnpm": {
