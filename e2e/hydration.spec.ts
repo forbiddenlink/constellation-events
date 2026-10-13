@@ -24,7 +24,17 @@ test.describe("hydration: viewer-local time rendering", () => {
     page.on("pageerror", (err) => consoleErrors.push(err.message));
 
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
+    // Not "networkidle": the dev server's homepage keeps outbound requests
+    // (ISS pass APIs, DB lookups) in flight, and in CI they time out slowly
+    // enough that the network never goes idle within the test timeout.
+    // Hydration errors are raised before any effect runs, so waiting for a
+    // <time> element to swap from its ISO-sliced fallback to the viewer-local
+    // text (LocalTime does this in useEffect) proves hydration has finished.
+    await page.waitForFunction(() =>
+      Array.from(document.querySelectorAll("time")).some(
+        (el) => !/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(el.textContent ?? "")
+      )
+    );
 
     const hydrationIssues = consoleErrors.filter((text) =>
       /hydration|did not match|server rendered|text content does not match/i.test(text)
