@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/forbiddenlink/constellation-events/compare/v1.1.1...v1.1.2) (2026-10-13)
+
+
+### Bug Fixes
+
+* **e2e:** stop waiting on networkidle in the hydration spec ([#103](https://github.com/forbiddenlink/constellation-events/issues/103)) ([2706bf5](https://github.com/forbiddenlink/constellation-events/commit/2706bf58e4de3fd9e992b8f555d37c5ea13ba32e))
+
 ## [1.1.1](https://github.com/forbiddenlink/constellation-events/compare/v1.1.0...v1.1.1) (2026-10-09)
 
 
