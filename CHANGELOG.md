@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/forbiddenlink/constellation-events/compare/v1.1.2...v1.1.3) (2026-10-17)
+
+
+### Bug Fixes
+
+* **deps:** clear transitive CVEs with bounded overrides ([#105](https://github.com/forbiddenlink/constellation-events/issues/105)) ([9081107](https://github.com/forbiddenlink/constellation-events/commit/9081107f4c37a62155e6e48bda8b30158396fe5b))
+
 ## [1.1.2](https://github.com/forbiddenlink/constellation-events/compare/v1.1.1...v1.1.2) (2026-10-13)
 
 
