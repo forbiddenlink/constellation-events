@@ -18,7 +18,7 @@ jobs:
           persist-credentials: false
       - name: Ally accessibility scan
         continue-on-error: true
-        uses: forbiddenlink/ally@4c9f08d7481b6942a6e3c206f8a691e3f2160a8f # main
+        uses: forbiddenlink/ally@c39526cc705bfc4cbce7ccaa50558b1502e0cac9 # main
         with:
           path: "."
           threshold: "9999"
