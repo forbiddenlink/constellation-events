@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/forbiddenlink/constellation-events/compare/v1.1.3...v1.1.4) (2026-10-24)
+
+
+### Bug Fixes
+
+* **deps:** bump vitest so @vitest/mocker resolves to the patched version ([#113](https://github.com/forbiddenlink/constellation-events/issues/113)) ([a3884f7](https://github.com/forbiddenlink/constellation-events/commit/a3884f7ec58ee19db2a7613a054045bcefc2ab59))
+
 ## [1.1.3](https://github.com/forbiddenlink/constellation-events/compare/v1.1.2...v1.1.3) (2026-10-19)
 
 
