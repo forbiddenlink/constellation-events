@@ -94,7 +94,7 @@
   "description": "Astronomy-themed event discovery and mapping platform",
   "pnpm": {
     "overrides": {
-      "undici": ">=7.29.1 <8",
+      "undici": ">=7.30.1 <8",
       "next": ">=16.2.6 <17",
       "flatted": ">=3.4.2 <4",
       "fast-xml-parser": ">=5.5.7 <6",

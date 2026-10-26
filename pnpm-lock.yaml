@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  undici: '>=7.29.1 <8'
+  undici: '>=7.30.1 <8'
   next: '>=16.2.6 <17'
   flatted: '>=3.4.2 <4'
   fast-xml-parser: '>=5.5.7 <6'
@@ -4725,8 +4725,8 @@ packages:
   undici-types@8.9.0:
     resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
 
-  undici@7.30.0:
-    resolution: {integrity: sha512-dkrQXeHSaoamnItlYbmzG0wFYrM0ZwDxCIg0A7aKjTyyhh9svRzCNFEzV+Vm05/yehjCzjDZ31KXfGEjYSztDQ==}
+  undici@7.30.1:
+    resolution: {integrity: sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==}
     engines: {node: '>=20.18.1'}
 
   unrs-resolver@1.12.2:
@@ -8283,7 +8283,7 @@ snapshots:
       parse5: 8.0.1
       saxes: 6.0.0
       tough-cookie: 6.0.2
-      undici: 7.30.0
+      undici: 7.30.1
       w3c-xmlserializer: 6.0.0
       webidl-conversions: 8.0.1
       whatwg-mimetype: 5.0.0
@@ -9426,7 +9426,7 @@ snapshots:
 
   undici-types@8.9.0: {}
 
-  undici@7.30.0: {}
+  undici@7.30.1: {}
 
   unrs-resolver@1.12.2:
     dependencies:
