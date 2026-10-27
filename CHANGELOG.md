@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/forbiddenlink/constellation-events/compare/v1.1.4...v1.1.5) (2026-10-27)
+
+
+### Bug Fixes
+
+* **deps:** raise undici override floor to 7.30.1 ([#119](https://github.com/forbiddenlink/constellation-events/issues/119)) ([8881520](https://github.com/forbiddenlink/constellation-events/commit/888152027fc127f6d3ab6b4413a6d4f450a96d59))
+
 ## [1.1.4](https://github.com/forbiddenlink/constellation-events/compare/v1.1.3...v1.1.4) (2026-10-24)
 
 
