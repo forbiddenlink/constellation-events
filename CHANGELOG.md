@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.6](https://github.com/forbiddenlink/constellation-events/compare/v1.1.5...v1.1.6) (2026-10-29)
+
+
+### Bug Fixes
+
+* **deps:** raise systeminformation and @hono/node-server override floors ([#122](https://github.com/forbiddenlink/constellation-events/issues/122)) ([dd4aee5](https://github.com/forbiddenlink/constellation-events/commit/dd4aee5de094d954c5804f08fb55920d33a0abc3))
+
 ## [1.1.5](https://github.com/forbiddenlink/constellation-events/compare/v1.1.4...v1.1.5) (2026-10-27)
 
 
