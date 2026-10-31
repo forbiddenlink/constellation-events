@@ -78,7 +78,7 @@
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "17.13.0",
     "jsdom": "30.1.2",
-    "minimatch": "10.2.6",
+    "minimatch": "11.0.1",
     "msw": "2.15.0",
     "next-sitemap": "4.2.3",
     "postcss": "8.5.29",
