@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.7](https://github.com/forbiddenlink/constellation-events/compare/v1.1.6...v1.1.7) (2026-11-04)
+
+
+### Bug Fixes
+
+* **a11y:** raise remaining muted text to WCAG AA contrast ([#129](https://github.com/forbiddenlink/constellation-events/issues/129)) ([84906ce](https://github.com/forbiddenlink/constellation-events/commit/84906ce182e314e070fcb205cd7b9a105e9ff7b0))
+* **events:** show an honest state when /api/events is refused; raise footer link contrast ([#127](https://github.com/forbiddenlink/constellation-events/issues/127)) ([f15e498](https://github.com/forbiddenlink/constellation-events/commit/f15e4982f1e59bcd77cf6a3f3d32b7ed4c89732a))
+
 ## [1.1.6](https://github.com/forbiddenlink/constellation-events/compare/v1.1.5...v1.1.6) (2026-10-29)
 
 
