@@ -42,7 +42,7 @@ function matchesFilter(event: AstronomyEvent, filter: string): boolean {
 
 export default function EventsFeedWithFilters() {
   const [data, setData] = useState<EventsResponse | null>(null);
-  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "error" | "blocked">("idle");
   const [activeFilter, setActiveFilter] = useState("all");
   const geo = useGeolocation();
 
@@ -56,10 +56,15 @@ export default function EventsFeedWithFilters() {
 
     fetch(`/api/events?${params.toString()}`)
       .then((res) => {
+        if (res.status === 403) {
+          setStatus("blocked");
+          return null;
+        }
         if (!res.ok) throw new Error(`Events request failed: ${res.status}`);
         return res.json();
       })
-      .then((payload: EventsResponse) => {
+      .then((payload: EventsResponse | null) => {
+        if (!payload) return;
         setData(payload);
         setStatus("idle");
       })
@@ -120,6 +125,15 @@ export default function EventsFeedWithFilters() {
         <div className="glass rounded-3xl p-8 text-center">
           <div className="text-ember">Events unavailable right now</div>
           <p className="mt-2 text-sm text-starlight/70">Please try again later</p>
+        </div>
+      )}
+
+      {status === "blocked" && (
+        <div className="glass rounded-3xl p-8 text-center" role="status">
+          <div className="text-starlight">Event data could not be loaded</div>
+          <p className="mt-2 text-sm text-starlight/70">
+            The events service refused this request (HTTP 403), which is what its bot protection returns for traffic it blocks. Nothing is listed because the request was refused, not because no events are upcoming.
+          </p>
         </div>
       )}
 

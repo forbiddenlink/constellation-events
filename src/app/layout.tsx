@@ -122,7 +122,7 @@ export default function RootLayout({
               <ClientErrorBoundary>{children}</ClientErrorBoundary>
             </main>
 
-            <footer className="border-t border-white/5 bg-black/20 py-12 text-center text-xs text-starlight/30 backdrop-blur-sm">
+            <footer className="border-t border-white/5 bg-black/20 py-12 text-center text-xs text-starlight/70 backdrop-blur-sm">
               <div className="mb-4 flex justify-center gap-6">
                    <Link href="/about" className="hover:text-aurora">About</Link>
                    <Link href="/contact" className="hover:text-aurora">Contact</Link>
