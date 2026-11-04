@@ -451,7 +451,7 @@ export default function MarketplaceBrowser() {
           </div>
         ) : (
           <div className="flex h-48 lg:h-64 w-full items-center justify-center rounded-2xl bg-white/5">
-            <span className="text-xs text-starlight/30">No image available</span>
+            <span className="text-xs text-starlight/50">No image available</span>
           </div>
         )}
         <div className="p-5">
@@ -487,7 +487,7 @@ export default function MarketplaceBrowser() {
           </button>
           )}
           {!isSample && (
-          <p className="mt-2 text-center text-[11px] text-starlight/40">
+          <p className="mt-2 text-center text-[11px] text-starlight/55">
             {contactSent
               ? "If your email app didn\u0027t open, email marketplace@constellation.app directly."
               : "Opens your email app with a pre-filled inquiry."}
@@ -510,7 +510,7 @@ export default function MarketplaceBrowser() {
             <div className="flex items-center justify-between mb-4">
               <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Search &amp; filter</div>
               {data?.generatedAt && (
-                <div className="text-[10px] text-starlight/30">
+                <div className="text-[10px] text-starlight/50">
                   Updated {new Date(data.generatedAt).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
                 </div>
               )}
@@ -521,7 +521,7 @@ export default function MarketplaceBrowser() {
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Search listings..."
-                  className="w-full rounded-xl bg-white/5 border border-white/10 p-3 text-sm text-starlight placeholder:text-starlight/30 focus:outline-none focus:ring-1 focus:ring-aurora"
+                  className="w-full rounded-xl bg-white/5 border border-white/10 p-3 text-sm text-starlight placeholder:text-starlight/50 focus:outline-none focus:ring-1 focus:ring-aurora"
                 />
               </div>
               <select
@@ -590,7 +590,7 @@ export default function MarketplaceBrowser() {
                 <LoadingSpinner message="Loading listings..." />
               </div>
             ) : filteredListings.length === 0 ? (
-              <div className="py-20 text-center text-sm text-starlight/40">
+              <div className="py-20 text-center text-sm text-starlight/55">
                 No results found. Try adjusting your filters.
               </div>
             ) : (
@@ -662,7 +662,7 @@ export default function MarketplaceBrowser() {
                     onChange={(e) => setAuthName(e.target.value)}
                     placeholder="Name"
                     required
-                    className="rounded-xl bg-white/5 border border-white/10 p-2.5 text-xs text-starlight placeholder:text-starlight/30 focus:outline-none focus:ring-1 focus:ring-aurora"
+                    className="rounded-xl bg-white/5 border border-white/10 p-2.5 text-xs text-starlight placeholder:text-starlight/50 focus:outline-none focus:ring-1 focus:ring-aurora"
                   />
                 )}
                 <input
@@ -671,7 +671,7 @@ export default function MarketplaceBrowser() {
                   onChange={(e) => setAuthEmail(e.target.value)}
                   placeholder="Email"
                   required
-                  className="rounded-xl bg-white/5 border border-white/10 p-2.5 text-xs text-starlight placeholder:text-starlight/30 focus:outline-none focus:ring-1 focus:ring-aurora"
+                  className="rounded-xl bg-white/5 border border-white/10 p-2.5 text-xs text-starlight placeholder:text-starlight/50 focus:outline-none focus:ring-1 focus:ring-aurora"
                 />
                 <input
                   type="password"
@@ -680,7 +680,7 @@ export default function MarketplaceBrowser() {
                   placeholder="Password"
                   required
                   minLength={8}
-                  className="rounded-xl bg-white/5 border border-white/10 p-2.5 text-xs text-starlight placeholder:text-starlight/30 focus:outline-none focus:ring-1 focus:ring-aurora"
+                  className="rounded-xl bg-white/5 border border-white/10 p-2.5 text-xs text-starlight placeholder:text-starlight/50 focus:outline-none focus:ring-1 focus:ring-aurora"
                 />
                 <button
                   type="submit"
@@ -694,7 +694,7 @@ export default function MarketplaceBrowser() {
                 )}
               </form>
             )}
-            <p className="mt-2 text-[11px] text-starlight/30">
+            <p className="mt-2 text-[11px] text-starlight/50">
               Sign in to create and manage your own listings.
             </p>
           </div>
@@ -707,7 +707,7 @@ export default function MarketplaceBrowser() {
               className="flex w-full items-center justify-between glass rounded-2xl p-4 text-left text-xs text-starlight hover:bg-white/5 transition-colors"
             >
               <span className="font-medium">{showSellerForm ? "Close listing form" : "Create a new listing"}</span>
-              <span className={`text-xs transition-transform ${showSellerForm ? "rotate-180 text-aurora" : "text-starlight/40"}`}>▾</span>
+              <span className={`text-xs transition-transform ${showSellerForm ? "rotate-180 text-aurora" : "text-starlight/55"}`}>▾</span>
             </button>
 
             {showSellerForm && (
@@ -855,7 +855,7 @@ export default function MarketplaceBrowser() {
                 renderDetailPanel(selectedListing)
               ) : (
                 <div className="flex h-96 items-center justify-center text-center">
-                  <div className="text-sm text-starlight/40">
+                  <div className="text-sm text-starlight/55">
                     Select a listing to see details
                   </div>
                 </div>

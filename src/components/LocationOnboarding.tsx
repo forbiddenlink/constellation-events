@@ -83,7 +83,7 @@ export default function LocationOnboarding() {
               </button>
               <button
                 onClick={handleUseDefault}
-                className="text-xs text-starlight/40 hover:text-starlight/60 transition py-2"
+                className="text-xs text-starlight/55 hover:text-starlight/60 transition py-2"
               >
                 Continue with default (Las Vegas)
               </button>
@@ -96,7 +96,7 @@ export default function LocationOnboarding() {
                   onChange={(e) => setQuery(e.target.value)}
                   autoFocus
                   placeholder="Search for a city..."
-                  className="w-full rounded-xl bg-white/5 border border-white/10 p-2.5 text-sm text-starlight placeholder:text-starlight/30 focus:outline-none focus:ring-1 focus:ring-aurora"
+                  className="w-full rounded-xl bg-white/5 border border-white/10 p-2.5 text-sm text-starlight placeholder:text-starlight/50 focus:outline-none focus:ring-1 focus:ring-aurora"
                 />
                 {query.length >= 2 && (
                   <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border border-white/10 bg-deep-space/95 backdrop-blur-xl shadow-lg overflow-hidden">
@@ -109,10 +109,10 @@ export default function LocationOnboarding() {
                       >
                         {result.name}
                         {result.admin1 ? `, ${result.admin1}` : ""}
-                        <span className="ml-1 text-xs text-starlight/40">{result.country}</span>
+                        <span className="ml-1 text-xs text-starlight/55">{result.country}</span>
                       </button>
                     )) : (
-                      <div className="px-4 py-3 text-sm text-starlight/40">No cities found</div>
+                      <div className="px-4 py-3 text-sm text-starlight/55">No cities found</div>
                     )}
                   </div>
                 )}
@@ -120,7 +120,7 @@ export default function LocationOnboarding() {
               <div className="mt-2 flex items-center gap-3">
                 <button
                   onClick={() => { setMode("prompt"); setQuery(""); setResults([]); }}
-                  className="text-xs text-starlight/40 hover:text-starlight/60 transition"
+                  className="text-xs text-starlight/55 hover:text-starlight/60 transition"
                 >
                   ← Back
                 </button>

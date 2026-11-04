@@ -24,7 +24,7 @@ export default function ContactForm() {
         <p className="mt-2 text-sm text-starlight/60">
           Your email app should have opened with a pre-filled message.
         </p>
-        <p className="mt-2 text-xs text-starlight/40">
+        <p className="mt-2 text-xs text-starlight/55">
           If it didn&apos;t open, email <a href="mailto:hello@constellation.app" className="text-aurora hover:underline">hello@constellation.app</a> directly.
         </p>
         <button

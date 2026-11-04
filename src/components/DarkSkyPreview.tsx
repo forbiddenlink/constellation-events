@@ -43,7 +43,7 @@ export default function DarkSkyPreview() {
 
   if (error) {
     return (
-      <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-starlight/40">
+      <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-starlight/55">
         Sky condition data unavailable right now.
       </div>
     );
@@ -52,8 +52,8 @@ export default function DarkSkyPreview() {
   return (
     <div className="mt-6 grid gap-4 sm:grid-cols-3">
       <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-        <div className="text-xs text-starlight/50">Bortle <span className="text-starlight/30">(1–9)</span></div>
-        <div className="mt-1 text-[10px] text-starlight/30">1 = darkest sky</div>
+        <div className="text-xs text-starlight/50">Bortle <span className="text-starlight/50">(1–9)</span></div>
+        <div className="mt-1 text-[10px] text-starlight/50">1 = darkest sky</div>
         <div className="mt-2 font-mono text-lg font-semibold text-aurora">
           {stats ? bortle : <span className="inline-block h-5 w-10 animate-pulse rounded bg-white/10" />}
         </div>

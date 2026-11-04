@@ -49,7 +49,7 @@ export default function HomepageEvents() {
     return (
       <div className="space-y-4">
         <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Upcoming Events</div>
-        <div className="glass rounded-2xl p-5 text-sm text-starlight/40">
+        <div className="glass rounded-2xl p-5 text-sm text-starlight/55">
           {error ? "Events temporarily unavailable." : "No upcoming events right now."}
         </div>
       </div>

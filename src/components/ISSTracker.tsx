@@ -156,19 +156,19 @@ export default function ISSTracker() {
           {/* Current Position */}
           <div className="grid grid-cols-3 gap-3">
             <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-              <div className="text-[10px] uppercase tracking-wider text-starlight/40">Latitude</div>
+              <div className="text-[10px] uppercase tracking-wider text-starlight/55">Latitude</div>
               <div className="mt-1 font-mono text-sm text-starlight">
                 {data.position.latitude.toFixed(2)}°
               </div>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-              <div className="text-[10px] uppercase tracking-wider text-starlight/40">Longitude</div>
+              <div className="text-[10px] uppercase tracking-wider text-starlight/55">Longitude</div>
               <div className="mt-1 font-mono text-sm text-starlight">
                 {data.position.longitude.toFixed(2)}°
               </div>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-              <div className="text-[10px] uppercase tracking-wider text-starlight/40">Altitude</div>
+              <div className="text-[10px] uppercase tracking-wider text-starlight/55">Altitude</div>
               <div className="mt-1 font-mono text-sm text-starlight">
                 {formatAltitude(data.position.altitude)}
               </div>
@@ -178,14 +178,14 @@ export default function ISSTracker() {
           {/* Velocity */}
           <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-3">
             <div>
-              <div className="text-[10px] uppercase tracking-wider text-starlight/40">Velocity</div>
+              <div className="text-[10px] uppercase tracking-wider text-starlight/55">Velocity</div>
               <div className="mt-1 font-mono text-lg font-semibold text-aurora">
                 {formatVelocity(data.position.velocity)}
               </div>
             </div>
             {data.position.footprint && (
               <div className="text-right">
-                <div className="text-[10px] uppercase tracking-wider text-starlight/40">Footprint</div>
+                <div className="text-[10px] uppercase tracking-wider text-starlight/55">Footprint</div>
                 <div className="mt-1 font-mono text-sm text-starlight/70">
                   {Math.round(data.position.footprint)} km radius
                 </div>
@@ -221,7 +221,7 @@ export default function ISSTracker() {
           {/* Expanded Pass List */}
           {expanded && data.passes.length > 1 && (
             <div className="space-y-2">
-              <div className="text-xs uppercase tracking-wider text-starlight/40">Upcoming Passes</div>
+              <div className="text-xs uppercase tracking-wider text-starlight/55">Upcoming Passes</div>
               {data.passes.slice(1).map((pass, index) => (
                 <div
                   key={index}
@@ -237,7 +237,7 @@ export default function ISSTracker() {
                     <span className={`text-xs ${getBrightnessColor(pass.brightness)}`}>
                       {getBrightnessLabel(pass.brightness)}
                     </span>
-                    <div className="text-[10px] text-starlight/40">
+                    <div className="text-[10px] text-starlight/55">
                       {pass.formatted.maxAltitude} max
                     </div>
                   </div>
@@ -248,7 +248,7 @@ export default function ISSTracker() {
 
           {/* Ground Track Info */}
           {expanded && data.groundTrack && data.groundTrack.length > 0 && (
-            <div className="text-xs text-starlight/40">
+            <div className="text-xs text-starlight/55">
               Ground track: {data.groundTrack.length} points over next 90 minutes
             </div>
           )}
@@ -256,7 +256,7 @@ export default function ISSTracker() {
       )}
 
       {data?.generatedAt && (
-        <div className="mt-4 text-[10px] text-starlight/30">
+        <div className="mt-4 text-[10px] text-starlight/50">
           Updated {new Date(data.generatedAt).toLocaleTimeString()}
         </div>
       )}

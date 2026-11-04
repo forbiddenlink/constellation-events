@@ -81,7 +81,7 @@ export default function PlannerLocationSearch() {
               setLocationName(null);
               setShowResults(true);
             }}
-            className="text-[11px] text-starlight/40 hover:text-starlight transition"
+            className="text-[11px] text-starlight/55 hover:text-starlight transition"
           >
             Change
           </button>
@@ -97,7 +97,7 @@ export default function PlannerLocationSearch() {
               }}
               onFocus={() => setShowResults(true)}
               placeholder="Search for a city..."
-              className="w-full rounded-xl bg-white/5 border border-white/10 p-2.5 text-sm text-starlight placeholder:text-starlight/30 focus:outline-none focus:ring-1 focus:ring-aurora"
+              className="w-full rounded-xl bg-white/5 border border-white/10 p-2.5 text-sm text-starlight placeholder:text-starlight/50 focus:outline-none focus:ring-1 focus:ring-aurora"
             />
             {showResults && query.length >= 2 && (
               <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border border-white/10 bg-deep-space/95 backdrop-blur-xl shadow-lg overflow-hidden">
@@ -110,10 +110,10 @@ export default function PlannerLocationSearch() {
                   >
                     {result.name}
                     {result.admin1 ? `, ${result.admin1}` : ""}
-                    <span className="ml-1 text-xs text-starlight/40">{result.country}</span>
+                    <span className="ml-1 text-xs text-starlight/55">{result.country}</span>
                   </button>
                 )) : (
-                  <div className="px-4 py-3 text-sm text-starlight/40">No cities found</div>
+                  <div className="px-4 py-3 text-sm text-starlight/55">No cities found</div>
                 )}
               </div>
             )}

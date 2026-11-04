@@ -74,7 +74,7 @@ export default function TonightAtGlance() {
     <div className="glass rounded-3xl p-6">
       <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-starlight/50">
         <span>Tonight at a glance</span>
-        <span className="text-[10px] tracking-[0.3em] text-starlight/40">
+        <span className="text-[10px] tracking-[0.3em] text-starlight/55">
           {data?.generatedAt ? (
             <>
               Updated <LocalTime iso={data.generatedAt} format={formatTimestamp} />
@@ -107,7 +107,7 @@ export default function TonightAtGlance() {
             </div>
             <div className="text-right">
               <div className="text-sm font-semibold text-aurora">{item.magnitude}</div>
-              <div className="text-[10px] uppercase tracking-[0.3em] text-starlight/40" title={metricTooltip(item.metricLabel ?? "Mag")}>
+              <div className="text-[10px] uppercase tracking-[0.3em] text-starlight/55" title={metricTooltip(item.metricLabel ?? "Mag")}>
                 {item.metricLabel ?? "Mag"}
               </div>
             </div>
@@ -115,7 +115,7 @@ export default function TonightAtGlance() {
         ))}
       </div>
       {data?.source && (
-        <div className="mt-4 text-[10px] uppercase tracking-[0.3em] text-starlight/40">
+        <div className="mt-4 text-[10px] uppercase tracking-[0.3em] text-starlight/55">
           Source: {data.source}
         </div>
       )}

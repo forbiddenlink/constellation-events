@@ -70,7 +70,7 @@ export default function NightModeToggle() {
               d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
             />
           </svg>
-          <span className="hidden sm:inline text-[10px] text-starlight/40">NV</span>
+          <span className="hidden sm:inline text-[10px] text-starlight/55">NV</span>
         </>
       )}
     </button>

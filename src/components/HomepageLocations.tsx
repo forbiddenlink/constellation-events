@@ -52,7 +52,7 @@ export default function HomepageLocations() {
 
   if (error) {
     return (
-      <div className="glass rounded-2xl p-5 text-sm text-starlight/40">
+      <div className="glass rounded-2xl p-5 text-sm text-starlight/55">
         Dark-sky locations temporarily unavailable.
       </div>
     );
@@ -64,7 +64,7 @@ export default function HomepageLocations() {
         <LocationCard key={location.id} location={location} />
       ))}
       {locations.length === 0 && (
-        <div className="glass rounded-2xl p-5 text-sm text-starlight/40">
+        <div className="glass rounded-2xl p-5 text-sm text-starlight/55">
           No dark-sky locations found.
         </div>
       )}
