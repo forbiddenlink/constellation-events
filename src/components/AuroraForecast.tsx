@@ -51,7 +51,7 @@ function getProbabilityColor(probability: AuroraData["visibility"]["probability"
     case "unlikely":
       return "text-starlight/60";
     case "none":
-      return "text-starlight/40";
+      return "text-starlight/55";
   }
 }
 
@@ -66,7 +66,7 @@ function getProbabilityBadgeColor(probability: AuroraData["visibility"]["probabi
     case "unlikely":
       return "bg-white/5 border-white/20 text-starlight/60";
     case "none":
-      return "bg-white/5 border-white/10 text-starlight/40";
+      return "bg-white/5 border-white/10 text-starlight/55";
   }
 }
 
@@ -146,7 +146,7 @@ export default function AuroraForecast() {
           {/* Current Kp Index */}
           <div className="flex items-center gap-4">
             <div className="flex-shrink-0">
-              <div className="text-[10px] uppercase tracking-wider text-starlight/40">Kp Index</div>
+              <div className="text-[10px] uppercase tracking-wider text-starlight/55">Kp Index</div>
               <div className={`text-4xl font-bold ${getKpColor(data.current.kp)}`}>
                 {data.current.kp.toFixed(1)}
               </div>
@@ -165,7 +165,7 @@ export default function AuroraForecast() {
                   />
                 ))}
               </div>
-              <div className="mt-1 flex justify-between text-[9px] text-starlight/30">
+              <div className="mt-1 flex justify-between text-[9px] text-starlight/50">
                 <span>Quiet</span>
                 <span>Minor Storm</span>
                 <span>Severe</span>
@@ -189,7 +189,7 @@ export default function AuroraForecast() {
           <div className="rounded-xl border border-aurora/20 bg-aurora/5 p-4">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-[10px] uppercase tracking-wider text-starlight/40">
+                <div className="text-[10px] uppercase tracking-wider text-starlight/55">
                   Visibility at Your Location
                 </div>
                 <div className={`mt-1 text-lg font-semibold ${getProbabilityColor(data.visibility.probability)}`}>
@@ -211,7 +211,7 @@ export default function AuroraForecast() {
                 className="flex w-full items-center justify-between rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-starlight/70 transition-colors hover:border-white/20"
               >
                 <span>3-Day Kp Forecast</span>
-                <span className="text-starlight/40">{showForecast ? "Hide" : "Show"}</span>
+                <span className="text-starlight/55">{showForecast ? "Hide" : "Show"}</span>
               </button>
 
               {showForecast && (
@@ -259,7 +259,7 @@ export default function AuroraForecast() {
       )}
 
       {data?.timestamp && (
-        <div className="mt-4 text-[10px] text-starlight/30">
+        <div className="mt-4 text-[10px] text-starlight/50">
           Data from {data.source.toUpperCase()} • Updated {new Date(data.timestamp).toLocaleTimeString()}
         </div>
       )}

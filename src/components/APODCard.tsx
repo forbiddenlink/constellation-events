@@ -59,7 +59,7 @@ export default function APODCard() {
     return (
       <div className="glass rounded-3xl p-6">
         <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Astronomy Picture of the Day</div>
-        <p className="mt-3 text-sm text-starlight/40">Today&apos;s astronomy picture is temporarily unavailable.</p>
+        <p className="mt-3 text-sm text-starlight/55">Today&apos;s astronomy picture is temporarily unavailable.</p>
       </div>
     );
   }
@@ -126,7 +126,7 @@ export default function APODCard() {
         )}
 
         {apod.copyright && (
-          <p className="text-xs text-starlight/40">
+          <p className="text-xs text-starlight/55">
             Credit: {apod.copyright}
           </p>
         )}

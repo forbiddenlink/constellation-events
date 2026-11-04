@@ -96,7 +96,7 @@ export default function TonightPlannerPanel() {
         <div className="text-right">
           <div className="font-mono text-3xl font-semibold text-aurora">{data.overallQuality.score}</div>
           <div className="text-xs text-starlight/50">Overall score</div>
-          <div className="text-[10px] text-starlight/30">out of 100</div>
+          <div className="text-[10px] text-starlight/50">out of 100</div>
         </div>
       </div>
 
@@ -122,7 +122,7 @@ export default function TonightPlannerPanel() {
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
           <div className="text-xs text-starlight/50">Local dark-sky score</div>
           <div className="mt-2 text-sm text-starlight/90">{data.localDarkSkyScore}</div>
-          <div className="text-[10px] text-starlight/30">out of 100 · higher is better</div>
+          <div className="text-[10px] text-starlight/50">out of 100 · higher is better</div>
           <div className="mt-1 text-xs text-starlight/60">
             Weather quality {data.weather?.quality ?? "n/a"}
           </div>

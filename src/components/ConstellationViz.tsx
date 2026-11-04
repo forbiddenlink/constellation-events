@@ -64,7 +64,7 @@ export default function ConstellationViz({ events = [], limit = 9 }: Constellati
 
       <div className="relative flex items-center justify-between text-xs uppercase tracking-[0.3em] text-starlight/50">
         <span>Sky timeline</span>
-        <span className="text-starlight/30">next {events.length ? "60 nights" : "—"}</span>
+        <span className="text-starlight/50">next {events.length ? "60 nights" : "—"}</span>
       </div>
 
       <svg
@@ -130,7 +130,7 @@ export default function ConstellationViz({ events = [], limit = 9 }: Constellati
         })}
       </svg>
 
-      <div className="relative mt-1 flex items-center justify-between text-[10px] text-starlight/40">
+      <div className="relative mt-1 flex items-center justify-between text-[10px] text-starlight/55">
         <span>
           {stars.length > 0
             ? `${stars.length} events · brighter = better visibility`

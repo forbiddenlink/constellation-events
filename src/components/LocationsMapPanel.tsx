@@ -142,7 +142,7 @@ export default function LocationsMapPanel() {
         ].map((item) => (
           <div key={item.label} className="rounded-2xl border border-white/10 bg-white/5 p-4">
             <div className="text-xs text-starlight/50">{item.label}</div>
-            {item.hint && <div className="text-[10px] text-starlight/30">{item.hint}</div>}
+            {item.hint && <div className="text-[10px] text-starlight/50">{item.hint}</div>}
             <div className="mt-2 font-mono text-lg font-semibold text-aurora">{item.value}</div>
           </div>
         ))}
@@ -157,7 +157,7 @@ export default function LocationsMapPanel() {
         <StarMap showLightPollution={showLightPollution} overlayOpacity={overlayOpacity} />
       </div>
       {!process.env.NEXT_PUBLIC_LIGHTPOLLUTION_TILES && (
-        <p className="mt-4 text-sm text-starlight/40 italic">
+        <p className="mt-4 text-sm text-starlight/55 italic">
           Light pollution tile overlay unavailable.
         </p>
       )}

@@ -114,7 +114,7 @@ export default function EventsRail() {
                 </div>
                 <h3 className="mt-3 line-clamp-2 text-sm font-semibold text-starlight">{event.title}</h3>
                 <p className="mt-2 line-clamp-2 text-xs text-starlight/60">{event.summary}</p>
-                <div className="mt-3 flex items-center justify-between text-[10px] text-starlight/40">
+                <div className="mt-3 flex items-center justify-between text-[10px] text-starlight/55">
                   <span>{event.window}</span>
                   <span className="text-aurora/80">vis {Math.round(event.visibilityScore)}</span>
                 </div>

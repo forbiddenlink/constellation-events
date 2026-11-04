@@ -49,7 +49,7 @@ export default function HomepageListings() {
 
   if (error) {
     return (
-      <div className="glass rounded-2xl p-5 text-sm text-starlight/40">
+      <div className="glass rounded-2xl p-5 text-sm text-starlight/55">
         Marketplace listings temporarily unavailable.
       </div>
     );
@@ -61,7 +61,7 @@ export default function HomepageListings() {
         <ListingCard key={listing.id} listing={listing} />
       ))}
       {listings.length === 0 && (
-        <div className="p-5 text-sm text-starlight/40">
+        <div className="p-5 text-sm text-starlight/55">
           No listings available right now.
         </div>
       )}

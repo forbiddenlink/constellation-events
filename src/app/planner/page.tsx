@@ -35,7 +35,7 @@ export default function PlannerPage() {
                 <div className="mt-2 text-sm text-starlight/80">
                   <PlannerDate />
                 </div>
-                <div className="mt-1 text-[10px] text-starlight/30">Plans are generated for tonight</div>
+                <div className="mt-1 text-[10px] text-starlight/50">Plans are generated for tonight</div>
               </div>
             </div>
           </div>
