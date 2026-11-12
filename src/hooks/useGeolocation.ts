@@ -23,14 +23,26 @@ let requestStarted = false;
 let storageChecked = false;
 const listeners = new Set<(next: GeoState) => void>();
 
+/**
+ * Round a coordinate to two decimals (about 1 km). Sky and weather data
+ * do not change at that scale, so the saved value never needs the precise
+ * position the browser reported.
+ */
+export function coarsenCoordinate(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
 function emit(next: GeoState) {
   sharedState = next;
-  // Persist successful location to localStorage
+  // Persist only a coarse location to localStorage
   if (next.status === "ready" && next.lat !== null && next.lng !== null) {
     try {
       window.localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify({ lat: next.lat, lng: next.lng })
+        JSON.stringify({
+          lat: coarsenCoordinate(next.lat),
+          lng: coarsenCoordinate(next.lng)
+        })
       );
     } catch {
       // localStorage unavailable
