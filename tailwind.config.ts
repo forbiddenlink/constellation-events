@@ -14,11 +14,21 @@ const config: Config = {
         "ember": "#F472B6", // Pink-Rose for accents
         "void": "#000000", // Absolute black
         "caution": "#FBBF24", // Amber for warnings/fair status
-        "success": "#34D399" // Green for positive/approved status
+        "success": "#34D399", // Green for positive/approved status
+        // Field-log palette (home page). Night-vision remaps these via CSS vars in home.css.
+        "desk": "#0B1426", // page background
+        "paper": "#EFE6CF", // log pages
+        "lamp": "#F2B544", // the one accent: fills only on paper
+        "chart": "#1B2F55", // plot panels
+        "faded": "#9AA6BD", // secondary text on desk
+        "torch": "#FF4040", // night-vision text
+        "torch-dim": "#CC3030" // night-vision secondary, large text only
       },
       fontFamily: {
         display: ["var(--font-display)", "serif"],
         sans: ["var(--font-sans)", "sans-serif"],
+        body: ["var(--font-body)", "sans-serif"],
+        hand: ["var(--font-hand)", "cursive"],
         mono: ["var(--font-mono)", "monospace"] // Added for technical data
       },
       boxShadow: {

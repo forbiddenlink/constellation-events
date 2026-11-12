@@ -1,13 +1,11 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, DM_Serif_Display, JetBrains_Mono } from "next/font/google";
-import Link from "next/link";
+import { Space_Grotesk, DM_Serif_Display, JetBrains_Mono, Instrument_Sans, Reenie_Beanie } from "next/font/google";
 import { clsx } from "clsx";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import ClientErrorBoundary from "@/components/ClientErrorBoundary";
-import NavBar from "@/components/NavBar";
+import SiteChrome from "@/components/SiteChrome";
 import { logConfigStatus } from "@/lib/config";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -31,6 +29,21 @@ const jetBrainsMono = JetBrains_Mono({
     subsets: ["latin"],
     variable: "--font-mono",
     display: "swap"
+});
+
+// Home page body face (replaces Space Grotesk there; other routes keep --font-sans).
+const instrumentSans = Instrument_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-body"
+});
+
+// Pencil margin notes only.
+const reenieBeanie = Reenie_Beanie({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  variable: "--font-hand"
 });
 
 export const viewport: Viewport = {
@@ -105,32 +118,10 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
       </head>
-      <body className={clsx(spaceGrotesk.variable, dmSerif.variable, jetBrainsMono.variable, "font-sans bg-midnight overflow-x-hidden")}>
+      <body className={clsx(spaceGrotesk.variable, dmSerif.variable, jetBrainsMono.variable, instrumentSans.variable, reenieBeanie.variable, "font-sans bg-midnight overflow-x-hidden")}>
         <a href="#main-content" className="skip-to-content">Skip to content</a>
-        {/* Cinematic Background Layer */}
-        <div className="fixed inset-0 z-0">
-          <div className="absolute inset-0 bg-[url('/background.png')] bg-cover bg-center opacity-60 mix-blend-overlay" />
-          <div className="absolute inset-0 bg-nebula-gradient" />
-          <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay" />
-        </div>
-        
         <NuqsAdapter>
-          <div className="relative z-10 flex min-h-dvh flex-col">
-            <NavBar />
-
-            <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-12 md:py-20">
-              <ClientErrorBoundary>{children}</ClientErrorBoundary>
-            </main>
-
-            <footer className="border-t border-white/5 bg-black/20 py-12 text-center text-xs text-starlight/70 backdrop-blur-sm">
-              <div className="mb-4 flex justify-center gap-6">
-                   <Link href="/about" className="hover:text-aurora">About</Link>
-                   <Link href="/contact" className="hover:text-aurora">Contact</Link>
-                   <Link href="/privacy" className="hover:text-aurora">Privacy</Link>
-              </div>
-              Constellation © 2026. Free to use.
-            </footer>
-          </div>
+          <SiteChrome>{children}</SiteChrome>
           <Analytics />
           <SpeedInsights />
         </NuqsAdapter>

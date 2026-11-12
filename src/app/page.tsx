@@ -1,132 +1,181 @@
 import Link from "next/link";
-import SectionHeading from "@/components/SectionHeading";
-import ConstellationViz from "@/components/ConstellationViz";
 import { generateUpcomingEvents } from "@/lib/events";
-import TonightAtGlance from "@/components/TonightAtGlance";
-import LiveSkyStatus from "@/components/LiveSkyStatus";
-import APODCard from "@/components/APODCard";
-import HeroStats from "@/components/HeroStats";
-import DarkSkyPreview from "@/components/DarkSkyPreview";
-import HomepageEvents from "@/components/HomepageEvents";
-import HomepageLocations from "@/components/HomepageLocations";
-import HomepageListings from "@/components/HomepageListings";
-import LocationOnboarding from "@/components/LocationOnboarding";
-import ISSTracker from "@/components/ISSTracker";
-import AuroraForecast from "@/components/AuroraForecast";
+import { MARKETPLACE_CATEGORIES } from "@/lib/marketplace";
+import HomeNav from "@/components/home/HomeNav";
+import HeroLog from "@/components/home/HeroLog";
+import TonightLog from "@/components/home/TonightLog";
+import Ephemeris from "@/components/home/Ephemeris";
+import Plate from "@/components/home/Plate";
+import DarkSky from "@/components/home/DarkSky";
+import Passes from "@/components/home/Passes";
+import "./home.css";
+
+const GEAR_BLURBS: Record<string, string> = {
+  telescope: "Refractors, reflectors and compound scopes.",
+  mount: "Tripods, equatorial and alt-az mounts.",
+  camera: "Astro cameras and camera bodies.",
+  eyepiece: "Eyepieces, Barlows and diagonals.",
+  filter: "Light-pollution, planetary and solar filters.",
+  accessory: "Finders, dew control, cases and cables."
+};
+
+const SAMPLE_PLAN: Array<{ time: string; text: string }> = [
+  { time: "8:30 PM", text: "Depart. 42 miles to Sierra Vista Overlook." },
+  { time: "9:05 PM", text: "Set up telescope." },
+  { time: "9:20 PM", text: "Jupiter and its moons." },
+  { time: "10:15 PM", text: "Orion Nebula imaging session." }
+];
+
+const SOURCES: Array<{ name: string; use: string }> = [
+  { name: "JPL Horizons", use: "planet positions" },
+  { name: "astronomy-engine", use: "moon, sun and fallback ephemerides" },
+  { name: "NOAA SWPC", use: "aurora and Kp index" },
+  { name: "NASA APOD", use: "the daily plate" },
+  { name: "Celestrak", use: "ISS orbital elements" },
+  { name: "Open-Meteo", use: "weather and city search" }
+];
+
+function Head({ id, title, note }: { id: string; title: string; note: string }) {
+  return (
+    <div className="section-head">
+      <h2 id={id} className="display-sm">
+        {title}
+      </h2>
+      <p className="hand on-desk">{note}</p>
+    </div>
+  );
+}
 
 export default function HomePage() {
-  // Real astronomy events power the constellation star map (server-computed).
+  // Real astronomy events (server-computed, so the table works without JavaScript).
   const skyEvents = generateUpcomingEvents(undefined, new Date(), 60);
 
   return (
-    <div className="space-y-16">
-      <LocationOnboarding />
-      <section className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="space-y-6">
-          <LiveSkyStatus />
-          <h1 className="font-display text-4xl leading-tight text-starlight sm:text-5xl">
-            Your nightly mission control for the sky above.
-          </h1>
-          <p className="max-w-xl text-base text-starlight/70">
-            Whether you&apos;re a backyard stargazer or a deep-sky photographer, Constellation blends
-            real-time celestial data, dark-sky scouting, and curated gear into one hub. Plan where to go,
-            what to watch, and how to capture it.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <Link href="/planner" className="button-primary">Generate Tonight Plan</Link>
-            <Link href="/events" className="button-ghost">
-              Explore events
-            </Link>
-          </div>
-          <HeroStats />
-        </div>
-        <div className="space-y-6">
-          <ConstellationViz events={skyEvents} />
-          <TonightAtGlance />
-        </div>
-      </section>
-
-      <section>
-        <SectionHeading
-          eyebrow="Today's Feature"
-          title="Astronomy Picture of the Day"
-          subtitle="NASA's daily showcase of our cosmos, from distant galaxies to breathtaking nebulae."
-        />
-        <div className="grid gap-6 lg:grid-cols-2">
-          <APODCard />
-          <HomepageEvents />
-        </div>
-      </section>
-
-      <section>
-        <SectionHeading
-          eyebrow="Dark-Sky Finder"
-          title="Scout the clearest horizons"
-          subtitle="Light-pollution overlays and atmospheric scoring help you choose the perfect observation site in minutes."
-        />
-        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="glass relative min-h-[200px] sm:min-h-[320px] rounded-3xl p-6">
-            <div className="absolute inset-0 rounded-3xl bg-[radial-gradient(circle_at_30%_30%,rgba(94,242,193,0.22),transparent_55%),radial-gradient(circle_at_70%_70%,rgba(255,141,92,0.2),transparent_45%)]" />
-            <div className="relative">
-              <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Light pollution layers</div>
-              <h3 className="mt-3 text-2xl font-semibold text-starlight">Sky quality map</h3>
-              <p className="mt-2 text-sm text-starlight/70">
-                Toggle Bortle scale, cloud cover, and moon illumination to plan your route.
-              </p>
-              <DarkSkyPreview />
-              <Link href="/locations" className="mt-6 inline-flex text-sm text-aurora">
-                Explore full map →
+    <div className="home-root">
+      <HomeNav />
+      <main id="main-content">
+        <section className="hero" aria-labelledby="hero-h">
+          <div className="wrap">
+            <p className="eyebrow">Constellation field log</p>
+            <h1 id="hero-h" className="display">
+              What is up tonight, and where to go to see it.
+            </h1>
+            <p className="lede" style={{ marginTop: 24 }}>
+              Tonight&apos;s sky, an events calendar, a dark-sky finder, ISS and aurora passes, and a gear marketplace. Free to use.
+            </p>
+            <div className="hero-cta">
+              <Link href="/planner" className="btn-lamp">
+                Plan tonight
+              </Link>
+              <Link href="/events" className="btn-line">
+                Explore events
               </Link>
             </div>
-          </div>
-          <HomepageLocations />
-        </div>
-      </section>
-
-      <section>
-        <SectionHeading
-          eyebrow="Overhead Tonight"
-          title="Satellites and space weather"
-          subtitle="Live ISS position and visible pass predictions, plus an aurora forecast for high-latitude observers."
-        />
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ISSTracker />
-          <AuroraForecast />
-        </div>
-      </section>
-
-      <section>
-        <SectionHeading
-          eyebrow="Marketplace"
-          title="Curated gear for every observer"
-        subtitle="Curated listings with detailed condition notes to help you find mission-ready gear."
-        />
-        <HomepageListings />
-      </section>
-
-      <section className="glass rounded-3xl p-8">
-        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-          <div>
-            <SectionHeading
-              eyebrow="Planner"
-              title="Build a full-night itinerary"
-              subtitle="Combine your best viewing window, drive time, and object list into a single shareable plan."
-            />
-            <div className="flex flex-wrap gap-4">
-              <Link href="/planner" className="button-primary">Create a plan</Link>
+            <div style={{ marginTop: 56 }}>
+              <HeroLog />
             </div>
           </div>
-          <div className="glass rounded-2xl p-5">
-            <div className="text-xs uppercase tracking-[0.3em] text-starlight/50">Example itinerary</div>
-            <div className="mt-4 space-y-3 text-sm text-starlight/70">
-              <div>8:30 PM: Depart, 42 miles to Sierra Vista Overlook</div>
-              <div>9:05 PM: Set up telescope and polar align</div>
-              <div>9:20 PM: Jupiter and its moons</div>
-              <div>10:15 PM: Orion Nebula imaging session</div>
+        </section>
+
+        <TonightLog />
+
+        <section className="section" id="coming" aria-labelledby="coming-h">
+          <div className="wrap">
+            <Head id="coming-h" title="Coming weeks." note="mark the clear nights" />
+            <Ephemeris events={skyEvents} />
+          </div>
+        </section>
+
+        <section className="section" id="plate" aria-labelledby="plate-h">
+          <div className="wrap">
+            <Head id="plate-h" title="Today's plate." note="pinned in with corners" />
+            <Plate />
+          </div>
+        </section>
+
+        <section className="section" id="dark-sky" aria-labelledby="dark-h">
+          <div className="wrap">
+            <Head id="dark-h" title="Where it is dark." note="darker means lower" />
+            <DarkSky />
+          </div>
+        </section>
+
+        <section className="section" id="passes" aria-labelledby="passes-h">
+          <div className="wrap">
+            <Head id="passes-h" title="Passes overhead." note="look up, then again" />
+            <Passes />
+          </div>
+        </section>
+
+        <section className="section" id="planner" aria-labelledby="planner-h">
+          <div className="wrap">
+            <Head id="planner-h" title="A night, planned." note="this one is a sample" />
+            <div className="log-page">
+              <span className="stamp" style={{ float: "right" }}>
+                Sample
+              </span>
+              <p className="mono">Example itinerary. Generate your own for your place and date.</p>
+              <ul className="plan-lines mono" style={{ listStyle: "none" }}>
+                {SAMPLE_PLAN.map((p) => (
+                  <li key={p.time}>
+                    <strong>{p.time}</strong>
+                    <span>{p.text}</span>
+                  </li>
+                ))}
+              </ul>
+              <p style={{ margin: "16px 0 0" }}>
+                <Link href="/planner" className="btn-line">
+                  Generate tonight&apos;s plan
+                </Link>
+              </p>
             </div>
           </div>
+        </section>
+
+        <section className="section" id="gear" aria-labelledby="gear-h">
+          <div className="wrap">
+            <Head id="gear-h" title="Gear, classified." note="six kinds of gear" />
+            <div className="log-page">
+              <ul className="ads">
+                {MARKETPLACE_CATEGORIES.map((c) => (
+                  <li key={c.value}>
+                    <div className="ad-title">{c.label}</div>
+                    <p className="mono" style={{ margin: 0 }}>
+                      {GEAR_BLURBS[c.value]}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+              <p style={{ margin: "8px 0 0" }}>
+                <Link href="/marketplace" className="btn-line">
+                  Open the marketplace
+                </Link>
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="back-page">
+        <div className="wrap">
+          <p className="display-sm" style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)" }}>
+            Constellation © 2026. Free to use.
+          </p>
+          <nav aria-label="Footer" className="back-links">
+            <Link href="/about">About</Link>
+            <Link href="/contact">Contact</Link>
+            <Link href="/privacy">Privacy</Link>
+          </nav>
+          <h2 className="eyebrow">Colophon, data sources</h2>
+          <ul className="colophon mono" style={{ listStyle: "none" }}>
+            {SOURCES.map((s) => (
+              <li key={s.name}>
+                {s.name}: {s.use}
+              </li>
+            ))}
+          </ul>
         </div>
-      </section>
+      </footer>
     </div>
   );
 }
