@@ -21,6 +21,7 @@ export default function Plate() {
   const [apod, setApod] = useState<APODData | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "error">("loading");
   const [expanded, setExpanded] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
 
   useEffect(() => {
     let live = true;
@@ -55,9 +56,12 @@ export default function Plate() {
   const long = apod.explanation.length > SHORT;
   const text = expanded || !long ? apod.explanation : `${apod.explanation.slice(0, SHORT).trimEnd()}...`;
 
+  const showPhoto = apod.mediaType === "video" || !imageFailed;
+
   return (
     <div className="log-page">
-      <div className="plate">
+      <div className={showPhoto ? "plate" : "plate plate-solo"}>
+        {showPhoto && (
         <div className="plate-photo">
           <span className="corner tl" aria-hidden="true" />
           <span className="corner tr" aria-hidden="true" />
@@ -73,9 +77,11 @@ export default function Plate() {
               style={{ objectFit: "cover" }}
               sizes="(max-width: 900px) 100vw, 55vw"
               unoptimized={apod.imageUrl.startsWith("http")}
+              onError={() => setImageFailed(true)}
             />
           )}
         </div>
+        )}
         <div>
           <p className="mono">Plate, NASA APOD, {apod.date}</p>
           <h3 className="plate-title">{apod.title}</h3>
@@ -91,7 +97,12 @@ export default function Plate() {
             Credit: {apod.copyright ?? "NASA"}
             {apod.source !== "nasa" ? ` (${apod.source} copy)` : ""}
           </p>
-          {apod.hdImageUrl && (
+          {!showPhoto && (
+            <a href="https://apod.nasa.gov/apod/astropix.html" target="_blank" rel="noopener noreferrer" className="link-ink">
+              Open today&apos;s picture on apod.nasa.gov
+            </a>
+          )}
+          {apod.hdImageUrl && showPhoto && (
             <a href={apod.hdImageUrl} target="_blank" rel="noopener noreferrer" className="link-ink">
               View HD image
             </a>
