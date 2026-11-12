@@ -54,7 +54,7 @@ describe("SectionHeading", () => {
     );
 
     const eyebrow = screen.getByText("Section");
-    expect(eyebrow).toHaveClass("text-xs", "uppercase", "tracking-[0.3em]", "text-aurora/70");
+    expect(eyebrow).toHaveClass("eyebrow");
   });
 
   it("applies correct styling to title", () => {
@@ -67,7 +67,7 @@ describe("SectionHeading", () => {
     );
 
     const title = screen.getByText("Styled Title");
-    expect(title).toHaveClass("font-display", "text-2xl", "text-starlight");
+    expect(title).toHaveClass("display-sm");
   });
 
   it("applies correct styling to subtitle", () => {
@@ -80,7 +80,7 @@ describe("SectionHeading", () => {
     );
 
     const subtitle = screen.getByText("Styled Subtitle");
-    expect(subtitle).toHaveClass("mt-2", "text-sm", "text-starlight/70", "max-w-2xl");
+    expect(subtitle).toHaveClass("lede", "mt-3", "max-w-2xl");
   });
 
   it("has correct container margin", () => {
@@ -93,6 +93,6 @@ describe("SectionHeading", () => {
     );
 
     const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper).toHaveClass("mb-6");
+    expect(wrapper).toHaveClass("mb-8");
   });
 });

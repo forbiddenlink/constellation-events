@@ -3,7 +3,7 @@ import type { AstronomyEvent } from "@/lib/events";
 
 const MAX_ROWS = 9;
 const W = 560;
-const H = 260;
+const H = 400;
 const PAD_L = 40;
 const PAD_R = 24;
 const PAD_T = 24;
@@ -55,16 +55,9 @@ export default function Ephemeris({ events }: { events: AstronomyEvent[] }) {
             </li>
           ))}
         </ol>
-        <p className="hand" style={{ marginTop: 12 }}>
-          dates are for your sky
-        </p>
-        <p style={{ margin: "8px 0 0" }}>
-          <Link href="/events" className="btn-line">
-            All events
-          </Link>
-        </p>
       </div>
 
+      <div className="plot-col">
       <figure className="plot" style={{ margin: 0 }}>
         <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={summary}>
           <title>{summary}</title>
@@ -113,6 +106,13 @@ export default function Ephemeris({ events }: { events: AstronomyEvent[] }) {
           <span>y: visibility score, 0 to 100</span>
         </figcaption>
       </figure>
+        <p className="hand plot-note">dates are for your sky</p>
+        <p style={{ margin: 0 }}>
+          <Link href="/events" className="btn-line">
+            All events
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

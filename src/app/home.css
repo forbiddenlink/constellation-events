@@ -884,6 +884,23 @@ html:has(.home-root) body {
   margin-top: -6px;
 }
 
+/* right column: plot, then the pencil note and the link under it so the
+   column carries the same weight as the ruled list beside it */
+.home-root .plot-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  align-self: start;
+}
+.home-root .plot-col .plot {
+  align-self: stretch;
+}
+.home-root .plot-note {
+  margin: 8px 0 0;
+  color: var(--faded);
+}
+
 /* plot on a chart-blue panel */
 .home-root .plot {
   align-self: start;

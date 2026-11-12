@@ -3,6 +3,7 @@ import Link from "next/link";
 import { generateUpcomingEvents } from "@/lib/events";
 import { MARKETPLACE_CATEGORIES } from "@/lib/marketplace";
 import HomeNav from "@/components/home/HomeNav";
+import BackPage from "@/components/home/BackPage";
 import HeroLog from "@/components/home/HeroLog";
 import TonightLog from "@/components/home/TonightLog";
 import Ephemeris from "@/components/home/Ephemeris";
@@ -25,15 +26,6 @@ const SAMPLE_PLAN: Array<{ time: string; text: string }> = [
   { time: "9:05 PM", text: "Set up telescope." },
   { time: "9:20 PM", text: "Jupiter and its moons." },
   { time: "10:15 PM", text: "Orion Nebula imaging session." }
-];
-
-const SOURCES: Array<{ name: string; use: string }> = [
-  { name: "JPL Horizons", use: "planet positions" },
-  { name: "astronomy-engine", use: "moon, sun and fallback ephemerides" },
-  { name: "NOAA SWPC", use: "aurora and Kp index" },
-  { name: "NASA APOD", use: "the daily plate" },
-  { name: "Celestrak", use: "ISS orbital elements" },
-  { name: "Open-Meteo", use: "weather and city search" }
 ];
 
 /** Static ruled sheet shown while a client section resolves, so the page shell never waits on one. */
@@ -184,26 +176,7 @@ export default function HomePage() {
         </section>
       </main>
 
-      <footer className="back-page">
-        <div className="wrap">
-          <p className="display-sm" style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)" }}>
-            Constellation © 2026. Free to use.
-          </p>
-          <nav aria-label="Footer" className="back-links">
-            <Link href="/about">About</Link>
-            <Link href="/contact">Contact</Link>
-            <Link href="/privacy">Privacy</Link>
-          </nav>
-          <h2 className="eyebrow">Colophon, data sources</h2>
-          <ul className="colophon mono" style={{ listStyle: "none" }}>
-            {SOURCES.map((s) => (
-              <li key={s.name}>
-                {s.name}: {s.use}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </footer>
+      <BackPage />
     </div>
   );
 }

@@ -10,10 +10,10 @@ export default function SectionHeading({
   as?: "h1" | "h2";
 }) {
   return (
-    <div className="mb-6">
-      <div className="text-xs uppercase tracking-[0.3em] text-aurora/70">{eyebrow}</div>
-      <Heading className="font-display text-2xl text-starlight sm:text-3xl">{title}</Heading>
-      <p className="mt-2 max-w-2xl text-sm text-starlight/70">{subtitle}</p>
+    <div className="mb-8">
+      <div className="eyebrow">{eyebrow}</div>
+      <Heading className="display-sm">{title}</Heading>
+      <p className="lede mt-3 max-w-2xl">{subtitle}</p>
     </div>
   );
 }
