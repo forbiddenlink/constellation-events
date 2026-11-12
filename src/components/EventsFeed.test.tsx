@@ -223,15 +223,14 @@ describe("EventsFeed", () => {
     });
   });
 
-  it("renders event cards in grid layout", async () => {
+  it("renders event rows in a ruled list", async () => {
     mockFetch.mockImplementation(() => mockJsonResponse(mockEventsData));
 
     const { container } = render(<EventsFeed />);
 
     await waitFor(() => {
-      const grid = container.querySelector(".grid.gap-6");
-      expect(grid).toBeInTheDocument();
-      expect(grid).toHaveClass("md:grid-cols-3");
+      const list = container.querySelector(".field-rows");
+      expect(list).toBeInTheDocument();
     });
   });
 

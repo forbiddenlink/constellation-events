@@ -166,11 +166,9 @@ export default function EventsFeedWithFilters() {
               <span>Updated {new Date(data.generatedAt).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}</span>
             )}
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="field-rows">
             {filtered.map((event) => (
-              <div key={event.id}>
-                <EventCard event={event} />
-              </div>
+              <EventCard key={event.id} event={event} />
             ))}
           </div>
         </>
