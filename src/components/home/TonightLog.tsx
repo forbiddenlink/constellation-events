@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { tonightHighlights } from "@/lib/mock";
 import type { TonightObject } from "@/lib/mock";
 import useGeolocation from "@/hooks/useGeolocation";
@@ -77,7 +77,8 @@ export default function TonightLog() {
   const live = data !== null && data.highlights.length > 0;
   const sample = !live;
   const items = (live ? data.highlights : tonightHighlights).slice(0, ENTRY_COUNT);
-  const blanks = Array.from({ length: ENTRY_COUNT - items.length }, (_, i) => i);
+  const short = live && items.length < ENTRY_COUNT;
+  const rows = items.length + (short ? 1 : 0);
 
   return (
     <section id="tonight" className="torch-track" aria-labelledby="tonight-h">
@@ -89,7 +90,12 @@ export default function TonightLog() {
           </h2>
         </div>
 
-        <div className="sheet" role="group" aria-label="Tonight's log">
+        <div
+          className="sheet"
+          role="group"
+          aria-label="Tonight's log"
+          style={{ "--rows": rows } as CSSProperties}
+        >
           <div className="sheet-bg bg-dark" aria-hidden="true" />
           <div className="sheet-bg bg-lit" aria-hidden="true" />
           <div className="beam" aria-hidden="true" />
@@ -132,11 +138,16 @@ export default function TonightLog() {
                   </li>
                 );
               })}
-              {blanks.map((i) => (
-                <li key={`blank-${i}`} className="entry blank" aria-hidden="true">
-                  <span className="entry-n dark">{items.length + i + 1}</span>
+              {short && (
+                <li className="entry entry-end">
+                  <span className="entry-n dark" aria-hidden="true">
+                    -
+                  </span>
+                  <div>
+                    <div className="entry-line">Nothing else bright tonight.</div>
+                  </div>
                 </li>
-              ))}
+              )}
             </ol>
 
             <div className="sheet-foot">

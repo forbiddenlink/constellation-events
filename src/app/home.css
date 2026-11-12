@@ -643,7 +643,7 @@ html:has(.home-root) body {
   --foot-h: 56px;
   position: relative;
   width: min(720px, calc(100% - 32px));
-  height: calc(var(--head-h) + 5 * var(--row-h) + var(--foot-h));
+  height: calc(var(--head-h) + var(--rows, 5) * var(--row-h) + var(--foot-h));
   overflow: hidden;
   --row-ink: var(--ink);
   --torch-r: 2400px;
@@ -807,8 +807,11 @@ html:has(.home-root) body {
   background: currentColor;
   transform-origin: left center;
 }
-.home-root .entry.blank {
-  opacity: 0.8;
+.home-root .entry.entry-end {
+  opacity: 0.85;
+}
+.home-root .entry.entry-end > div {
+  grid-column: 2 / -1;
 }
 .home-root .sheet-foot {
   height: var(--foot-h);
@@ -1209,23 +1212,23 @@ html:has(.home-root) body {
         --row-ink: #ff4040;
       }
       60% {
-        --torch-y: calc(var(--head-h) + 5 * var(--row-h) + 20px);
+        --torch-y: calc(var(--head-h) + var(--rows, 5) * var(--row-h) + 20px);
         --torch-r: 160px;
         --row-ink: #ff4040;
       }
       /* hold the beam at the foot of the page, then click */
       70% {
-        --torch-y: calc(var(--head-h) + 5 * var(--row-h) + 20px);
+        --torch-y: calc(var(--head-h) + var(--rows, 5) * var(--row-h) + 20px);
         --torch-r: 160px;
         --row-ink: #ff4040;
       }
       73% {
-        --torch-y: calc(var(--head-h) + 5 * var(--row-h) + 20px);
+        --torch-y: calc(var(--head-h) + var(--rows, 5) * var(--row-h) + 20px);
         --torch-r: 2400px;
         --row-ink: var(--ink);
       }
       100% {
-        --torch-y: calc(var(--head-h) + 5 * var(--row-h) + 20px);
+        --torch-y: calc(var(--head-h) + var(--rows, 5) * var(--row-h) + 20px);
         --torch-r: 2400px;
         --row-ink: var(--ink);
       }
