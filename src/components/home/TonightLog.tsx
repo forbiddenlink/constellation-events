@@ -85,11 +85,11 @@ export default function TonightLog() {
         <div className="torch-stage-head">
           <p className="eyebrow">Tonight&apos;s log</p>
           <h2 id="tonight-h" className="display-sm">
-            Five entries for tonight.
+            Entries for tonight.
           </h2>
         </div>
 
-        <div className="sheet" role="group" aria-label="Tonight's log, five entries">
+        <div className="sheet" role="group" aria-label="Tonight's log">
           <div className="sheet-bg bg-dark" aria-hidden="true" />
           <div className="sheet-bg bg-lit" aria-hidden="true" />
           <div className="beam" aria-hidden="true" />

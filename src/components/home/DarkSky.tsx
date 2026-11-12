@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import useGeolocation from "@/hooks/useGeolocation";
@@ -99,7 +99,9 @@ export default function DarkSky() {
 
       <figure className="map-frame">
         <div className="map-body">
-          <StarMap showLightPollution overlayOpacity={0.6} />
+          <Suspense fallback={<p className="mono" style={{ padding: 16 }}>Loading map...</p>}>
+            <StarMap showLightPollution overlayOpacity={0.6} />
+          </Suspense>
         </div>
         <figcaption className="mono">Light-pollution map. Source: NASA VIIRS tiles.</figcaption>
       </figure>

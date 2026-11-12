@@ -235,7 +235,7 @@ export default function HeroLog() {
                     )}
                   </div>
                 )}
-                <div className="place-choices" style={{ marginTop: 8 }}>
+                <div className="place-choices">
                   <button type="button" className="link-ink" onClick={() => { setSearching(false); setQuery(""); setResults([]); }}>
                     Back
                   </button>

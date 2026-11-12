@@ -423,6 +423,9 @@ html:has(.home-root) body {
     padding: 96px 0 96px;
   }
 }
+.home-root .hero .display + .lede {
+  margin-top: clamp(32px, 4vw, 48px);
+}
 .home-root .hero-cta {
   display: flex;
   flex-wrap: wrap;
@@ -456,14 +459,20 @@ html:has(.home-root) body {
 .home-root .place-choices {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 12px;
+  gap: 0 12px;
   align-items: center;
 }
+/* Controls are exactly two ruled lines (56px) tall so every wrapped row sits on the 28px ruling. */
 .home-root .place-choices .btn-lamp,
 .home-root .place-choices .btn-line {
-  min-height: 44px;
-  padding: 8px 16px;
+  box-sizing: border-box;
+  height: 56px;
+  min-height: 56px;
+  padding: 0 16px;
   font-size: 15px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
 }
 .home-root .log-page .btn-line {
   border-color: var(--ink);
@@ -472,8 +481,9 @@ html:has(.home-root) body {
 .home-root .link-ink {
   background: none;
   border: 0;
-  padding: 8px 4px;
-  min-height: 44px;
+  padding: 0 4px;
+  height: 56px;
+  min-height: 56px;
   font: inherit;
   font-size: 15px;
   text-decoration: underline;
@@ -484,8 +494,10 @@ html:has(.home-root) body {
 .home-root .city-input {
   width: 100%;
   max-width: 420px;
-  min-height: 44px;
-  padding: 6px 4px;
+  box-sizing: border-box;
+  height: 56px;
+  min-height: 56px;
+  padding: 0 4px;
   background: transparent;
   border: 0;
   border-bottom: 2px solid var(--ink);

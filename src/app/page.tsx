@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { generateUpcomingEvents } from "@/lib/events";
 import { MARKETPLACE_CATEGORIES } from "@/lib/marketplace";
@@ -35,6 +36,11 @@ const SOURCES: Array<{ name: string; use: string }> = [
   { name: "Open-Meteo", use: "weather and city search" }
 ];
 
+/** Static ruled sheet shown while a client section resolves, so the page shell never waits on one. */
+function LogFallback() {
+  return <div className="log-page" aria-hidden="true" style={{ minHeight: 168 }} />;
+}
+
 function Head({ id, title, note }: { id: string; title: string; note: string }) {
   return (
     <div className="section-head">
@@ -60,7 +66,7 @@ export default function HomePage() {
             <h1 id="hero-h" className="display">
               What is up tonight, and where to go to see it.
             </h1>
-            <p className="lede" style={{ marginTop: 24 }}>
+            <p className="lede">
               Tonight&apos;s sky, an events calendar, a dark-sky finder, ISS and aurora passes, and a gear marketplace. Free to use.
             </p>
             <div className="hero-cta">
@@ -72,12 +78,28 @@ export default function HomePage() {
               </Link>
             </div>
             <div style={{ marginTop: 56 }}>
-              <HeroLog />
+              <Suspense fallback={<LogFallback />}>
+                <HeroLog />
+              </Suspense>
             </div>
           </div>
         </section>
 
-        <TonightLog />
+        <Suspense
+          fallback={
+            <section id="tonight" className="section" aria-labelledby="tonight-h">
+              <div className="wrap">
+                <p className="eyebrow">Tonight&apos;s log</p>
+                <h2 id="tonight-h" className="display-sm">
+                  Entries for tonight.
+                </h2>
+                <LogFallback />
+              </div>
+            </section>
+          }
+        >
+          <TonightLog />
+        </Suspense>
 
         <section className="section" id="coming" aria-labelledby="coming-h">
           <div className="wrap">
@@ -89,21 +111,27 @@ export default function HomePage() {
         <section className="section" id="plate" aria-labelledby="plate-h">
           <div className="wrap">
             <Head id="plate-h" title="Today's plate." note="pinned in with corners" />
-            <Plate />
+            <Suspense fallback={<LogFallback />}>
+              <Plate />
+            </Suspense>
           </div>
         </section>
 
         <section className="section" id="dark-sky" aria-labelledby="dark-h">
           <div className="wrap">
             <Head id="dark-h" title="Where it is dark." note="darker means lower" />
-            <DarkSky />
+            <Suspense fallback={<LogFallback />}>
+              <DarkSky />
+            </Suspense>
           </div>
         </section>
 
         <section className="section" id="passes" aria-labelledby="passes-h">
           <div className="wrap">
             <Head id="passes-h" title="Passes overhead." note="look up, then again" />
-            <Passes />
+            <Suspense fallback={<LogFallback />}>
+              <Passes />
+            </Suspense>
           </div>
         </section>
 
