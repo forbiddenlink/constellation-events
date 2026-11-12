@@ -94,12 +94,6 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-
-      <div className="text-center">
-        <p className="text-sm text-starlight/50">
-          Constellation Network Mission Control
-        </p>
-      </div>
     </div>
   );
 }

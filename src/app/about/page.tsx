@@ -14,34 +14,34 @@ export const metadata: Metadata = {
 const TOOLKIT = [
   {
     title: "Tonight View",
-    description: "Real-time sky conditions, moon phase, and optimal viewing windows for your location."
+    description: "Moon phase, bright planets, and the best time to look, calculated for your location."
   },
   {
     title: "Event Calendar",
-    description: "Never miss a meteor shower, eclipse, or planetary conjunction with personalized alerts."
+    description: "Upcoming meteor showers, moon phases, and planetary conjunctions, each with a visibility score for your location and an Add to calendar button. Constellation does not send alerts or notifications."
   },
   {
     title: "Dark-Sky Finder",
-    description: "Interactive maps showing light pollution levels, drive times, and weather forecasts."
+    description: "A light pollution map with a Bortle overlay, plus the distance, cloud cover, and an estimated dark-sky score for each site."
   },
   {
     title: "Session Planner",
-    description: "Build detailed observation itineraries with target lists and timing recommendations."
+    description: "A plan for tonight with the bright planets in prime position, an optimal viewing window, and packing reminders."
   }
 ];
 
 const SOURCES = [
   {
-    title: "NASA Data",
-    description: "Authoritative celestial event data and daily featured imagery direct from NASA"
+    title: "NASA and JPL",
+    description: "Planet positions come from JPL Horizons, and the daily featured image is NASA's Astronomy Picture of the Day."
   },
   {
-    title: "Precise Positioning",
-    description: "Planet and moon positions calculated for your exact location and time, accurate to the arc-second"
+    title: "Sky Positions",
+    description: "JPL Horizons supplies hourly altitude and azimuth for your coordinates. If it is unreachable, the astronomy-engine library calculates positions locally. Values are rounded for planning, not for pointing a mount."
   },
   {
     title: "Live Conditions",
-    description: "Cloud cover, seeing quality, and light pollution scored in real time from multiple weather sources"
+    description: "Cloud cover comes from OpenWeather or Open-Meteo. The seeing rating is an estimate derived from cloud, humidity, and wind."
   }
 ];
 
@@ -77,22 +77,22 @@ export default function AboutPage() {
             <li>
               <h3>Dark-Sky Mapping</h3>
               <p>
-                Real-time light pollution overlays, Bortle scale ratings, and satellite imagery
-                to pinpoint the clearest horizons near you.
+                A light pollution overlay and Bortle scale ratings to help you find the
+                clearest horizons near you.
               </p>
             </li>
             <li>
               <h3>Event Forecasting</h3>
               <p>
-                Meteor showers, planetary alignments, eclipses, and lunar events, all with
+                Meteor showers, planetary conjunctions, and lunar events, all with
                 visibility scores tailored to your location.
               </p>
             </li>
             <li>
               <h3>Community Marketplace</h3>
               <p>
-                A curated space for buying and selling astronomy gear, with detailed condition
-                notes and seller descriptions.
+                A space for astronomy gear listings, with condition notes and seller
+                descriptions. Sample listings are labeled as such.
               </p>
             </li>
           </ul>
@@ -117,7 +117,7 @@ export default function AboutPage() {
       <section className="about-section">
         <div>
           <div className="eyebrow">Powered By</div>
-          <h2>Precision data you can trust in the field</h2>
+          <h2>Where the numbers come from</h2>
         </div>
         <ul className="about-list">
           {SOURCES.map((source) => (
