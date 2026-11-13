@@ -24,76 +24,61 @@ export default function ContactPage() {
 
       <ContactForm />
 
-      <div className="glass rounded-3xl p-8">
-        <div className="grid gap-8 lg:grid-cols-2">
-          <div className="space-y-6">
-            <div>
-              <h2 className="font-display text-xl text-starlight mb-3">General Inquiries</h2>
-              <p className="text-sm text-starlight/70 mb-2">
-                For questions about Constellation, feature requests, or general feedback:
-              </p>
-              <a
-                href="mailto:hello@constellation.app"
-                className="text-aurora hover:underline text-sm"
-              >
+      <section className="about-section">
+        <ul className="about-list contact-list">
+          <li>
+            <h2>General Inquiries</h2>
+            <p>
+              For questions about Constellation, feature requests, or general feedback:{" "}
+              <a href="mailto:hello@constellation.app" className="text-aurora hover:underline">
                 hello@constellation.app
               </a>
-            </div>
-
-            <div>
-              <h2 className="font-display text-xl text-starlight mb-3">Privacy & Data</h2>
-              <p className="text-sm text-starlight/70 mb-2">
-                For privacy inquiries or data access requests:
-              </p>
-              <a
-                href="mailto:privacy@constellation.app"
-                className="text-aurora hover:underline text-sm"
-              >
+            </p>
+          </li>
+          <li>
+            <h2>Privacy &amp; Data</h2>
+            <p>
+              For privacy inquiries or data access requests:{" "}
+              <a href="mailto:privacy@constellation.app" className="text-aurora hover:underline">
                 privacy@constellation.app
               </a>
-            </div>
-
-            <div>
-              <h2 className="font-display text-xl text-starlight mb-3">Marketplace Support</h2>
-              <p className="text-sm text-starlight/70 mb-2">
-                Questions about telescope listings, seller verification, or transactions:
-              </p>
-              <a
-                href="mailto:marketplace@constellation.app"
-                className="text-aurora hover:underline text-sm"
-              >
+            </p>
+          </li>
+          <li>
+            <h2>Marketplace Support</h2>
+            <p>
+              Questions about telescope listings, seller verification, or transactions:{" "}
+              <a href="mailto:marketplace@constellation.app" className="text-aurora hover:underline">
                 marketplace@constellation.app
               </a>
-            </div>
-          </div>
+            </p>
+          </li>
+        </ul>
 
-          <div className="space-y-6">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div className="text-xs uppercase tracking-[0.3em] text-aurora/70 mb-3">Response Time</div>
-              <p className="text-sm text-starlight/70">
-                We typically respond within 24-48 hours. For urgent matters, please include
-                &quot;URGENT&quot; in your subject line.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div className="text-xs uppercase tracking-[0.3em] text-aurora/70 mb-3">Bug Reports</div>
-              <p className="text-sm text-starlight/70">
-                Found a bug or issue? Include your browser, device, and steps to reproduce.
-                Screenshots help us fix issues faster.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div className="text-xs uppercase tracking-[0.3em] text-aurora/70 mb-3">Feature Ideas</div>
-              <p className="text-sm text-starlight/70">
-                We love hearing what would make your stargazing experience better.
-                Share your ideas and we&apos;ll consider them for future updates.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+        <ul className="about-list contact-list">
+          <li>
+            <h3 className="eyebrow">Response Time</h3>
+            <p>
+              We typically respond within 24-48 hours. For urgent matters, please include
+              &quot;URGENT&quot; in your subject line.
+            </p>
+          </li>
+          <li>
+            <h3 className="eyebrow">Bug Reports</h3>
+            <p>
+              Found a bug or issue? Include your browser, device, and steps to reproduce.
+              Screenshots help us fix issues faster.
+            </p>
+          </li>
+          <li>
+            <h3 className="eyebrow">Feature Ideas</h3>
+            <p>
+              We love hearing what would make your stargazing experience better.
+              Share your ideas and we&apos;ll consider them for future updates.
+            </p>
+          </li>
+        </ul>
+      </section>
     </div>
   );
 }

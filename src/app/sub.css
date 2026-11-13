@@ -342,3 +342,32 @@ html:not(.night-vision) .home-root.sub-root {
 .sub-root .about-section p + .about-list {
   margin-top: 24px;
 }
+
+/* contact: ruled rows, one surface level (no plate around the form or the notes) */
+.sub-root .contact-list li {
+  grid-template-columns: minmax(0, 1fr);
+}
+.sub-root .contact-list li + li {
+  padding-top: 20px;
+}
+.sub-root .contact-list li:first-child {
+  padding-top: 0;
+}
+.sub-root .contact-list h2 {
+  font-size: 1.25rem;
+  line-height: 1.2;
+  margin: 0;
+  color: var(--cream);
+}
+.sub-root .contact-list h3.eyebrow {
+  margin: 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 28px;
+  font-weight: 400;
+  color: var(--faded);
+}
+.sub-root .contact-list p {
+  font-size: 16px;
+  margin: 0;
+}
