@@ -11,157 +11,151 @@ export const metadata: Metadata = {
   }
 };
 
+const TOOLKIT = [
+  {
+    title: "Tonight View",
+    description: "Moon phase, bright planets, and the best time to look, calculated for your location."
+  },
+  {
+    title: "Event Calendar",
+    description: "Upcoming meteor showers, moon phases, and planetary conjunctions, each with a visibility score for your location and an Add to calendar button. Constellation does not send alerts or notifications."
+  },
+  {
+    title: "Dark-Sky Finder",
+    description: "A light pollution map with a Bortle overlay, plus the distance, cloud cover, and an estimated dark-sky score for each site."
+  },
+  {
+    title: "Session Planner",
+    description: "A plan for tonight with the bright planets in prime position, an optimal viewing window, and packing reminders."
+  }
+];
+
+const SOURCES = [
+  {
+    title: "NASA and JPL",
+    description: "Planet positions come from JPL Horizons, and the daily featured image is NASA's Astronomy Picture of the Day."
+  },
+  {
+    title: "Sky Positions",
+    description: "JPL Horizons supplies hourly altitude and azimuth for your coordinates. If it is unreachable, the astronomy-engine library calculates positions locally. Values are rounded for planning, not for pointing a mount."
+  },
+  {
+    title: "Live Conditions",
+    description: "Cloud cover comes from OpenWeather or Open-Meteo. The seeing rating is an estimate derived from cloud, humidity, and wind."
+  }
+];
+
 export default function AboutPage() {
   return (
-    <div className="space-y-10">
-      {/* Hero Section */}
-      <div className="text-center">
-        <div className="text-xs uppercase tracking-[0.3em] text-aurora/70">About</div>
-        <h1 className="font-display text-3xl text-starlight sm:text-4xl mt-2">
-          Mission: Clear Skies for Everyone
-        </h1>
-        <p className="mt-4 max-w-2xl mx-auto text-base text-starlight/70">
+    <div>
+      <div className="mb-10">
+        <div className="eyebrow">About</div>
+        <h1 className="display-sm">Mission: Clear Skies for Everyone</h1>
+        <p className="lede mt-3 max-w-2xl">
           Constellation exists to make stargazing accessible, informed, and unforgettable.
           We believe everyone deserves to witness the cosmos unobstructed by light pollution
           and unpredictable weather.
         </p>
       </div>
 
-      {/* Mission Section */}
-      <section className="glass rounded-3xl p-8">
-        <div className="grid gap-8 lg:grid-cols-2">
-          <div>
-            <div className="text-xs uppercase tracking-[0.3em] text-aurora/70">Our Mission</div>
-            <h2 className="font-display text-2xl text-starlight mt-2">
-              Connecting observers with the night sky
-            </h2>
-            <p className="mt-4 text-sm text-starlight/70 leading-relaxed">
-              Light pollution affects over 80% of the world&apos;s population. Finding truly dark skies
-              requires planning, timing, and local knowledge. Constellation brings all that intelligence
-              into one platform, so you can spend less time researching and more time under the stars.
-            </p>
-            <p className="mt-4 text-sm text-starlight/70 leading-relaxed">
-              Whether you&apos;re photographing the Milky Way, tracking a meteor shower, or simply
-              sharing a quiet moment with the universe, we&apos;re here to help you find your window.
-            </p>
-          </div>
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div className="text-xs text-starlight/50 uppercase tracking-wider">Dark-Sky Mapping</div>
-              <p className="mt-2 text-sm text-starlight/70">
-                Real-time light pollution overlays, Bortle scale ratings, and satellite imagery
-                to pinpoint the clearest horizons near you.
+      <section className="about-section">
+        <div>
+          <div className="eyebrow">Our Mission</div>
+          <h2>Connecting observers with the night sky</h2>
+        </div>
+        <div>
+          <p>
+            Light pollution affects over 80% of the world&apos;s population. Finding truly dark skies
+            requires planning, timing, and local knowledge. Constellation brings all that intelligence
+            into one platform, so you can spend less time researching and more time under the stars.
+          </p>
+          <p>
+            Whether you&apos;re photographing the Milky Way, tracking a meteor shower, or simply
+            sharing a quiet moment with the universe, we&apos;re here to help you find your window.
+          </p>
+          <ul className="about-list mt-6">
+            <li>
+              <h3>Dark-Sky Mapping</h3>
+              <p>
+                A light pollution overlay and Bortle scale ratings to help you find the
+                clearest horizons near you.
               </p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div className="text-xs text-starlight/50 uppercase tracking-wider">Event Forecasting</div>
-              <p className="mt-2 text-sm text-starlight/70">
-                Meteor showers, planetary alignments, eclipses, and lunar events, all with
+            </li>
+            <li>
+              <h3>Event Forecasting</h3>
+              <p>
+                Meteor showers, planetary conjunctions, and lunar events, all with
                 visibility scores tailored to your location.
               </p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <div className="text-xs text-starlight/50 uppercase tracking-wider">Community Marketplace</div>
-              <p className="mt-2 text-sm text-starlight/70">
-                A curated space for buying and selling astronomy gear, with detailed condition
-                notes and seller descriptions.
+            </li>
+            <li>
+              <h3>Community Marketplace</h3>
+              <p>
+                A space for astronomy gear listings, with condition notes and seller
+                descriptions. Sample listings are labeled as such.
               </p>
-            </div>
-          </div>
+            </li>
+          </ul>
         </div>
       </section>
 
-      {/* What We Do Section */}
-      <section>
-        <div className="text-center mb-8">
-          <div className="text-xs uppercase tracking-[0.3em] text-aurora/70">What We Do</div>
-          <h2 className="font-display text-2xl text-starlight mt-2">
-            Your complete stargazing toolkit
-          </h2>
+      <section className="about-section">
+        <div>
+          <div className="eyebrow">What We Do</div>
+          <h2>Your complete stargazing toolkit</h2>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {[
-            {
-              title: "Tonight View",
-              description: "Real-time sky conditions, moon phase, and optimal viewing windows for your location."
-            },
-            {
-              title: "Event Calendar",
-              description: "Never miss a meteor shower, eclipse, or planetary conjunction with personalized alerts."
-            },
-            {
-              title: "Dark-Sky Finder",
-              description: "Interactive maps showing light pollution levels, drive times, and weather forecasts."
-            },
-            {
-              title: "Session Planner",
-              description: "Build detailed observation itineraries with target lists and timing recommendations."
-            }
-          ].map((feature) => (
-            <div key={feature.title} className="glass rounded-2xl p-5">
-              <h3 className="text-lg font-semibold text-starlight">{feature.title}</h3>
-              <p className="mt-2 text-sm text-starlight/70">{feature.description}</p>
-            </div>
+        <ul className="about-list">
+          {TOOLKIT.map((feature) => (
+            <li key={feature.title}>
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
-      {/* Powered By Section */}
-      <section className="glass rounded-3xl p-8">
-        <div className="text-center mb-8">
-          <div className="text-xs uppercase tracking-[0.3em] text-aurora/70">Powered By</div>
-          <h2 className="font-display text-2xl text-starlight mt-2">
-            Precision data you can trust in the field
-          </h2>
+      <section className="about-section">
+        <div>
+          <div className="eyebrow">Powered By</div>
+          <h2>Where the numbers come from</h2>
         </div>
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
-            <div className="text-2xl font-semibold text-aurora">NASA Data</div>
-            <p className="mt-2 text-sm text-starlight/70">
-              Authoritative celestial event data and daily featured imagery direct from NASA
-            </p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
-            <div className="text-2xl font-semibold text-aurora">Precise Positioning</div>
-            <p className="mt-2 text-sm text-starlight/70">
-              Planet and moon positions calculated for your exact location and time, accurate to the arc-second
-            </p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
-            <div className="text-2xl font-semibold text-aurora">Live Conditions</div>
-            <p className="mt-2 text-sm text-starlight/70">
-              Cloud cover, seeing quality, and light pollution scored in real time from multiple weather sources
-            </p>
-          </div>
-        </div>
+        <ul className="about-list">
+          {SOURCES.map((source) => (
+            <li key={source.title}>
+              <h3>{source.title}</h3>
+              <p>{source.description}</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
-      {/* Creator Section */}
-      <section className="text-center">
-        <div className="text-xs uppercase tracking-[0.3em] text-aurora/70">The Creator</div>
-        <h2 className="font-display text-2xl text-starlight mt-2">
-          Built by stargazers, for stargazers
-        </h2>
-        <p className="mt-4 max-w-2xl mx-auto text-sm text-starlight/70 leading-relaxed">
+      <section className="about-section">
+        <div>
+          <div className="eyebrow">The Creator</div>
+          <h2>Built by stargazers, for stargazers</h2>
+        </div>
+        <p>
           Constellation was born from countless nights spent searching for dark skies,
           checking weather apps, and wishing there was one place that brought it all together.
           We built the tool we always wanted, and now we&apos;re sharing it with the community.
         </p>
       </section>
 
-      {/* CTA Section */}
-      <section className="glass rounded-3xl p-8 text-center">
-        <h2 className="font-display text-2xl text-starlight">Ready to explore?</h2>
-        <p className="mt-2 text-sm text-starlight/70">
-          Start planning your next observation session today.
-        </p>
-        <div className="mt-6 flex justify-center gap-4">
-          <Link href="/planner" className="button-primary">
-            Create a plan
-          </Link>
-          <Link href="/events" className="button-ghost">
-            View Events
-          </Link>
+      <section className="about-section">
+        <div>
+          <div className="eyebrow">Next</div>
+          <h2>Ready to explore?</h2>
+        </div>
+        <div>
+          <p>Start planning your next observation session today.</p>
+          <div className="about-cta">
+            <Link href="/planner" className="button-primary">
+              Create a plan
+            </Link>
+            <Link href="/events" className="button-ghost">
+              View Events
+            </Link>
+          </div>
         </div>
       </section>
     </div>

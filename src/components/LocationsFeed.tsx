@@ -73,9 +73,11 @@ export default function LocationsFeed() {
           </div>
         </div>
       ) : null}
-      {(data?.locations ?? []).map((location) => (
-        <LocationCard key={location.id} location={location} />
-      ))}
+      <div className="field-rows">
+        {(data?.locations ?? []).map((location) => (
+          <LocationCard key={location.id} location={location} />
+        ))}
+      </div>
       {data && data.locations.length === 0 ? (
         <div className="glass rounded-2xl p-4 text-sm text-starlight/60">
           No dark-sky sites found near your location.

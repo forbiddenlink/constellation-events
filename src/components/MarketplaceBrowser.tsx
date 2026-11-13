@@ -450,8 +450,8 @@ export default function MarketplaceBrowser() {
             <div className="h-full w-full bg-gradient-to-t from-deep-space to-transparent" />
           </div>
         ) : (
-          <div className="flex h-48 lg:h-64 w-full items-center justify-center rounded-2xl bg-white/5">
-            <span className="text-xs text-starlight/50">No image available</span>
+          <div className="plate-empty h-48 lg:h-64 w-full" role="img" aria-label="No image available">
+            <span className="plate-empty-label" aria-hidden="true">No image available</span>
           </div>
         )}
         <div className="p-5">

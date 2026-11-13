@@ -34,9 +34,9 @@ export default function ListingCard({ listing }: { readonly listing: ListingMode
   else if (moderationStatus === "pending") statusTone = "text-caution border-caution/40";
 
   return (
-    <div className="group relative flex items-center justify-between border-b border-white/10 py-4 px-4 transition-colors hover:bg-white/5">
+    <div className="group relative flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-white/10 py-4 px-4 transition-colors hover:bg-white/5">
         {/* Leading Data Block — photo-forward */}
-        <div className="flex items-center gap-4">
+        <div className="flex min-w-0 items-center gap-4">
             <div className="relative flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-aurora/40">
                 {imageUrl ? (
                     <div
@@ -52,11 +52,11 @@ export default function ListingCard({ listing }: { readonly listing: ListingMode
                 )}
             </div>
 
-            <div>
-                <h3 className="text-sm font-semibold text-starlight group-hover:text-aurora transition-colors truncate max-w-[200px] sm:max-w-[300px]">
+            <div className="min-w-0">
+                <h3 className="text-sm font-semibold text-starlight group-hover:text-aurora transition-colors sm:truncate sm:max-w-[300px]">
                     {listing.title}
                 </h3>
-                <div className="flex items-center gap-3 text-xs text-starlight/50">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-starlight/50">
                     <span>{listing.tag}</span>
                     <span className="h-3 w-px bg-white/10" />
                     <span>{formatCondition(listing.condition)}</span>
@@ -71,7 +71,7 @@ export default function ListingCard({ listing }: { readonly listing: ListingMode
         </div>
 
         {/* Trailing Data Block */}
-        <div className="flex items-center gap-6">
+        <div className="flex w-full flex-shrink-0 items-center justify-between gap-3 sm:w-auto sm:justify-start sm:gap-6">
             {moderationStatus && (
                 <div className={`text-[10px] uppercase ${statusTone}`}>
                     {moderationStatus}

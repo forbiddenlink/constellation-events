@@ -22,7 +22,7 @@ export default function LocationsPage() {
         subtitle="Layer satellite data, cloud cover, and moonlight to pinpoint your clearest horizon."
         as="h1"
       />
-      <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+      <div className="grid items-start gap-6 lg:grid-cols-[1.2fr_0.8fr]">
         <LocationsMapPanel />
         <LocationsFeed />
       </div>

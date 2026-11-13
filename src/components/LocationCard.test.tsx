@@ -73,38 +73,17 @@ describe("LocationCard", () => {
     expect(screen.getByText(/Best viewing: 9:00 PM - 2:00 AM/)).toBeInTheDocument();
   });
 
-  it("applies glass styling to card", () => {
+  it("renders as a ruled row without a repeated thumbnail", () => {
     const { container } = render(<LocationCard location={mockLocationItem} />);
 
-    const card = container.firstChild as HTMLElement;
-    expect(card).toHaveClass("glass", "rounded-2xl");
+    const row = container.firstChild as HTMLElement;
+    expect(row).toHaveClass("field-row");
+    expect(container.querySelector("svg")).toBeNull();
   });
 
-  it("renders location name with correct styling", () => {
+  it("renders location name as a heading", () => {
     render(<LocationCard location={mockLocationItem} />);
 
-    const name = screen.getByText("Sierra Vista Overlook");
-    expect(name).toHaveClass("text-lg", "font-semibold", "text-starlight");
-  });
-
-  it("renders dark sky score with aurora color", () => {
-    render(<LocationCard location={mockLocationItem} />);
-
-    const score = screen.getByText("92");
-    expect(score).toHaveClass("text-lg", "font-semibold", "text-aurora");
-  });
-
-  it("renders distance with subtle styling", () => {
-    render(<LocationCard location={mockLocationItem} />);
-
-    const distance = screen.getByText("42 mi away");
-    expect(distance).toHaveClass("text-xs", "text-starlight/50");
-  });
-
-  it("renders score label with uppercase tracking", () => {
-    render(<LocationCard location={mockLocationItem} />);
-
-    const scoreLabel = screen.getByText("/100");
-    expect(scoreLabel).toHaveClass("uppercase", "tracking-[0.2em]");
+    expect(screen.getByRole("heading", { name: "Sierra Vista Overlook" })).toBeInTheDocument();
   });
 });

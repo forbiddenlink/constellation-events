@@ -21,11 +21,10 @@ describe("EventCard", () => {
     peak: "3:30 AM"
   };
 
-  it("renders event title and summary", () => {
+  it("renders event title as a row heading", () => {
     render(<EventCard event={mockEvent} />);
 
-    expect(screen.getByText("Quadrantids Meteor Shower")).toBeInTheDocument();
-    expect(screen.getByText(/First major meteor shower/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Quadrantids Meteor Shower" })).toBeInTheDocument();
   });
 
   it("displays the date computed from the viewer's own timezone, not the server-side dateDisplay", () => {
@@ -47,42 +46,18 @@ describe("EventCard", () => {
     expect(screen.getByText(/Peak: 3:30 AM/)).toBeInTheDocument();
   });
 
-  it("applies aurora color for excellent visibility", () => {
-    render(<EventCard event={mockEvent} />);
-
-    const badge = screen.getByText("excellent");
-    expect(badge).toHaveClass("text-aurora", "border-aurora/30");
-  });
-
-  it("applies starlight color for good visibility", () => {
-    const goodEvent = { ...mockEvent, visibility: "good" as const };
-    render(<EventCard event={goodEvent} />);
-
-    const badge = screen.getByText("good");
-    expect(badge).toHaveClass("text-starlight", "border-starlight/30");
-  });
-
-  it("applies yellow color for fair visibility", () => {
-    const fairEvent = { ...mockEvent, visibility: "fair" as const };
-    render(<EventCard event={fairEvent} />);
-
-    const badge = screen.getByText("fair");
-    expect(badge).toHaveClass("text-caution", "border-caution/30");
-  });
-
-  it("applies ember color for poor visibility", () => {
-    const poorEvent = { ...mockEvent, visibility: "poor" as const };
-    render(<EventCard event={poorEvent} />);
-
-    const badge = screen.getByText("poor");
-    expect(badge).toHaveClass("text-ember", "border-ember/30");
-  });
-
-  it("has hover animation classes", () => {
+  it("renders as a ruled field-log row, not a lifted card", () => {
     const { container } = render(<EventCard event={mockEvent} />);
 
-    const card = container.firstChild as HTMLElement;
-    expect(card).toHaveClass("hover:-translate-y-1", "hover:shadow-comet");
+    const row = container.firstChild as HTMLElement;
+    expect(row).toHaveClass("field-row");
+    expect(row).not.toHaveClass("glass");
+  });
+
+  it("offers a quiet add-to-calendar link for dated events", () => {
+    render(<EventCard event={mockEvent} />);
+
+    expect(screen.getByRole("button", { name: /Add Quadrantids Meteor Shower to calendar/ })).toHaveClass("field-row-link");
   });
 
   it("handles legacy EventItem format", () => {

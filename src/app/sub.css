@@ -1,0 +1,344 @@
+/*
+ * Sub-pages (events, planner, locations, marketplace, about, contact, privacy)
+ * set in the field-log language. The page components keep their Tailwind
+ * markup and behavior; this sheet remaps their glass panels, pills and blue
+ * accent onto the home page's tokens (desk, chart blue, cream, lamp amber)
+ * and its type. Scoped under .sub-root so nothing else changes.
+ */
+.sub-root .sub-main {
+  padding-top: 56px;
+  padding-bottom: 96px;
+  min-height: 60dvh;
+}
+@media (min-width: 768px) {
+  .sub-root .sub-main {
+    padding-top: 80px;
+  }
+}
+
+/* plates: glass panels become chart-blue plates with a hairline and a lamp margin rule */
+.sub-root .glass,
+.sub-root .glass-panel {
+  background: var(--chart);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid var(--hair);
+  border-left: 4px solid var(--lamp);
+  box-shadow: none;
+}
+.sub-root [class*="rounded-"]:not([class*="rounded-full"]) {
+  border-radius: 2px;
+}
+
+/* ink on plates: one cream, one faded; the blue accent becomes lamp amber */
+.sub-root [class*="text-starlight"] {
+  color: var(--cream);
+}
+.sub-root [class*="text-starlight/30"],
+.sub-root [class*="text-starlight/40"],
+.sub-root [class*="text-starlight/50"],
+.sub-root [class*="text-starlight/55"],
+.sub-root [class*="text-starlight/60"] {
+  color: #b4bfd4;
+}
+.sub-root [class*="text-aurora"],
+.sub-root [class*="text-ember"],
+.sub-root [class*="text-comet"] {
+  color: var(--lamp);
+}
+.sub-root [class*="border-white"] {
+  border-color: var(--hair);
+}
+.sub-root [class*="bg-white/"] {
+  background-color: rgba(239, 230, 207, 0.07);
+}
+.sub-root [class*="bg-aurora/"] {
+  background-color: rgba(242, 181, 68, 0.18);
+}
+.sub-root .bg-aurora {
+  background-color: var(--lamp);
+}
+.sub-root [class*="border-aurora"] {
+  border-color: rgba(242, 181, 68, 0.6);
+}
+.sub-root [class*="focus:ring-aurora"]:focus,
+.sub-root [class*="focus-visible:ring-aurora"]:focus-visible {
+  --tw-ring-color: var(--lamp);
+}
+.sub-root ::selection {
+  background: var(--lamp);
+  color: var(--desk);
+}
+
+/* buttons: the lamp pill and the line pill from the home page */
+.sub-root .button-primary {
+  background: var(--lamp);
+  color: var(--desk);
+  box-shadow: none;
+  border-radius: 999px;
+}
+.sub-root .button-primary:hover {
+  transform: none;
+  background: var(--cream);
+  box-shadow: none;
+}
+.sub-root .button-ghost {
+  background: transparent;
+  color: var(--cream);
+  border: 1.5px solid var(--cream);
+  border-radius: 999px;
+}
+.sub-root .button-ghost:hover {
+  background: rgba(239, 230, 207, 0.12);
+  border-color: var(--cream);
+  color: var(--cream);
+}
+
+/* form fields */
+.sub-root input,
+.sub-root select,
+.sub-root textarea {
+  color: var(--cream);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+.sub-root select option {
+  background: var(--chart);
+  color: var(--cream);
+}
+
+/* prose pages */
+.sub-root h1,
+.sub-root h2,
+.sub-root h3 {
+  font-family: var(--font-display), serif;
+  font-weight: 400;
+}
+
+/* entries inside a page (event cards, location cards, tool tiles) are log
+   entries on the desk, not plates: hairline only, no lamp margin rule, no lift */
+.sub-root .glass.rounded-2xl {
+  background: rgba(239, 230, 207, 0.04);
+  border: 1px solid var(--hair);
+  border-left: 1px solid var(--hair);
+}
+.sub-root .glass.rounded-2xl:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: rgba(239, 230, 207, 0.4);
+}
+
+/* legibility floor: the old UI used 10 to 12px labels */
+.sub-root .text-xs {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.sub-root [class*="text-[10px]"],
+.sub-root [class*="text-[11px]"] {
+  font-size: 12px;
+}
+.sub-root .text-sm {
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+/* range inputs and checkboxes follow the lamp, not the old sky blue */
+.sub-root input[type="range"],
+.sub-root input[type="checkbox"],
+.sub-root input[type="radio"] {
+  accent-color: var(--lamp);
+}
+
+/* about: ruled editorial layout instead of nested plates */
+.sub-root .about-section {
+  display: grid;
+  gap: 16px 48px;
+  padding: 40px 0;
+  border-top: 1px solid var(--hair);
+}
+@media (min-width: 900px) {
+  .sub-root .about-section {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+}
+.sub-root .about-section h2 {
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  line-height: 1.08;
+  margin: 4px 0 0;
+}
+.sub-root .about-section p {
+  color: var(--cream);
+  font-size: 17px;
+  line-height: 1.6;
+  max-width: 62ch;
+  margin: 0 0 16px;
+}
+.sub-root .about-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sub-root .about-list li {
+  display: grid;
+  gap: 4px 24px;
+  padding: 16px 0;
+  border-top: 1px solid var(--hair);
+}
+.sub-root .about-list li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+@media (min-width: 640px) {
+  .sub-root .about-list li {
+    grid-template-columns: 11rem minmax(0, 1fr);
+  }
+}
+.sub-root .about-list h3 {
+  font-size: 1.25rem;
+  margin: 0;
+  color: var(--cream);
+}
+.sub-root .about-list p {
+  font-size: 16px;
+  margin: 0;
+  color: var(--cream);
+}
+.sub-root .about-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* links inside running text need more than colour to stand out */
+.sub-root p a[href^="mailto:"],
+.sub-root p a.text-aurora {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* secondary ink on the chart-blue plates: lift --faded to clear 4.5:1 (not in night vision, which stays torch red) */
+html:not(.night-vision) .home-root.sub-root {
+  --faded: #b4bfd4;
+}
+
+/* privacy rows with a single paragraph: let the text span the full row */
+.sub-root .about-list li > p:only-child {
+  grid-column: 1 / -1;
+}
+.sub-root .about-section > p {
+  max-width: 62ch;
+}
+.sub-root .about-section a[href^="mailto:"] {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--lamp);
+}
+
+/* ruled field-log rows: events and locations lists */
+.sub-root .field-rows {
+  border-bottom: 1px solid var(--hair);
+}
+.sub-root .field-row {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 4px 20px;
+  align-items: baseline;
+  padding: 18px 0;
+  border-top: 1px solid var(--hair);
+}
+.sub-root .field-row-date {
+  font-family: var(--font-mono), monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--lamp);
+  white-space: nowrap;
+}
+.sub-root .field-row-title {
+  font-size: 1.25rem;
+  line-height: 1.25;
+  margin: 0;
+  color: var(--cream);
+}
+.sub-root .field-row-meta {
+  margin: 4px 0 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #b4bfd4;
+}
+.sub-root .field-row-note {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  max-width: 62ch;
+  color: var(--cream);
+}
+.sub-root .field-row-link {
+  grid-column: 2;
+  justify-self: start;
+  min-height: 44px;
+  padding: 0 2px;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 14px;
+  color: var(--cream);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.sub-root .field-row-link:hover {
+  color: var(--lamp);
+}
+.sub-root .field-row-score {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.sub-root .field-row-unit {
+  margin-left: 2px;
+  font-size: 12px;
+  color: #b4bfd4;
+}
+@media (min-width: 720px) {
+  .sub-root .field-row {
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+    align-items: baseline;
+  }
+  .sub-root .field-row-link {
+    grid-column: 3;
+    justify-self: end;
+  }
+  .sub-root .field-row-loc {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+}
+
+/* empty image frame: a ruled placeholder, same hairline and lamp margin as the plates */
+.sub-root .plate-empty {
+  display: grid;
+  place-items: center;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 27px,
+      rgba(239, 230, 207, 0.14) 27px,
+      rgba(239, 230, 207, 0.14) 28px
+    ),
+    var(--chart);
+  border: 1px solid var(--hair);
+  border-left: 4px solid var(--lamp);
+  border-radius: 2px;
+}
+.sub-root .plate-empty-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b4bfd4;
+  background: var(--chart);
+  padding: 4px 10px;
+}
+.sub-root .about-section p + .about-list {
+  margin-top: 24px;
+}
