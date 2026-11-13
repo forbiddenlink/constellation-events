@@ -19,7 +19,11 @@ export default function ContactForm() {
 
   if (sent) {
     return (
-      <div className="glass rounded-3xl p-8 text-center">
+      <section className="about-section">
+        <div>
+          <div className="eyebrow">Send a Message</div>
+        </div>
+        <div>
         <div className="text-aurora text-lg font-semibold">Message prepared</div>
         <p className="mt-2 text-sm text-starlight/60">
           Your email app should have opened with a pre-filled message.
@@ -33,14 +37,17 @@ export default function ContactForm() {
         >
           Send another message
         </button>
-      </div>
+        </div>
+      </section>
     );
   }
 
   return (
-    <div className="glass rounded-3xl p-8">
-      <div className="text-xs uppercase tracking-[0.3em] text-aurora/70 mb-3">Send a Message</div>
-      <form onSubmit={handleSubmit} className="grid gap-5">
+    <section className="about-section">
+      <div>
+        <div className="eyebrow">Send a Message</div>
+      </div>
+      <form onSubmit={handleSubmit} className="contact-form grid gap-5">
         <div className="grid gap-4 md:grid-cols-2">
           <label className="block text-xs text-starlight/60">
             Name
@@ -90,6 +97,6 @@ export default function ContactForm() {
           </button>
         </div>
       </form>
-    </div>
+    </section>
   );
 }
