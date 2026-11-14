@@ -90,7 +90,7 @@ export default function TonightPlannerPanel() {
     <div className="plan-body">
       <div className="plan-verdict">
         <div>
-          <p className="plan-label">Tonight&apos;s observation plan</p>
+          <p className="plan-label">Tonight&apos;s plan</p>
           <h2 className="plan-rating">{data.overallQuality.rating}</h2>
         </div>
         <div className="plan-score">
