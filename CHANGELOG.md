@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.0](https://github.com/forbiddenlink/constellation-events/compare/v1.1.7...v1.2.0) (2026-11-14)
+
+
+### Features
+
+* **home:** field-log home page redesign (draft) ([#130](https://github.com/forbiddenlink/constellation-events/issues/130)) ([11b47d1](https://github.com/forbiddenlink/constellation-events/commit/11b47d1acc17ab7cb6794b779c3cd955be4de85b))
+
+
+### Bug Fixes
+
+* **contact:** flatten the nested cards into one surface ([#134](https://github.com/forbiddenlink/constellation-events/issues/134)) ([eaa2b81](https://github.com/forbiddenlink/constellation-events/commit/eaa2b819dbe3dbbe1b35bb851a9fdd4abc98c3a4))
+* **deps:** bump next to 16.4.5 for Nov 2026 security advisories ([#132](https://github.com/forbiddenlink/constellation-events/issues/132)) ([338501f](https://github.com/forbiddenlink/constellation-events/commit/338501fdb9e8743727395375246a4f6f97a27ff8))
+* **geo:** save only a coarse location in localStorage ([#131](https://github.com/forbiddenlink/constellation-events/issues/131)) ([b7c15c6](https://github.com/forbiddenlink/constellation-events/commit/b7c15c6256d8e72f70217381bba50649d9dbeb86))
+
 ## [1.1.7](https://github.com/forbiddenlink/constellation-events/compare/v1.1.6...v1.1.7) (2026-11-04)
 
 
