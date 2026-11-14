@@ -66,12 +66,11 @@ export default function PlannerLocationSearch() {
       : null);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-      <div className="text-xs text-starlight/50">Location</div>
+    <div className="plan-place">
       {activeLabel ? (
-        <div className="mt-2 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 text-sm text-aurora">
-            <svg className="h-3.5 w-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+        <div className="plan-place-row">
+          <div className="plan-place-label">
+            <svg className="plan-pin" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
               <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
             </svg>
             {activeLabel}
@@ -81,14 +80,14 @@ export default function PlannerLocationSearch() {
               setLocationName(null);
               setShowResults(true);
             }}
-            className="text-[11px] text-starlight/55 hover:text-starlight transition"
+            className="link-ink"
           >
             Change
           </button>
         </div>
       ) : (
         <>
-          <div className="mt-2 relative">
+          <div className="plan-search">
             <input
               value={query}
               onChange={(e) => {
@@ -97,23 +96,23 @@ export default function PlannerLocationSearch() {
               }}
               onFocus={() => setShowResults(true)}
               placeholder="Search for a city..."
-              className="w-full rounded-xl bg-white/5 border border-white/10 p-2.5 text-sm text-starlight placeholder:text-starlight/50 focus:outline-none focus:ring-1 focus:ring-aurora"
+              aria-label="Search for a city" className="city-input"
             />
             {showResults && query.length >= 2 && (
-              <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border border-white/10 bg-deep-space/95 backdrop-blur-xl shadow-lg overflow-hidden">
+              <div className="plan-results">
                 {results.length > 0 ? results.map((result) => (
                   <button
                     key={result.id}
                     onClick={() => handleSelect(result)}
-                    className="w-full text-left px-4 py-2.5 text-sm text-starlight/80 hover:bg-white/10 transition-colors"
+                    className="plan-result"
                     type="button"
                   >
                     {result.name}
                     {result.admin1 ? `, ${result.admin1}` : ""}
-                    <span className="ml-1 text-xs text-starlight/55">{result.country}</span>
+                    <span className="plan-sub"> {result.country}</span>
                   </button>
                 )) : (
-                  <div className="px-4 py-3 text-sm text-starlight/55">No cities found</div>
+                  <div className="plan-result">No cities found</div>
                 )}
               </div>
             )}
@@ -121,9 +120,9 @@ export default function PlannerLocationSearch() {
           <button
             onClick={handleUseMyLocation}
             disabled={geo.status === "loading"}
-            className="mt-2 flex items-center gap-1.5 text-xs text-aurora/80 hover:text-aurora transition disabled:opacity-50"
+            className="link-ink disabled:opacity-50"
           >
-            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <svg className="plan-pin" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>

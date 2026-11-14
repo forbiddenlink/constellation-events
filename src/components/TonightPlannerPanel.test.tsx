@@ -372,14 +372,14 @@ describe("TonightPlannerPanel", () => {
     });
   });
 
-  it("applies glass styling to container", async () => {
+  it("renders the plan body inside the log page", async () => {
     mockFetch.mockImplementation(() => mockJsonResponse(mockPlannerData));
 
     const { container } = render(<TonightPlannerPanel />);
 
     await waitFor(() => {
-      const glassContainer = container.querySelector(".glass.rounded-3xl.p-6");
-      expect(glassContainer).toBeInTheDocument();
+      const planBody = container.querySelector(".plan-body");
+      expect(planBody).toBeInTheDocument();
     });
   });
 

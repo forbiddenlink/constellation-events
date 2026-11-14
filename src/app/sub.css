@@ -371,3 +371,277 @@ html:not(.night-vision) .home-root.sub-root {
   font-size: 16px;
   margin: 0;
 }
+
+/* ---------- planner: tonight's plan set as one field-log page ----------
+   Every line height and vertical margin in this block is a multiple of the
+   28px rule pitch, and the rules are drawn from the top of the page (no 14px
+   offset), so each line of text sits on a rule like the home log page. */
+.sub-root .plan-root .plan-lede {
+  margin-top: 16px;
+  margin-bottom: 40px;
+}
+.sub-root .plan-page {
+  max-width: 880px;
+  padding-top: 28px;
+  padding-bottom: 28px;
+  background-position: 0 0, 0 0;
+  line-height: 28px;
+}
+.sub-root .plan-page .field-row {
+  grid-template-columns: 72px 1fr;
+  min-height: 28px;
+}
+.sub-root .plan-field-label,
+.sub-root .plan-label,
+.sub-root .plan-sub {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 28px;
+}
+.sub-root .plan-sub {
+  display: block;
+  color: var(--pencil);
+}
+.sub-root .plan-date {
+  line-height: 28px;
+}
+.sub-root .plan-place-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 16px;
+  min-height: 28px;
+}
+.sub-root .plan-place-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  line-height: 28px;
+}
+.sub-root .plan-pin {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.sub-root .plan-place .link-ink {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  min-height: 28px;
+  line-height: 28px;
+}
+.sub-root .plan-search {
+  position: relative;
+}
+.sub-root .plan-results {
+  position: absolute;
+  z-index: 20;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-width: 420px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+}
+.sub-root .plan-result {
+  display: block;
+  width: 100%;
+  text-align: left;
+  min-height: 44px;
+  padding: 8px 12px;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  font: 500 16px/28px var(--font-body), sans-serif;
+  cursor: pointer;
+}
+.sub-root .plan-result:hover {
+  background: rgba(11, 20, 38, 0.1);
+}
+.sub-root .plan-result .plan-sub {
+  display: inline;
+}
+.sub-root .plan-body {
+  margin-top: 28px;
+  color: var(--ink);
+}
+.sub-root .plan-body .plan-alert {
+  margin: 0;
+  font-weight: 600;
+  line-height: 28px;
+}
+.sub-root .plan-verdict {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  column-gap: 16px;
+}
+.sub-root .plan-label {
+  margin: 0;
+}
+.sub-root .plan-rating {
+  font-family: var(--font-display), serif;
+  font-size: clamp(2.25rem, 5vw, 3rem);
+  line-height: 56px;
+  margin: 0;
+}
+.sub-root .plan-score {
+  text-align: right;
+  font: 400 13px/28px var(--font-mono), monospace;
+}
+.sub-root .plan-score-n {
+  font: 600 40px/56px var(--font-mono), monospace;
+}
+.sub-root .plan-desc {
+  margin: 28px 0;
+  max-width: 40rem;
+  line-height: 28px;
+}
+.sub-root .plan-ledger {
+  margin: 0;
+}
+.sub-root .plan-row {
+  display: grid;
+  grid-template-columns: minmax(0, 220px) 1fr;
+  column-gap: 16px;
+  min-height: 56px;
+}
+.sub-root .plan-row dt {
+  font-weight: 600;
+  line-height: 28px;
+}
+.sub-root .plan-row dd {
+  margin: 0;
+  line-height: 28px;
+}
+.sub-root .plan-h {
+  margin: 28px 0 0;
+  font: 600 18px/28px var(--font-body), sans-serif;
+}
+.sub-root .plan-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sub-root .plan-entry {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 120px;
+  column-gap: 12px;
+  align-items: start;
+  min-height: 56px;
+}
+.sub-root .plan-note {
+  grid-template-columns: 28px minmax(0, 1fr);
+}
+.sub-root .plan-n {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1.5px solid var(--ink);
+  font: 600 13px/1 var(--font-mono), monospace;
+}
+.sub-root .plan-entry-name {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 28px;
+  overflow-wrap: anywhere;
+}
+.sub-root .plan-alt {
+  text-align: right;
+  font: 600 14px/28px var(--font-mono), monospace;
+}
+.sub-root .plan-bar {
+  position: relative;
+  display: block;
+  height: 28px;
+}
+.sub-root .plan-bar::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 11px;
+  height: 6px;
+  border: 1px solid var(--ink);
+  box-sizing: border-box;
+}
+.sub-root .plan-bar > i {
+  position: absolute;
+  left: 0;
+  top: 11px;
+  height: 6px;
+  background: var(--ink);
+}
+.sub-root .plan-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 20px;
+  margin-top: 28px;
+}
+.sub-root .plan-foot .btn-lamp {
+  height: 56px;
+  min-height: 56px;
+  padding: 0 22px;
+}
+.sub-root .plan-extras {
+  display: grid;
+  gap: 40px 56px;
+  margin-top: 56px;
+  max-width: 880px;
+}
+@media (min-width: 900px) {
+  .sub-root .plan-extras {
+    grid-template-columns: 1fr 1fr;
+    max-width: none;
+  }
+}
+.sub-root .plan-h2 {
+  font-family: var(--font-display), serif;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.sub-root .plan-stamp {
+  font-size: 13px;
+  letter-spacing: 0.14em;
+}
+.sub-root .plan-tips {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--cream);
+}
+.sub-root .plan-tips li {
+  padding: 8px 0;
+  border-bottom: 1px dotted var(--hair);
+  font-size: 16px;
+  line-height: 28px;
+}
+@media (max-width: 520px) {
+  .sub-root .plan-page .field-row {
+    grid-template-columns: 1fr;
+  }
+  .sub-root .plan-row {
+    grid-template-columns: 1fr;
+  }
+  .sub-root .plan-entry {
+    grid-template-columns: 28px minmax(0, 1fr) 84px;
+  }
+  .sub-root .plan-note {
+    grid-template-columns: 28px minmax(0, 1fr);
+  }
+  .sub-root .plan-verdict {
+    flex-direction: column;
+  }
+  .sub-root .plan-score {
+    text-align: left;
+  }
+}
