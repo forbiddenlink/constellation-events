@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/forbiddenlink/constellation-events/compare/v1.2.0...v1.2.1) (2026-11-15)
+
+
+### Bug Fixes
+
+* **events:** compute the event calendar for any year ([#138](https://github.com/forbiddenlink/constellation-events/issues/138)) ([39f6d32](https://github.com/forbiddenlink/constellation-events/commit/39f6d328c574c7348c18ff029798319ccb56460f))
+
 ## [1.2.0](https://github.com/forbiddenlink/constellation-events/compare/v1.1.7...v1.2.0) (2026-11-15)
 
 
