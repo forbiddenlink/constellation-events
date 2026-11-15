@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.0](https://github.com/forbiddenlink/constellation-events/compare/v1.1.7...v1.2.0) (2026-11-15)
+
+
+### Features
+
+* **home:** field-log home page redesign (draft) ([#130](https://github.com/forbiddenlink/constellation-events/issues/130)) ([11b47d1](https://github.com/forbiddenlink/constellation-events/commit/11b47d1acc17ab7cb6794b779c3cd955be4de85b))
+
+
+### Bug Fixes
+
+* **contact:** flatten the nested cards into one surface ([#134](https://github.com/forbiddenlink/constellation-events/issues/134)) ([eaa2b81](https://github.com/forbiddenlink/constellation-events/commit/eaa2b819dbe3dbbe1b35bb851a9fdd4abc98c3a4))
+* **deps:** bump next to 16.4.5 for Nov 2026 security advisories ([#132](https://github.com/forbiddenlink/constellation-events/issues/132)) ([338501f](https://github.com/forbiddenlink/constellation-events/commit/338501fdb9e8743727395375246a4f6f97a27ff8))
+* **deps:** lift glob/minimatch to patched majors ([#136](https://github.com/forbiddenlink/constellation-events/issues/136)) ([c7b570c](https://github.com/forbiddenlink/constellation-events/commit/c7b570ccc6ccb456579b096d78128b2847502b93))
+* **geo:** save only a coarse location in localStorage ([#131](https://github.com/forbiddenlink/constellation-events/issues/131)) ([b7c15c6](https://github.com/forbiddenlink/constellation-events/commit/b7c15c6256d8e72f70217381bba50649d9dbeb86))
+* **planner:** refresh the date shown after midnight or tab resume ([#137](https://github.com/forbiddenlink/constellation-events/issues/137)) ([aa8c9ae](https://github.com/forbiddenlink/constellation-events/commit/aa8c9aea23f68ea33a83798d7bd77505721f76db))
+
 ## [1.1.7](https://github.com/forbiddenlink/constellation-events/compare/v1.1.6...v1.1.7) (2026-11-04)
 
 
