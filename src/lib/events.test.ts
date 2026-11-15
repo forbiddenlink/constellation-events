@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import {
   generateUpcomingEvents,
   getTonightEvents,
@@ -124,5 +124,60 @@ describe("getActiveMeteorShowers", () => {
     // Late October/early November: Orionids overlap with Leonids start
     const showers = getActiveMeteorShowers(new Date("2026-11-06"));
     expect(showers.length).toBeGreaterThanOrEqual(1);
+  });
+});
+
+describe("calendar keeps working after 2026 (fake clock)", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it.each([
+    ["2027-08-01T00:00:00Z", "Perseids", "2027-08-12"],
+    ["2028-08-01T00:00:00Z", "Perseids", "2028-08-12"],
+    ["2027-12-01T00:00:00Z", "Geminids", "2027-12-14"],
+    ["2028-01-01T00:00:00Z", "Quadrantids", "2028-01-03"],
+  ])("default clock %s lists %s peak", (now, name, peakDay) => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(now));
+    const events = generateUpcomingEvents(undefined, undefined, 30);
+    const shower = events.find((e) => e.title.includes(name));
+    expect(shower).toBeDefined();
+    expect(shower!.date.startsWith(peakDay)).toBe(true);
+    expect(shower!.id).toContain(peakDay.slice(0, 4));
+  });
+
+  it("lists solstices and equinoxes in 2027 and 2028", () => {
+    for (const year of [2027, 2028]) {
+      const events = generateUpcomingEvents(undefined, new Date(`${year}-01-01`), 366);
+      const titles = events.map((e) => e.title);
+      expect(titles).toContain("March Equinox");
+      expect(titles).toContain("June Solstice");
+      expect(titles).toContain("September Equinox");
+      expect(titles).toContain("December Solstice");
+    }
+  });
+
+  it("puts the 2027 June solstice on June 21 (UTC)", () => {
+    const events = generateUpcomingEvents(undefined, new Date("2027-06-01"), 40);
+    const solstice = events.find((e) => e.title === "June Solstice");
+    expect(solstice!.date.startsWith("2027-06-21")).toBe(true);
+  });
+
+  it("lists the 2027-08-02 total solar eclipse", () => {
+    const events = generateUpcomingEvents(undefined, new Date("2027-07-25"), 20);
+    const eclipse = events.find((e) => e.type === "eclipse" && e.title.includes("Solar"));
+    expect(eclipse).toBeDefined();
+    expect(eclipse!.date.startsWith("2027-08-02")).toBe(true);
+  });
+
+  it("does not return 2026-only one-off events in other years", () => {
+    const events = generateUpcomingEvents(undefined, new Date("2027-01-01"), 365);
+    expect(events.some((e) => e.id.includes("2026"))).toBe(false);
+  });
+
+  it("returns showers for getActiveMeteorShowers in 2027", () => {
+    const showers = getActiveMeteorShowers(new Date("2027-08-12"));
+    expect(showers.some((s) => s.name === "Perseids")).toBe(true);
   });
 });
