@@ -24,7 +24,7 @@ export const env = createEnv({
     R2_SECRET_ACCESS_KEY: z.string().min(1),
     R2_TILE_PREFIX: z.string().optional(),
     RAW_RETENTION_DAYS: z.string().optional(),
-    RESEND_API_KEY: z.string().min(1),
+    RESEND_API_KEY: z.string().min(1).optional(),
     TILE_PROCESSES: z.string().optional(),
     TILE_RUN_HOUR: z.string().optional(),
     TILE_RUN_MINUTE: z.string().optional(),
