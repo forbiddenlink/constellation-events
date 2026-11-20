@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/forbiddenlink/constellation-events/compare/v1.2.1...v1.2.2) (2026-11-20)
+
+
+### Bug Fixes
+
+* allow startup without an unused email credential ([#144](https://github.com/forbiddenlink/constellation-events/issues/144)) ([42419ee](https://github.com/forbiddenlink/constellation-events/commit/42419ee47f032fc830492500f1e079464cc8592c))
+
 ## [1.2.1](https://github.com/forbiddenlink/constellation-events/compare/v1.2.0...v1.2.1) (2026-11-15)
 
 
