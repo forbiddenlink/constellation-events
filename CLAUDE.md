@@ -11,7 +11,7 @@ R2-backed image uploads.
 - Next.js ^16.3.4 (App Router), TypeScript, Tailwind CSS 4
 - pnpm (`packageManager: pnpm@10.34.5`)
 - better-auth, pg + better-sqlite3, Cloudflare R2 (`@aws-sdk/client-s3`)
-- Trigger.dev, Sentry, Axiom, Arcjet
+- Trigger.dev, Sentry, Axiom
 - Vitest (unit) + Playwright (e2e, Chromium only)
 - ESLint (`next/core-web-vitals`) and Biome are both configured; `pnpm lint`
   runs ESLint only
