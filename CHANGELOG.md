@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/forbiddenlink/constellation-events/compare/v1.2.2...v1.2.3) (2026-11-24)
+
+
+### Bug Fixes
+
+* sample 10 percent of traces and report global-error to Sentry ([#148](https://github.com/forbiddenlink/constellation-events/issues/148)) ([63dc505](https://github.com/forbiddenlink/constellation-events/commit/63dc505ed361e0d8b157ff20f1ea29c156fbc215))
+
 ## [1.2.2](https://github.com/forbiddenlink/constellation-events/compare/v1.2.1...v1.2.2) (2026-11-22)
 
 
