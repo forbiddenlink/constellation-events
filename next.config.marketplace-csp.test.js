@@ -58,3 +58,11 @@ describe("getTileCspHosts", () => {
     expect(getTileCspHosts(undefined, "")).toBe("");
   });
 });
+
+describe("getMarketplaceImageCspHost with a pasted multi-line env value", () => {
+  it("keeps only the first token instead of gluing the next line into the host", () => {
+    expect(
+      getMarketplaceImageCspHost("https://pub-xxxx.r2.dev\nMARKETPLACE_IMAGE_PREFIX=marketplace")
+    ).toBe(" https://pub-xxxx.r2.dev");
+  });
+});
