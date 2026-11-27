@@ -9,8 +9,14 @@
 // instead of only being exercised indirectly through a build.
 function getMarketplaceImageCspHost(base) {
   if (!base) return "";
+  // A pasted env value can carry a newline plus the next line
+  // ("https://pub-x.r2.dev\nMARKETPLACE_IMAGE_PREFIX=..."). The URL parser
+  // drops newlines rather than failing, which glued the second line into the
+  // hostname and produced an img-src entry matching nothing. Keep only the
+  // first whitespace-separated token.
+  const first = String(base).trim().split(/\s+/)[0];
   try {
-    const url = new URL(base);
+    const url = new URL(first);
     // Hardcoding "https://" + hostname silently dropped a non-default port
     // (e.g. a base with :8443), producing a CSP entry that doesn't match
     // where images are actually served. It also let a non-http(s) scheme
@@ -25,4 +31,21 @@ function getMarketplaceImageCspHost(base) {
   }
 }
 
-module.exports = { getMarketplaceImageCspHost };
+// Light-pollution tiles are served from the R2 public host named in
+// NEXT_PUBLIC_LIGHTPOLLUTION_TILES (a {z}/{x}/{y} template URL) or, as a
+// fallback, R2_PUBLIC_BASE. Mapbox GL fetches raster tiles with fetch/XHR, so
+// the host must be in connect-src as well as img-src. Returns the unique,
+// space-prefixed origins (never a path or template) to append to a directive.
+function getTileCspHosts(...bases) {
+  const seen = [];
+  for (const base of bases) {
+    if (!base) continue;
+    // The template contains {z}/{x}/{y}; URL() tolerates it, and we only use
+    // the origin, so no placeholder text can leak into the CSP.
+    const host = getMarketplaceImageCspHost(String(base).trim());
+    if (host && !seen.includes(host)) seen.push(host);
+  }
+  return seen.join("");
+}
+
+module.exports = { getMarketplaceImageCspHost, getTileCspHosts };
