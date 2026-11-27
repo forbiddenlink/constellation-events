@@ -2,7 +2,7 @@ const { withSentryConfig } = require("@sentry/nextjs");
 /** @type {import('next').NextConfig} */
 const { withAxiom } = require('next-axiom');
 const withBundleAnalyzer = require("@next/bundle-analyzer")({ enabled: process.env.ANALYZE === "true" });
-const { getMarketplaceImageCspHost } = require("./next.config.marketplace-csp.js");
+const { getMarketplaceImageCspHost, getTileCspHosts } = require("./next.config.marketplace-csp.js");
 
 const nextConfig = {
   poweredByHeader: false,
@@ -66,9 +66,9 @@ const nextConfig = {
               // box on every page that embeds it.
               "worker-src 'self' blob:; " +
               "style-src 'self' 'unsafe-inline'; " +
-              `img-src 'self' data: blob: https://images.unsplash.com https://upload.wikimedia.org https://grainy-gradients.vercel.app https://apod.nasa.gov${marketplaceImageCspHost}; ` +
+              `img-src 'self' data: blob: https://images.unsplash.com https://upload.wikimedia.org https://grainy-gradients.vercel.app https://apod.nasa.gov https://*.nasa.gov${marketplaceImageCspHost}${tileCspHosts}; ` +
               "font-src 'self' https://fonts.gstatic.com; " +
-              "connect-src 'self' https://api.open-meteo.com https://api.n2yo.com https://api.nasa.gov https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io; " +
+              `connect-src 'self' https://api.open-meteo.com https://api.n2yo.com https://api.nasa.gov https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io${tileCspHosts}; ` +
               "frame-src 'self' https://www.youtube.com https://youtube.com https://player.vimeo.com; " +
               "frame-ancestors 'none'; " +
               "base-uri 'self'; " +
@@ -79,6 +79,11 @@ const nextConfig = {
     ];
   }
 };
+
+const tileCspHosts = getTileCspHosts(
+  process.env.NEXT_PUBLIC_LIGHTPOLLUTION_TILES,
+  process.env.R2_PUBLIC_BASE
+);
 
 const marketplaceImageCspHost = getMarketplaceImageCspHost(
   process.env.MARKETPLACE_IMAGE_PUBLIC_BASE || process.env.R2_PUBLIC_BASE

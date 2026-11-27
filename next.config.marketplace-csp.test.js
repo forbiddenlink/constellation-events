@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getMarketplaceImageCspHost } from "./next.config.marketplace-csp.js";
+import { getMarketplaceImageCspHost, getTileCspHosts } from "./next.config.marketplace-csp.js";
 
 describe("getMarketplaceImageCspHost", () => {
   it("returns nothing when no base is configured", () => {
@@ -41,5 +41,20 @@ describe("getMarketplaceImageCspHost", () => {
     // the CSP img-src directive as-is.
     expect(getMarketplaceImageCspHost("javascript:alert(1)")).toBe("");
     expect(getMarketplaceImageCspHost("ftp://cdn.example.com")).toBe("");
+  });
+});
+
+describe("getTileCspHosts", () => {
+  it("reduces a tile template URL to its origin", () => {
+    expect(getTileCspHosts("https://pub-xxxx.r2.dev/lightpollution/{z}/{x}/{y}.png")).toBe(
+      " https://pub-xxxx.r2.dev"
+    );
+  });
+
+  it("dedupes and skips unset or invalid bases", () => {
+    expect(
+      getTileCspHosts("https://pub-xxxx.r2.dev/a/{z}.png", undefined, "https://pub-xxxx.r2.dev", "nonsense")
+    ).toBe(" https://pub-xxxx.r2.dev");
+    expect(getTileCspHosts(undefined, "")).toBe("");
   });
 });

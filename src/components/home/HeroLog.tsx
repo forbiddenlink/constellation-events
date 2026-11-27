@@ -120,7 +120,7 @@ export default function HeroLog() {
     const target =
       geo.status === "ready" && lat !== null && lng !== null
         ? { lat, lng }
-        : geo.status === "error"
+        : geo.status === "error" || geo.status === "idle"
           ? { lat: LAS_VEGAS_LAT, lng: LAS_VEGAS_LNG }
           : null;
     if (!target) return;
@@ -252,7 +252,7 @@ export default function HeroLog() {
           <p className="pencil-status mono" style={{ margin: 0 }}>
             <span className="dot" data-state={sky.state} aria-hidden="true" />
             <span>
-              {status === "idle" && sky.state === "checking" ? "Choose a place to read the sky." : sky.text}
+              {status === "idle" || status === "error" ? `Las Vegas, NV (default). ${sky.text}` : sky.text}
             </span>
           </p>
         </div>

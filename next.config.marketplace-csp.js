@@ -25,4 +25,21 @@ function getMarketplaceImageCspHost(base) {
   }
 }
 
-module.exports = { getMarketplaceImageCspHost };
+// Light-pollution tiles are served from the R2 public host named in
+// NEXT_PUBLIC_LIGHTPOLLUTION_TILES (a {z}/{x}/{y} template URL) or, as a
+// fallback, R2_PUBLIC_BASE. Mapbox GL fetches raster tiles with fetch/XHR, so
+// the host must be in connect-src as well as img-src. Returns the unique,
+// space-prefixed origins (never a path or template) to append to a directive.
+function getTileCspHosts(...bases) {
+  const seen = [];
+  for (const base of bases) {
+    if (!base) continue;
+    // The template contains {z}/{x}/{y}; URL() tolerates it, and we only use
+    // the origin, so no placeholder text can leak into the CSP.
+    const host = getMarketplaceImageCspHost(String(base).trim());
+    if (host && !seen.includes(host)) seen.push(host);
+  }
+  return seen.join("");
+}
+
+module.exports = { getMarketplaceImageCspHost, getTileCspHosts };
