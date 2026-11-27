@@ -8,6 +8,7 @@ import {
   validateOrigin
 } from "@/lib/marketplace-auth";
 import { getMarketplaceSessionUser } from "@/lib/marketplace-authz";
+import { normalizeUrlBase } from "@/lib/marketplace-images";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const DEFAULT_IMAGE_MAX_BYTES = 5 * 1024 * 1024;
@@ -210,17 +211,6 @@ function normalizeEndpoint(endpoint: string, bucket: string) {
     value = value.slice(0, -suffix.length);
   }
   return value;
-}
-
-function normalizeUrlBase(value: string | undefined) {
-  if (!value) return "";
-  try {
-    const url = new URL(value);
-    url.pathname = url.pathname.replace(/\/+$/, "");
-    return url.toString().replace(/\/+$/, "");
-  } catch {
-    return "";
-  }
 }
 
 function normalizePrefix(value: string) {

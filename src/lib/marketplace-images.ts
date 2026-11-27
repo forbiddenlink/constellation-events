@@ -1,4 +1,4 @@
-function normalizeUrlBase(value: string | undefined) {
+export function normalizeUrlBase(value: string | undefined) {
   if (!value) return "";
   try {
     const url = new URL(value);
