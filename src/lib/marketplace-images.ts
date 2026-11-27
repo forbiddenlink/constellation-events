@@ -1,7 +1,12 @@
 export function normalizeUrlBase(value: string | undefined) {
   if (!value) return "";
+  // A pasted env value can carry a newline plus the next line. The URL parser
+  // drops newlines instead of failing, so the second line ended up inside the
+  // hostname. Keep only the first whitespace-separated token, matching
+  // getMarketplaceImageCspHost in next.config.marketplace-csp.js.
+  const first = value.trim().split(/\s+/)[0];
   try {
-    const url = new URL(value);
+    const url = new URL(first);
     url.pathname = url.pathname.replace(/\/+$/, "");
     return url.toString().replace(/\/+$/, "");
   } catch {

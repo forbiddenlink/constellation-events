@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { isAllowedMarketplaceImageUrl, isValidHttpUrl } from "@/lib/marketplace-images";
+import { isAllowedMarketplaceImageUrl, isValidHttpUrl, normalizeUrlBase } from "@/lib/marketplace-images";
 
 describe("isValidHttpUrl", () => {
   it("accepts http/https urls", () => {
@@ -43,5 +43,21 @@ describe("isAllowedMarketplaceImageUrl", () => {
     process.env.R2_PUBLIC_BASE = "https://r2.example.com/bucket";
     expect(isAllowedMarketplaceImageUrl("https://r2.example.com/bucket/foo.jpg")).toBe(true);
     expect(isAllowedMarketplaceImageUrl("https://evil.example/tracker.png")).toBe(false);
+  });
+});
+
+describe("normalizeUrlBase", () => {
+  it("keeps only the first line of a pasted multi-line env value", () => {
+    // A pasted value once carried the next env line after a newline. The URL
+    // parser drops newlines, which glued that line into the hostname.
+    expect(
+      normalizeUrlBase("https://pub-xxxx.r2.dev\nMARKETPLACE_IMAGE_PREFIX=marketplace/images")
+    ).toBe("https://pub-xxxx.r2.dev");
+  });
+
+  it("strips trailing slashes and returns empty for invalid input", () => {
+    expect(normalizeUrlBase("https://cdn.example.com/images/")).toBe("https://cdn.example.com/images");
+    expect(normalizeUrlBase("not a url")).toBe("");
+    expect(normalizeUrlBase(undefined)).toBe("");
   });
 });
