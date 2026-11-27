@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.4](https://github.com/forbiddenlink/constellation-events/compare/v1.2.3...v1.2.4) (2026-11-27)
+
+
+### Bug Fixes
+
+* **auth:** handle idle pg pool errors so a dropped connection is not an uncaught exception ([#154](https://github.com/forbiddenlink/constellation-events/issues/154)) ([b228c45](https://github.com/forbiddenlink/constellation-events/commit/b228c45d5077720cd65354c07a2cb130b14392a5))
+* **csp,home:** allow light-pollution tile host, show default sky location ([#151](https://github.com/forbiddenlink/constellation-events/issues/151)) ([21f71d8](https://github.com/forbiddenlink/constellation-events/commit/21f71d85267133b71a5dc642b1d72a1771d48e32))
+* **marketplace:** ignore trailing lines in the image public base env value ([#153](https://github.com/forbiddenlink/constellation-events/issues/153)) ([d748edb](https://github.com/forbiddenlink/constellation-events/commit/d748edb661eecf223353df86b464ebb86cc7af82))
+
 ## [1.2.3](https://github.com/forbiddenlink/constellation-events/compare/v1.2.2...v1.2.3) (2026-11-24)
 
 
